@@ -1,0 +1,23 @@
+/* User Info */
+.lb-user-info {
+	height: @lb-topbar-height;
+	text-align: right;
+	line-height: @lb-topbar-height;
+
+	img {
+		display: inline;
+		max-height: @lb-topbar-height - 20px;
+	}
+
+	a {
+		color: #fff;
+	}
+}
+
+/* media */
+@media (max-width: @screen-sm) {
+	.lb-user-info {
+		height: auto;
+		text-align: left;
+	}
+}
