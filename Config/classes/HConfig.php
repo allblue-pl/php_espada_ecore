@@ -30,30 +30,35 @@ class HConfig
         ]]);
     }
 
-    static public function Get($package_name, $property_name, $default_value = null)
+    static public function Get($packageName, $propertyName, $default_value = null)
     {
         self::Initialize();
 
-        if (!isset(self::$Properties[$package_name]))
+        if (!isset(self::$Properties[$packageName]))
             return $default_value;
-        if (!isset(self::$Properties[$package_name][$property_name]))
+        if (!isset(self::$Properties[$packageName][$propertyName]))
             return $default_value;
 
-        return self::$Properties[$package_name][$property_name];
+        return self::$Properties[$packageName][$propertyName];
     }
 
-    static public function GetRequired($package_name, $property_name)
+    static public function GetR($packageName, $propertyName)
+    {
+        return self::GetRequired($packageName, $propertyName);
+    }
+
+    static public function GetRequired($packageName, $propertyName)
     {
         self::Initialize();
 
-        if (!isset(self::$Properties[$package_name]))
-            throw new \Exception("Config property `{$package_name}.{$property_name}`" .
+        if (!isset(self::$Properties[$packageName]))
+            throw new \Exception("Config property `{$packageName}.{$propertyName}`" .
                     " not set.");
-        if (!isset(self::$Properties[$package_name][$property_name]))
-            throw new \Exception("Config property `{$package_name}.{$property_name}`" .
+        if (!isset(self::$Properties[$packageName][$propertyName]))
+            throw new \Exception("Config property `{$packageName}.{$propertyName}`" .
                     " not set.");
 
-        return self::$Properties[$package_name][$property_name];
+        return self::$Properties[$packageName][$propertyName];
     }
 
     static public function Initialize()
@@ -66,21 +71,21 @@ class HConfig
     }
 
 
-    // static private function GetPropertyValue($property_array, $property_name,
+    // static private function GetPropertyValue($property_array, $propertyName,
     //         $required, $default_value = null)
     // {
-    //     $property_name_array = explode('.', $property_name);
+    //     $propertyName_array = explode('.', $propertyName);
     //     $value = $property_array;
-    //     foreach ($property_name_array as $property_name_part) {
-    //         if (!array_key_exists($property_array, $property_name)) {
+    //     foreach ($propertyName_array as $propertyName_part) {
+    //         if (!array_key_exists($property_array, $propertyName)) {
     //             if ($required) {
-    //                 throw new \Exception("Config property `{$package_name}.{$property_name}`" .
+    //                 throw new \Exception("Config property `{$packageName}.{$propertyName}`" .
     //                         " not set.");
     //             } else
     //                 return $default_value;
     //         }
     //
-    //         $value = $value[$property_name_part];
+    //         $value = $value[$propertyName_part];
     //     }
     //
     //     return $value;
