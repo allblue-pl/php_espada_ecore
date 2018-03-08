@@ -56,7 +56,7 @@ class MDatabase extends E\Module
 		if ($time === null)
 			return 'NULL';
 
-		return '\'' . gmdate('Y-m-d', (0 + $time)) . '\'';
+		return '\'' . gmdate('Y-m-d', (0 + (int)$time)) . '\'';
 	}
 
 	// public function escapeDateMillis($time)
@@ -72,7 +72,7 @@ class MDatabase extends E\Module
 		if ($time === null)
 			return 'NULL';
 
-		return '\'' . gmdate('Y-m-d H:i:s', (0 + $time)) . '\'';
+		return '\'' . gmdate('Y-m-d H:i:s', (0 + (int)$time)) . '\'';
 	}
 
 	public function escapeFloat($value)

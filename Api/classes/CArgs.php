@@ -8,17 +8,20 @@ class CArgs
 
     private $args = [];
 
-    public function __construct($arg_infos)
+    public function __construct($argInfos)
     {
-        foreach ($arg_infos as $arg_name => $arg_info) {
-            $this->args[$arg_name] = [
+        foreach ($argInfos as $argName => $argInfo) {
+            if ($argName === 'get' || $argName === 'getAll' || $argName === 'set')
+                throw new \Exception("'{$argName}' is a reserved arg name.");
+
+            $this->args[$argName] = [
                 'set' => false,
                 'value' => null
             ];
         }
     }
 
-    public function &__get($name)
+    public function get($name)
     {
         $this->validateArg($name);
 
@@ -26,6 +29,24 @@ class CArgs
             throw new \Exception("Api arg `{$name}` not set.");
 
         return $this->args[$name]['value'];
+    }
+
+    public function getAll()
+    {
+        $args = [];
+        foreach ($this->args as $argName => $argInfo) {
+            if (!$argInfo['set'])
+                continue;
+
+            $args[$argName] = $argInfo['value'];
+        }
+
+        return $args;
+    }
+
+    public function &__get($name)
+    {
+        return $this->get($name);
     }
 
     public function __isset($name)
