@@ -34,17 +34,17 @@ class HUsers
 	static public function CheckLoginAndPassword(EC\MDatabase $db, $login,
 			$password)
 	{
-		$test_users = self::GetTestUsers();
-		foreach ($test_users as $test_user) {
-			if ($test_user['login'] === $login &&
-				$test_user['password'] === $password) {
+		$testUsers = self::GetTestUsers();
+		foreach ($testUsers as $testUser) {
+			if ($testUser['login'] === $login && EC\HHash::CheckPassword(
+					$password, $testUser['password'])) {
 
 				$user = [];
 
-				$user['id'] = $test_user['id'];
+				$user['id'] = $testUser['id'];
 				$user['login'] = $login;
 				$user['groups'] = explode(',',
-						str_replace(' ', '', $test_user['groups']));
+						str_replace(' ', '', $testUser['groups']));
 				$user['permissions'] = HPermissions::Get_FromGroups($user['groups']);
 
 				return $user;
@@ -52,10 +52,10 @@ class HUsers
 		}
 
 		$salt = EC\HHash::Salt();
-        $login_hash = self::GetLoginHash($login);
+        $loginHash = self::GetLoginHash($login);
 
 		$row = (new TUsers($db))->row_Where([
-			[ 'LoginHash', '=', $login_hash ],
+			[ 'LoginHash', '=', $loginHash ],
 			[ 'Active', '=', true ]
 		]);
 
@@ -108,12 +108,12 @@ class HUsers
     // static public function Update(EC\MDatabase $database,
 	// 		$id, $login, $email, $password, $groups, $active)
     // {
-	// 	$login_hash = self::GetLoginHash($login);
+	// 	$loginHash = self::GetLoginHash($login);
     //     $email_hash = self::GetEMailHash($email);
     //     $groups_string = implode(',', $groups);
 	//
 	// 	$db_id = $database->escapeInt($id);
-    //     $db_login_hash = $database->escapeString($login_hash);
+    //     $db_login_hash = $database->escapeString($loginHash);
     //     $db_email_hash = $database->escapeString($email_hash);
     //     $db_groups_string = $database->escapeString($groups_string);
     //     $db_active = $database->escapeBool($active);
@@ -156,11 +156,11 @@ class HUsers
     // }
 
 	static public function Exists(EC\MDatabase $db, $login, $excluded_ids = [ -1 ]) {
-		$login_hash = self::GetLoginHash($login);
+		$loginHash = self::GetLoginHash($login);
 
 		$row = (new TUsers($db))->row_Where([
 			[ 'Id', 'NOT IN', $excluded_ids ],
-			[ 'LoginHash', '=', $login_hash ],
+			[ 'LoginHash', '=', $loginHash ],
 		]);
 
 		if ($row === null)

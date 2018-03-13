@@ -58,7 +58,13 @@ class MSession extends E\Module
 		$this->requirePreInitialize();
 		$this->requireBeforePostInitialize();
 
+		// echo "before";
+		// print_r($_SESSION);
+
 		$_SESSION[$name] = $value;
+
+		// echo "after";
+		// print_r($_SESSION);
 	}
 
 	public function delete($name)
@@ -76,7 +82,10 @@ class MSession extends E\Module
 		$this->requireBeforePostInitialize();
 
 		$_SESSION = [];
+
 		session_destroy();
+
+		echo "HM?";
 	}
 
 	public function &__get($name)

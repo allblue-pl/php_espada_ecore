@@ -21,7 +21,7 @@ class CArgs
         }
     }
 
-    public function get($name)
+    public function &get($name)
     {
         $this->validateArg($name);
 
