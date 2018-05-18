@@ -11,7 +11,7 @@ class MHeader extends \E\Module
     /* Meta Data */
     private $title = 'Espada Website';
     private $description = '';
-    private $keywords = '';
+    private $keywords = [];
     private $author = null;
 
     /* Scripts */
@@ -46,6 +46,11 @@ class MHeader extends \E\Module
         ]);
     }
 
+    public function addKeywords($keywords)
+    {
+        $this->keywords = array_merge($this->keywords, explode(',', $keywords));
+    }
+
     public function addTag($name, $attribs = [], $self_closing = false,
             $value = '')
     {
@@ -65,7 +70,7 @@ class MHeader extends \E\Module
 
     public function setKeywords($keywords)
     {
-        $this->keywords = $keywords;
+        $this->keywords = explode(',', $keywords);
     }
 
     public function setTitle($title)
@@ -89,9 +94,12 @@ class MHeader extends \E\Module
                 ], true) . "\n";
 
             /* Meta Keywords */
+            $keywords = [];
+            foreach ($this->keywords as $keyword)
+                $keywords[] = trim($keyword);
             $header .= $this->getNode('meta', [
                     "name" => "keywords",
-                    "content" => $this->keywords
+                    "content" => implode(', ', $keywords),
                 ], true) . "\n";
 
             /* Author */
