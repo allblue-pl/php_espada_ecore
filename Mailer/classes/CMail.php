@@ -16,7 +16,8 @@ class CMail
 	private $from_Mail = '';
 	private $from_Name = '';
 
-	private $tos = null;
+    private $tos = null;
+    private $replyTos = [];
 	private $ccs = [];
 	private $bcce = [];
 
@@ -82,7 +83,16 @@ class CMail
 
 		$this->tos[] = array($mail, $name);
 		// $this->mail->addAddress($mail, $name);
-	}
+    }
+    
+    public function setReplyTo($mail, $name = null)
+    {
+        if ($name === null)
+			$name = $mail;
+
+        $this->replyTos = [];
+        $this->replyTos[] = [ $mail, $name ];
+    }
 
 	public function setTo($mail, $name = '')
 	{
@@ -130,7 +140,10 @@ class CMail
 				$this->from_Mail : $this->from_Name;
 
 			foreach ($this->tos as $to)
-				$this->mail->addAddress($to[0], $to[1]);
+                $this->mail->addAddress($to[0], $to[1]);
+                
+            foreach ($this->replyTos as $replyTo)
+                $this->mail->addReplyTo($replyTo[0], $replyTo[1]);
 
 			$text = $this->text;
 			$html = $this->html;
