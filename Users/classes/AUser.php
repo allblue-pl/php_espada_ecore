@@ -120,9 +120,9 @@ class AUser extends EC\Api\ABasic
 			$result->add('login', $user->getLogin());
 
 			return $result;
-		}
+        }
 
-		$userInfo = EC\HUsers::CheckLoginAndPassword($db, $login, $password);
+        $userInfo = EC\HUsers::CheckLoginAndPassword($db, $login, $password);
 
 		if ($userInfo === null) {
 			return CResult::Failure('`login` and `password`' .

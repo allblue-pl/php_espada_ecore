@@ -12,12 +12,11 @@ class MABWeb extends E\Module
         $this->_dirPath = $dirPath;
     }
 
+    
     protected function _preInitialize(E\Site $site)
     {
-        if (!file_exists($this->_dirPath)) {
-            E\Notice::Add("'abWeb' dir does not exist.");
-            return;
-        }
+        if (!file_exists($this->_dirPath))
+            throw new \Exception("'abWeb' path does not exist.");
 
         $headerPath = $this->_dirPath . '/header.html';
         if (file_exists($headerPath)) {

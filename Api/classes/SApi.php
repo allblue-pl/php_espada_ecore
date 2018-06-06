@@ -96,9 +96,8 @@ class SApi extends E\Site
             return CResult::Failure('Result cannot be null.');
 
         $notices = E\Notice::GetAll();
-        foreach ($notices as $notice) {
-            $result->debug('Notice: ' . $notice['message'] . $notice['stack']);
-        }
+        foreach ($notices as $notice)
+            $result->debug('Notice: ' . $notice['message'] . implode("; ", $notice['stack']));
 
         return $result;
     }
