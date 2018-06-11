@@ -19,6 +19,7 @@ class SLemonBee extends EC\SBasic
                 $this->m->db));
 
         $this->addM('abWeb', new EC\MABWeb($this->m->header, $abWebBuildPath));
+        $this->addM('eLibs', new EC\MELibs($this->m->header));
 
         // $this->addM('spk', new EC\MSPK($this->m->header,
         //         $this->m->abTemplate));
@@ -36,14 +37,10 @@ class SLemonBee extends EC\SBasic
             'aliases' => [
                 'main' => '',
                 'logIn' => 'log-in',
-                'user' => 'userInfo',
+                // 'user' => 'userInfo',
             ],
             'images' => [
-                'messages' => [
-                    'loading' => E\Uri::File('LemonBee:images/notifications/loading.gif'),
-                    'success' => E\Uri::File('LemonBee:images/notifications/message-success.png'),
-                    'failure' => E\Uri::File('LemonBee:images/notifications/message-failure.png'),
-                ],
+                'messages' => [],
             ],
             'panels' => [],
             'texts' => EC\HText::GetTranslations('LemonBee'),

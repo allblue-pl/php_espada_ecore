@@ -6,7 +6,8 @@ const
     js0 = require('js0'),
     spkForms = require('spk-forms'),
     spkLemonBee = require('spk-lemon-bee'),
-    spocky = require('spocky')
+    spocky = require('spocky'),
+    webABApi = require('web-ab-api')
 ;
 
 spocky.ext(new spkForms.Ext());
@@ -42,5 +43,8 @@ class Site extends spocky.Module {
 export function init(debug)
 {
     spk.init(debug);
+
+    spkForms.setDebug(debug);
+    webABApi.setDebug(debug);    
 }
 

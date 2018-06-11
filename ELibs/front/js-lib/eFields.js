@@ -9,6 +9,12 @@ class eFields_Class
         this._fields = {};
     }
 
+    add(fields)
+    {
+        for (let fieldName in fields)
+            this.set(fieldName, fields[fieldName]);
+    }
+
     get(fieldsName)
     {
         if (!(fieldsName in this._fields)) {

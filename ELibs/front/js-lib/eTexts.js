@@ -1,7 +1,7 @@
 'use strict';
 
 
-class eText_Class
+class eTexts_Class
 {
 
     constructor()
@@ -17,11 +17,11 @@ class eText_Class
         return `#${text}#`;
     }
 
-    set(texts)
+    add(texts)
     {
         for (let text in texts)
             this._texts[text] = texts[text];
     }
 
 }
-module.exports = new eFields_Class();
+module.exports = new eTexts_Class();

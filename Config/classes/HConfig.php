@@ -7,23 +7,38 @@ class HConfig
 {
 
     static private $Properties = null;
+    static private $DBCache = [];
 
     static public function DB_Get(EC\MDatabase $db, $name)
     {
+        if (array_key_exists($name, HConfig::$DBCache))
+            return HConfig::$DBCache[$name];
+
         $table = new TSettings($db);
         $row = $table->row_Where([
             [ 'Name', '=', $name ],
         ]);
 
-        if ($row === null)
-            return null;
+        if ($row === null) {
+            $defaultValues = HConfig::Get('Config', 'DB', []);
+            if (array_key_exists($name, $defaultValues)) {
+                HConfig::$DBCache[$name] = $defaultValues[$name];
+                return $defaultValues[$name];
+            }
 
+            HConfig::$DBCache[$name] = null;
+            return null;
+        }
+
+        HConfig::$DBCache[$name] = $row['Value'];        
         return $row['Value'];
     }
 
     static public function DB_Set(EC\MDatabase $db, $name, $value)
     {
         $table = new TSettings($db);
+
+        HConfig::$DBCache[$name] = $value;
         return $table->update([[
             'Name' => $name,
             'Value' =>  $value,
