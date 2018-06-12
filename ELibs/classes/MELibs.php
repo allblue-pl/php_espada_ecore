@@ -16,9 +16,21 @@ class MELibs extends E\Module
         $this->header = $header;
     }
 
-    function addTexts($texts)
+    function addTexts(array $texts)
     {
         $this->texts = array_merge($this->texts, $texts);
+    }
+
+    function addTranslations($path)
+    {
+        $pkg = explode(':', $path)[0];
+        $texts = [];
+        $translationsArr = EC\HText::GetTranslations('Adm')->getArray();
+
+        foreach ($translationsArr as $text => $textTranslation) 
+            $texts["{$pkg}:{$text}"] = $textTranslation;
+
+        $this->addTexts($texts);
     }
 
     function setField($fieldName, $fieldValue)
