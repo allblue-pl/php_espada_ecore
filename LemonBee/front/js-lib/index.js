@@ -42,9 +42,10 @@ class Site extends spocky.Module {
 
 export function init(debug)
 {
-    spk.init(debug);
-
+    spocky.setDebug(debug);
     spkForms.setDebug(debug);
-    webABApi.setDebug(debug);    
+    webABApi.setDebug(debug);
+
+    spk.init(debug); 
 }
 
