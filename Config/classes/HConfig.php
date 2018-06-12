@@ -9,7 +9,7 @@ class HConfig
     static private $Properties = null;
     static private $DBCache = [];
 
-    static public function DB_Get(EC\MDatabase $db, $name)
+    static public function DB_Get(EC\MDatabase $db, $name, $defaultValue = null)
     {
         if (array_key_exists($name, HConfig::$DBCache))
             return HConfig::$DBCache[$name];
@@ -26,11 +26,11 @@ class HConfig
                 return $defaultValues[$name];
             }
 
-            HConfig::$DBCache[$name] = null;
-            return null;
+            HConfig::$DBCache[$name] = $defaultValue;
+            return $defaultValue;
         }
 
-        HConfig::$DBCache[$name] = $row['Value'];        
+        HConfig::$DBCache[$name] = $row['Value'];
         return $row['Value'];
     }
 
@@ -38,11 +38,14 @@ class HConfig
     {
         $table = new TSettings($db);
 
-        HConfig::$DBCache[$name] = $value;
-        return $table->update([[
+        if (!$table->update([[
             'Name' => $name,
             'Value' =>  $value,
-        ]]);
+                ]]))
+            return false;
+
+        HConfig::$DBCache[$name] = $value;
+        return true;
     }
 
     static public function Get($packageName, $propertyName, $default_value = null)
