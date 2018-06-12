@@ -25,7 +25,7 @@ class MELibs extends E\Module
     {
         $pkg = explode(':', $path)[0];
         $texts = [];
-        $translationsArr = EC\HText::GetTranslations('Adm')->getArray();
+        $translationsArr = EC\HText::GetTranslations($pkg)->getArray();
 
         foreach ($translationsArr as $text => $textTranslation) 
             $texts["{$pkg}:{$text}"] = $textTranslation;
