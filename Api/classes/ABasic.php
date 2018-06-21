@@ -10,11 +10,11 @@ class ABasic extends AApi
     private $actionRequiredPermissions = [];
     private $requiredPermissions = null;
 
-    public function __construct(EC\SApi $site, $required_permissions = [])
+    public function __construct(EC\SApi $site, $requiredPermissions = [])
     {
         parent::__construct($site);
 
-        $this->requiredPermissions = $required_permissions;
+        $this->requiredPermissions = $requiredPermissions;
 
         $site->addM('session', new EC\MSession());
         $site->addM('db', new EC\MDatabase());
@@ -23,9 +23,9 @@ class ABasic extends AApi
     }
 
     public function actionR($action_name, $fn, $arg_infos = [],
-            $required_permissions = [])
+            $requiredPermissions = [])
     {
-        $this->actionRequiredPermissions[$action_name] = $required_permissions;
+        $this->actionRequiredPermissions[$action_name] = $requiredPermissions;
         $this->action($action_name, $fn, $arg_infos);
     }
 
@@ -34,12 +34,12 @@ class ABasic extends AApi
         $user = $this->getSite()->m->user;
 
         if (array_key_exists($action_name, $this->actionRequiredPermissions)) {
-            $required_permissions = array_merge($this->requiredPermissions,
+            $requiredPermissions = array_merge($this->requiredPermissions,
                     $this->actionRequiredPermissions[$action_name]);
         } else
-            $required_permissions = $this->requiredPermissions;
+            $requiredPermissions = $this->requiredPermissions;
 
-        foreach ($required_permissions as $p) {
+        foreach ($requiredPermissions as $p) {
             if (!$user->hasPermission($p)) {
                 return EC\Api\CResult::Failure('Permission denied.')
                         ->debug('Required permission: ' . $p);

@@ -62,35 +62,38 @@ class SApi extends E\Site
 
         $post_args = E\Args::Post_All();
         if (array_key_exists('json', $post_args)) {
-            $api_args = json_decode($post_args['json'], true);
-            if ($api_args === null)
+            $apiArgs = json_decode($post_args['json'], true);
+            if ($apiArgs === null)
                 return CResult::Failure('Cannot parse json.');
         } else
-            $api_args = [];
+            $apiArgs = [];
 
         foreach ($post_args as $post_arg_name => $post_arg_value) {
             if ($post_arg_name === 'json')
                 continue;
 
             // foreach ($post_args as $post_arg_name => $post_arg_value) {
-                if (array_key_exists($post_arg_name, $api_args)) {
+                if (array_key_exists($post_arg_name, $apiArgs)) {
                     return CResult::Failure("Arg `{$post_arg_name}` already " .
                             ' set in `json`.');
                 }
-                $api_args[$post_arg_name] = $post_arg_value;
+                $apiArgs[$post_arg_name] = $post_arg_value;
             // }
         }
 
         /* Debug with GET. */
+        $apiArgs['_debug'] = false;
+        $apiArgs['_test'] = false;
         if (EDEBUG) {
+
             if (E\Args::Get_Exists('_debug')) {
-                $get_args = E\Args::Get_All();
-                foreach ($get_args as $get_arg_name => $get_arg_value)
-                    $api_args[$get_arg_name] = $get_arg_value;
+               $getArgs = E\Args::Get_All();
+                foreach ($getArgs as $getArgName => $getArgValue)
+                    $apiArgs[$getArgName] = $getArgValue;
             }
         }
 
-        $result = $this->api->getResult($this->actionName, $api_args);
+        $result = $this->api->getResult($this->actionName, $apiArgs);
 
         if ($result === null)
             return CResult::Failure('Result cannot be null.');

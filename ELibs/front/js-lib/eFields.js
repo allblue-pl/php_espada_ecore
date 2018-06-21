@@ -15,19 +15,24 @@ class eFields_Class
             this.set(fieldName, fields[fieldName]);
     }
 
-    get(fieldsName)
+    get(fieldName)
     {
-        if (!(fieldsName in this._fields)) {
-            throw new Error('Fields `' + fieldsName +
+        if (!(fieldName in this._fields)) {
+            throw new Error('Field `' + fieldName +
                     '` does not exist.');
         }
 
-        return this._fields[fieldsName];
+        return this._fields[fieldName];
     }
 
-    set(fieldsName, fields)
+    exists(fieldName)
     {
-        this._fields[fieldsName] = fields;
+        return fieldName in this._fields;
+    }
+
+    set(fieldName, fieldValue)
+    {
+        this._fields[fieldName] = fieldValue;
     }
 
 }

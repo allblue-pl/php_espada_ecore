@@ -123,7 +123,12 @@ class MDatabase extends E\Module
 	public function getLastQuery()
 	{
 		return $this->lastQuery;
-	}
+    }
+    
+    public function isConnected()
+    {
+        return $this->mysqli !== null;
+    }
 
 	public function requireNoTransaction()
 	{

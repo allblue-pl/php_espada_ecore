@@ -1,0 +1,59 @@
+.spk-e-images {
+
+	.checkboxField {
+		width: auto;
+		padding-right: 5px;
+	}
+
+	.file-input {
+		position: relative;
+		padding: 15px;
+		background-color: #fff;
+		border: 3px solid #fff;
+		width: 100%;
+		min-height: 60px;
+		.btn-group {
+			margin-bottom: 15px;
+		}
+	}
+
+    .images {
+    	position: relative;
+		padding: 15px 0px;
+        background-color: #fff;
+        border: 3px solid #fff;
+        width: 100%;
+        min-height: 60px;
+
+        .image-holder {
+			min-height: 100px;
+			overflow: hidden;
+			word-wrap: break-word;
+
+        	 i {
+        	 	margin-right: 5px;
+        	 }
+
+			 .image-displayer {
+				 max-height: 120px;
+				 overflow: hidden;
+				 img {
+					 max-height: 100%;
+				 }
+			 }
+        }
+
+    }
+
+	.single-image {
+		width: 230px;
+		.image-holder {
+			width: 200px;
+		}
+	}
+
+    .dragover {
+        background-color: #b4fbbb;
+        border: 3px dashed #5cb85c;
+    }
+}

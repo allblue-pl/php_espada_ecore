@@ -90,4 +90,26 @@ class HStrings
         }
     }
 
+    static public function ValidateChars($string, $validChars, &$invalidChars)
+    {
+        $regexp = '[^' . $validChars . ']';
+
+        $invalidChars = [];
+
+        mb_ereg_search_init($string, $regexp);
+        while(true) {
+            if (mb_ereg_search() === false)
+                break;
+            
+            $match = mb_ereg_search_getregs();
+            if (!in_array($match[0], $invalidChars))
+                $invalidChars[] = $match[0];
+        }
+        
+        if (count($invalidChars) === 0)
+            return true;
+
+        return false;
+    }
+
 }

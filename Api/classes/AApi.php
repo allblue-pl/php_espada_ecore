@@ -23,8 +23,8 @@ class AApi
 
         $action = $this->actions[$action_name];
 
-        if (EDEBUG)
-            $action['argInfos']['_test'] = false;
+        $action['argInfos']['_debug'] = false;
+        $action['argInfos']['_test'] = false;
 
         $api_args = new CArgs($action['argInfos']);
 

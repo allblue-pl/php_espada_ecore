@@ -23,12 +23,15 @@ class Site extends spocky.Module {
     constructor() {
         super();
 
-        let pager = new abPager.Pager();
-        let lb = new spkLemonBee.System(pager);
-        
         let lbSetup = eLibs.eFields.get('lbSetup');
+        let base = '/';
+        if ('uris' in lbSetup) {
+            if ('base' in lbSetup.uris)
+                base = lbSetup.uris.base;
+        }
 
-        pager.base(lbSetup.uris.base);
+        let pager = new abPager.Pager(base);
+        let lb = new spkLemonBee.System(pager);
 
         lb.setup(lbSetup);
 

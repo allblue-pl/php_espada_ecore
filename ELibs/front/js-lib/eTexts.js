@@ -1,5 +1,8 @@
 'use strict';
 
+const
+    js0 = require('js0')
+;
 
 class eTexts_Class
 {
@@ -9,12 +12,19 @@ class eTexts_Class
         this._texts = {};
     }
 
-    get(text)
+    get(text, args = [])
     {
-        if (text in this._texts)
-            return this._texts[text];
+        js0.args(arguments, 'string', [ Array, js0.Default ]);
 
-        return `#${text}#`;
+        if (text in this._texts) {
+            let translation = this._texts[text];
+            for (let i = 0; i < args.length; i++)
+                translation = translation.replace(`{${i}}`, args[i]);
+
+            return translation;
+        }
+
+        return `#${text}#` + (args.length === 0 ? '' : ' (' + args.join(', ') + ')');
     }
 
     add(texts)

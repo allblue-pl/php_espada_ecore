@@ -50,6 +50,16 @@ class MUser extends E\Module
 	public function hasPermission($permission)
 	{
 		return in_array($permission, $this->permissions);
+    }
+    
+    public function hasPermissions(array $permissions)
+	{
+        foreach ($permissions as $permission) {
+            if (!$this->hasPermission($permission))
+                return false;
+        }
+
+		return true;
 	}
 
 	public function isInGroup($group_name)

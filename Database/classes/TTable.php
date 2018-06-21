@@ -767,6 +767,15 @@ class TTable
         }
     }
 
+    public function validateDefault(EC\Forms\CValidator $validator, $values)
+    {
+        $fieldInfos = [];
+        foreach ($values as $columnName => $value)
+            $fieldInfos[$columnName] = [ $columnName, $value ];
+
+        return $this->validate($validator, $fieldInfos);
+    }
+
     // public function validateRow($row)
     // {
     //
