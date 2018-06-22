@@ -32,6 +32,8 @@ class SLemonBee extends EC\SBasic
             ]
         ]));
 
+        // print_r(EC\HText::GetTranslations('LemonBee:spk')->getArray());
+
         /* Default Setup */
         $this->defaultSetup = [
             'aliases' => [
@@ -43,7 +45,7 @@ class SLemonBee extends EC\SBasic
                 'messages' => [],
             ],
             'panels' => [],
-            'texts' => EC\HText::GetTranslations('LemonBee'),
+            'texts' => EC\HText::GetTranslations('LemonBee:spk')->getArray(),
             'uris' => [
                 'base' => E\Uri::Base(),
                 'api' => E\Uri::Base() . '/api',
@@ -54,6 +56,7 @@ class SLemonBee extends EC\SBasic
                 'permissions' => [],
             ],
         ];
+
     }
 
     public function lbSetup(array $setup)
