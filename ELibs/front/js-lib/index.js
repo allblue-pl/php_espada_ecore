@@ -1,25 +1,41 @@
 'use strict';
 
 
-export const eFields = require('./eFields');
-export const eTexts = require('./eTexts');
+class eLibs_Class
+{
 
-export function createLayout(layoutClass) {
-    let l = new layoutClass();
-    l.$fields.eField = (field) => {
-        return 'Not implemented yet.';
-    };
-    l.$fields.eText = (text) => {
-        return this.eText(text);
-    };
+    get eFields() {
+        return require('./eFields');
+    }
 
-    return l;
+    get eLang() {
+        return this.eFields.get('eLang');
+    }
+
+    get eTexts() {
+        return require('./eTexts');
+    }
+
+
+    createLayout(layoutClass) {
+        let l = new layoutClass();
+        l.$fields.eField = (field) => {
+            return 'Not implemented yet.';
+        };
+        l.$fields.eText = (text) => {
+            return this.eText(text);
+        };
+
+        return l;
+    }
+
+    eField(fieldName) {
+        return this.eFields.get(fieldName);
+    }
+
+    eText(text, args = []) {
+        return this.eTexts.get(text, args);
+    }
+
 }
-
-export function eField(fieldName) {
-    return eFields.get(fieldName);
-}
-
-export function eText(text, args = []) {
-    return eTexts.get(text, args);
-}
+export default eLibs = new eLibs_Class();

@@ -1,6 +1,7 @@
 'use strict';
 
 const
+    abDate = require('ab-date'),
     abPager = require('ab-pager'),
     eLibs = require('e-libs'),
     js0 = require('js0'),
@@ -26,7 +27,7 @@ class Site extends spocky.Module {
         let lbSetup = eLibs.eFields.get('lbSetup');
         let base = '/';
         if ('uris' in lbSetup) {
-            if ('base' in lbSetup.uris)
+        if ('base' in lbSetup.uris)
                 base = lbSetup.uris.base;
         }
 
@@ -48,6 +49,8 @@ export function init(debug)
     spocky.setDebug(debug);
     spkForms.setDebug(debug);
     webABApi.setDebug(debug);
+
+    spkForms.setLang(eLibs.eLang.code.substring(0, 2));
 
     spk.init(debug); 
 }

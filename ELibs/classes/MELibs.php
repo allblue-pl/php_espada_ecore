@@ -40,6 +40,8 @@ class MELibs extends E\Module
 
     function _postInitialize(E\Site $site)
     {
+        $this->setField('eLang', E\Langs::Get());
+
         $fieldsString = str_replace("'", "\\'", json_encode($this->fields));
         $textsString = str_replace("'", "\\'", json_encode($this->texts));
 
