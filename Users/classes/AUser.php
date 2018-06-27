@@ -116,7 +116,7 @@ class AUser extends EC\Api\ABasic
         $user = $this->user;
 
         if ($user->isLoggedIn()) {
-			$result = CResult::Failure('Log out first.');
+			$result = CResult::Failure('Users:errors_LogOutFirst');
 			$result->add('login', $user->getLogin());
 
 			return $result;
@@ -125,16 +125,14 @@ class AUser extends EC\Api\ABasic
         $userInfo = EC\HUsers::CheckLoginAndPassword($db, $login, $password);
 
 		if ($userInfo === null) {
-			return CResult::Failure('`login` and `password`' .
-									  ' do not match.`');
+			return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'));
 		}
 
 		$user_permissions = $userInfo['permissions'];
 
 		foreach ($this->requiredPermissions as $permission) {
 			if (!in_array($permission, $user_permissions)) {
-				return CResult::Failure('`login` and `password`' .
-										  ' do not match.`')
+				return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'))
                     ->debug('Permission denied.');
 			}
 		}
