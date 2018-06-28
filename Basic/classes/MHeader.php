@@ -3,7 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MHeader extends \E\Module
+class MHeader extends E\Module
 {
 
     private $fields = null;
@@ -78,7 +78,7 @@ class MHeader extends \E\Module
         $this->title = $title;
     }
 
-    protected function _preInitialize(E\Site $site)
+    protected function _preDisplay(E\Site $site)
     {
         $site->addL('header', E\Layout::_('Basic:raw', function() {
             $header = '';

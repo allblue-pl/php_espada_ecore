@@ -83,6 +83,13 @@ class TTable
         }
     }
 
+    public function addColumns_Ref_All(TTable $table, $tablePrefix, $fieldPrefix = '',
+            $excludedColumns = [ 'Id' ], $includedColumns = null)
+    {
+        $this->addColumns_Ref($table, $table->getColumnTableRefs($tablePrefix, 
+                $fieldPrefix, $excludedColumns, $includedColumns));
+    }
+
     public function addColumns_Optional($columns, $extra = true)
     {
         $this->addColumns($columns, $extra, true);
@@ -217,22 +224,22 @@ class TTable
         return $column_names;
     }
 
-    public function getColumnTableRefs($table_prefix, $field_prefix = '',
-            $excluded_columns = [ 'Id' ], $included_columns = null)
+    public function getColumnTableRefs($tablePrefix, $fieldPrefix = '',
+            $excludedColumns = [ 'Id' ], $includedColumns = null)
     {
         $column_refs = [];
         foreach ($this->columns_Table as $column_name => $column_field) {
             $column = $this->getColumn($column_name, true);
-            if ($excluded_columns !== null) {
-                if (in_array($column['name'], $excluded_columns))
+            if ($excludedColumns !== null) {
+                if (in_array($column['name'], $excludedColumns))
                     continue;
-            } else if ($included_columns !== null) {
-                if (!in_array($column['name'], $included_columns))
+            } else if ($includedColumns !== null) {
+                if (!in_array($column['name'], $includedColumns))
                     continue;
             }
 
-            $column_refs[$field_prefix . $column['name']] =
-                    [ $table_prefix . '.' . $column['name'], $column['name'] ];
+            $column_refs[$fieldPrefix . $column['name']] =
+                    [ $tablePrefix . '.' . $column['name'], $column['name'] ];
         }
 
         return $column_refs;

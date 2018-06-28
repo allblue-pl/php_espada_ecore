@@ -38,17 +38,31 @@ class MELibs extends E\Module
         $this->fields[$fieldName] = $fieldValue;
     } 
 
-    function _postInitialize(E\Site $site)
+    function _preDisplay(E\Site $site)
     {
+        /* Defaults */
+        $this->addTranslations('Date');
         $this->setField('eLang', E\Langs::Get());
 
+        /* Setup */
         $fieldsString = str_replace("'", "\\'", json_encode($this->fields));
         $textsString = str_replace("'", "\\'", json_encode($this->texts));
+
+        $date_UTCOffset = EC\HDate::GetUTCOffset();
+        $date_Formats_Date = EC\HText::_('ELibs:date_Formats_Date');
+        $date_Formats_DateTime = EC\HText::_('ELibs:date_Formats_DateTime');
+        $date_Formats_Time = EC\HText::_('ELibs:date_Formats_Time');
 
         $script = <<<HTML
 <script type="text/javascript">
     (() => {
+        let abDate = jsLibs.require('ab-date');
         let eLibs = jsLibs.require('e-libs');
+
+        abDate.utfOffset = {$date_UTCOffset};
+        abDate.formats_Date = '{$date_Formats_Date}';
+        abDate.formats_DateTime = '{$date_Formats_DateTime}';
+        abDate.formats_Time = '{$date_Formats_Time}';
 
         eLibs.eFields.add({$fieldsString});
         eLibs.eTexts.add({$textsString});
