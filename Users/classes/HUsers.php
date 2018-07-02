@@ -15,29 +15,29 @@ class HUsers
 	const Password_MinCharacters = 6;
 
 
-	static public function Activate(EC\MDatabase $db, $user_id, $active)
+	static public function Activate(EC\MDatabase $db, $userId, $active)
 	{
 		return (new TUsers($db))->update_Where([ 'active' => $active ],
-				[ 'id', '=', $user_id ]);
+				[ 'id', '=', $userId ]);
 	}
 
-	static public function ChangePassword(EC\MDatabase $db, $user_id,
-			$new_password)
+	static public function ChangePassword(EC\MDatabase $db, $userId,
+			$newPassword)
 	{
-		$new_password_hash = self::GetPasswordHash($new_password);
+		$newPassword_Hash = self::GetPasswordHash($newPassword);
 
 		return (new TUsers($db))->update_Where(
-			[ 'PasswordHash' => $new_password_hash ],
-			[[ 'Id', '=', $user_id ]]);
+			[ 'PasswordHash' => $newPassword_Hash ],
+			[[ 'Id', '=', $userId ]]);
 	}
 
-	static public function CheckLoginAndPassword(EC\MDatabase $db, $login,
+	static public function CheckLoginAndPassword(EC\MDatabase $db, $type, $login,
 			$password)
 	{
 		$testUsers = self::GetTestUsers();
 		foreach ($testUsers as $testUser) {
-			if ($testUser['login'] === $login && EC\HHash::CheckPassword(
-					$password, $testUser['password'])) {
+            if ($testUser['type'] === $type && $testUser['login'] === $login && 
+                    EC\HHash::CheckPassword($password, $testUser['password'])) {
 
 				$user = [];
 
@@ -55,6 +55,7 @@ class HUsers
         $loginHash = self::GetLoginHash($login);
 
 		$row = (new TUsers($db))->row_Where([
+            [ 'Type', '=', $type ],
 			[ 'LoginHash', '=', $loginHash ],
 			[ 'Active', '=', true ]
 		]);
@@ -94,9 +95,9 @@ class HUsers
 		return true;
 	}
 
-	static public function Get(EC\MDatabase $db, $user_id)
+	static public function Get(EC\MDatabase $db, $userId)
 	{
-		return (new TUsers($db))->row_ById($user_id);
+		return (new TUsers($db))->row_ById($userId);
 	}
 
 	static public function GetTestUsers()
@@ -155,7 +156,7 @@ class HUsers
 	// 		return $id;
     // }
 
-	static public function Exists(EC\MDatabase $db, $login, $excluded_ids = [ -1 ]) {
+	static public function Exists(EC\MDatabase $db, $type, $login, $excluded_ids = [ -1 ]) {
 		$loginHash = self::GetLoginHash($login);
 
 		$row = (new TUsers($db))->row_Where([

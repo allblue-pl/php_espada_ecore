@@ -15,8 +15,8 @@ class SLemonBee extends EC\SBasic
         /* Modules */
         $this->addM('session', new EC\MSession());
         $this->addM('db', new EC\MDatabase());
-        $this->addM('user', new EC\Users\MUser($this->m->session,
-                $this->m->db));
+        $this->addM('user', new EC\Users\MUser($this->m->session, $this->m->db, 
+                'LemonBee'));
 
         $this->addM('abWeb', new EC\MABWeb($this->m->header, $abWebBuildPath));
         $this->addM('eLibs', new EC\MELibs($this->m->header));

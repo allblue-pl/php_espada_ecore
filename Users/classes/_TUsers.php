@@ -13,6 +13,7 @@ class _TUsers extends Database\TTable
 
         $this->setColumns([
             'Id' => new Database\FInt(true),
+            'Type' => new Database\FVarchar(true, 16),
             'LoginHash' => new Database\FVarchar(true, 256),
             'EmailHash' => new Database\FVarchar(true, 256),
             'PasswordHash' => new Database\FVarchar(true, 256),

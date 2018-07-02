@@ -8,6 +8,7 @@ use E, EC,
 class AUser extends EC\Api\ABasic
 {
 
+    private $userType = null;
     private $requiredPermissions = null;
 
     private $db = null;
@@ -15,7 +16,8 @@ class AUser extends EC\Api\ABasic
 
     public function __construct(EC\SApi $site, $args)
     {
-        parent::__construct($site);
+        parent::__construct($site, array_key_exists('userType', $args) ? 
+                $args['userType'] : 'Default');
 
         if (!isset($args['requiredPermissions']))
             throw new \Exception('No `requiredPermissions` specified in' .
@@ -61,7 +63,7 @@ class AUser extends EC\Api\ABasic
         $userId = $user->getId();
         $userLogin = $user->getLogin();
 
-        if (!HUsers::CheckLoginAndPassword($db,
+        if (!HUsers::CheckLoginAndPassword($db, $this->user->getType(),
                 $userLogin, $args->OldPassword)) {
             $result = CResult::Failure();
             $result->add('error', [
@@ -122,7 +124,8 @@ class AUser extends EC\Api\ABasic
 			return $result;
         }
 
-        $userInfo = EC\HUsers::CheckLoginAndPassword($db, $login, $password);
+        $userInfo = EC\HUsers::CheckLoginAndPassword($db, $user->getType(), 
+                $login, $password);
 
 		if ($userInfo === null) {
 			return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'));

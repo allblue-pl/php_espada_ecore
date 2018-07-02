@@ -23,14 +23,22 @@ class MUser extends E\Module
 
 	private $salt = '';
 
-	public function __construct(EC\MSession $session,
-								EC\MDatabase $database)
+    public function __construct(EC\MSession $session, EC\MDatabase $database,
+            $type = 'Default')
 	{
 		parent::__construct();
 
 		$this->session = $session;
-		$this->db = $database;
-	}
+        $this->db = $database;
+        $this->type = $type;
+
+        $this->session_Name = "User_User_{$type}";
+    }
+    
+    public function getType()
+    {
+        return $this->type;
+    }
 
 	/* Permissions */
 	public function getPermissions()
@@ -114,18 +122,18 @@ class MUser extends E\Module
 	/* Session */
 	public function startSession($user_id, $user_login)
 	{
-		$this->session->delete('user_User');
+		$this->session->delete($this->session_Name);
 
 		$user = [];
 		$user['id'] = $user_id;
 		$user['login'] = $user_login;
 
-		$this->session->users_User = $user;
+		$this->session->set($this->session_Name, $user);
 	}
 
 	public function destroy()
 	{
-		$this->session->delete('users_User');
+		$this->session->delete($this->session_Name);
 
 		$this->id = -1;
 		$this->login = '';
@@ -155,7 +163,7 @@ class MUser extends E\Module
 
 	private function _preInitialize_User()
 	{
-		$user = $this->session->users_User;
+		$user = $this->session->get($this->session_Name);
 
 		if ($user !== null) {
 			$user_info = HUsers::Get($this->db, $user['id']);

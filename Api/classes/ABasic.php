@@ -10,7 +10,8 @@ class ABasic extends AApi
     private $actionRequiredPermissions = [];
     private $requiredPermissions = null;
 
-    public function __construct(EC\SApi $site, $requiredPermissions = [])
+    public function __construct(EC\SApi $site, $userType = 'Default', 
+            $requiredPermissions = [])
     {
         parent::__construct($site);
 
@@ -19,7 +20,7 @@ class ABasic extends AApi
         $site->addM('session', new EC\MSession());
         $site->addM('db', new EC\MDatabase());
         $site->addM('user', new EC\Users\MUser($site->m->session,
-                $site->m->db));
+                $site->m->db, $userType));
     }
 
     public function actionR($action_name, $fn, $arg_infos = [],

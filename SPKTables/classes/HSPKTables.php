@@ -105,7 +105,7 @@ class HSPKTables
             'apiUri' => null,
             'image' => '',
             'orderBy' => null,
-            'hiddenColumns' => []
+            'hiddenColumnNames' => []
         ];
 
         foreach ($table_info as $prop_name => $prop) {
@@ -117,8 +117,9 @@ class HSPKTables
         if (!array_key_exists('columns', $table_info))
             throw new \Exception('`columns` not set.');
 
-        foreach ($table_info['columns'] as $column_name => $column_info) {
+        foreach ($table_info['columns'] as $column_info) {
             $column = [
+                'name' => '',
                 'header' => '',
                 'orderBy' => null,
                 'filter' => true
@@ -131,7 +132,7 @@ class HSPKTables
                 $column[$prop_name] = $prop;
             }
 
-            $table['columns'][$column_name] = $column;
+            $table['columns'][$column['name']] = $column;
         }
 
         /* Api Uri */
@@ -149,8 +150,8 @@ class HSPKTables
         else
             $table['orderBy'] = [ array_keys($table['columns'])[0], false ];
 
-        if (array_key_exists('hiddenColumns', $table_info))
-            $table['hiddenColumns'] = $table_info['hiddenColumns'];
+        if (array_key_exists('hiddenColumnNames', $table_info))
+            $table['hiddenColumnNames'] = $table_info['hiddenColumnNames'];
 
         return $table;
     }
