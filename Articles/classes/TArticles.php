@@ -18,9 +18,9 @@ class TArticles extends _TArticles
             'IsPublished'       => [ "a_a.Published AND a_a.Publish <= $time", 
                     new Database\FBool(false) ],
 
-            'Alias'             => [ null, new Database\FVarchar(false, 256) ],
-            'Uri'               => [ null, new Database\FVarchar(false, 256) ],
-            'ImageUri'          => [ null, new Database\FVarchar(false, 256) ],
+            // 'Alias'             => [ null, new Database\FVarchar(false, 256) ],
+            // 'Uri'               => [ null, new Database\FVarchar(false, 256) ],
+            // 'ImageUri'          => [ null, new Database\FVarchar(false, 256) ],
         ]);
 
         /* Validators */

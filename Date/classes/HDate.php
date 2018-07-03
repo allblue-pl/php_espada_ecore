@@ -29,6 +29,11 @@ class HDate
         return ($start + $diff);
     }
 
+    static public function GetMonthName($monthNr)
+    {
+        return EC\HText::_('Date:monthNames_' . $monthNr);
+    }
+
     static public function Format_Date($time)
     {
         if ($time === null)
