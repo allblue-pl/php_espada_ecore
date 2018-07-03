@@ -37,28 +37,28 @@ class TTable
         ]);
     }
 
-    public function addColumnVFields($column_name, $v_fields)
+    public function addColumnVFields($columnName, $v_fields)
     {
-        $column = &$this->getColumnRef($column_name);
+        $column = &$this->getColumnRef($columnName);
         foreach ($v_fields as $v_field)
             $column['vFields'][] = $v_field;
     }
 
     public function addColumns($column_infos, $extra = false, $optional = false)
     {
-        foreach ($column_infos as $column_name => $column_info) {
-            if (array_key_exists($column_name, $this->columns))
-                throw new \Exception("Column `{$column_name}` already exists.");
+        foreach ($column_infos as $columnName => $column_info) {
+            if (array_key_exists($columnName, $this->columns))
+                throw new \Exception("Column `{$columnName}` already exists.");
 
-            $column = &$this->parseColumnInfo($column_name, $column_info, $extra, $optional);
+            $column = &$this->parseColumnInfo($columnName, $column_info, $extra, $optional);
 
-            $this->columns[$column_name] = &$column;
+            $this->columns[$columnName] = &$column;
 
             if (!$extra)
-                $this->columns_Table[$column_name] = &$column;
+                $this->columns_Table[$columnName] = &$column;
 
             if (!$optional)
-                $this->selectColumnNames[] = $column_name;
+                $this->selectColumnNames[] = $columnName;
         }
     }
 
@@ -69,24 +69,27 @@ class TTable
 
     public function addColumns_Ref(TTable $table, $ref_column_infos, $extra = true)
     {
-        foreach ($ref_column_infos as $column_name => $ref_column_info) {
+        foreach ($ref_column_infos as $columnName => $ref_column_info) {
+            if ($this->columnExists($columnName))
+                continue;
+
             $column_expr = $ref_column_info[0];
             $ref_column = $table->getColumn($ref_column_info[1]);
 
             $column_info = [ $column_expr, $ref_column['field'] ];
-            $this->addColumns([ $column_name => $column_info ], $extra);
+            $this->addColumns([ $columnName => $column_info ], $extra);
 
-            $column = &$this->getColumnRef($column_name);
+            $column = &$this->getColumnRef($columnName);
 
             $column['parser'] = $ref_column['parser'];
             $column['vFields'] = $ref_column['vFields'];
         }
     }
 
-    public function addColumns_Ref_All(TTable $table, $tablePrefix, $fieldPrefix = '',
+    public function addColumns_Ref_All(TTable $table, $fieldPrefix = '',
             $excludedColumns = [ 'Id' ], $includedColumns = null)
     {
-        $this->addColumns_Ref($table, $table->getColumnTableRefs($tablePrefix, 
+        $this->addColumns_Ref($table, $table->getColumnTableRefs( 
                 $fieldPrefix, $excludedColumns, $includedColumns));
     }
 
@@ -110,12 +113,12 @@ class TTable
         throw new \Exception("Table columns not set in `{$class_name}.");
     }
 
-    public function columnExists($column_name, $is_table_column = false)
+    public function columnExists($columnName, $is_table_column = false)
     {
         if ($is_table_column)
-            return array_key_exists($column_name, $this->columns_Table);
+            return array_key_exists($columnName, $this->columns_Table);
         else
-            return array_key_exists($column_name, $this->columns);
+            return array_key_exists($columnName, $this->columns);
     }
 
     public function count($group_extension = '')
@@ -169,67 +172,67 @@ class TTable
         );
     }
 
-    public function escapeColumn($column_name, $value)
+    public function escapeColumn($columnName, $value)
     {
-        return $this->getColumn($column_name)['field']->escape($this->db, $value);
+        return $this->getColumn($columnName)['field']->escape($this->db, $value);
     }
 
-    public function getColumn($column_name, $only_table = false)
+    public function getColumn($columnName, $only_table = false)
     {
-        return $this->getColumnRef($column_name, $only_table);
+        return $this->getColumnRef($columnName, $only_table);
     }
 
-    public function &getColumnRef($column_name, $only_table = false)
+    public function &getColumnRef($columnName, $only_table = false)
     {
-        // if ($column_name === 'Cow_Nr') {
-        //     echo $column_name . '#' . $only_table . "\r\n";
+        // if ($columnName === 'Cow_Nr') {
+        //     echo $columnName . '#' . $only_table . "\r\n";
         //     print_r($this->columns_Table);
-        //     echo array_key_exists($column_name, $this->columns_Table) . "\r\n";
+        //     echo array_key_exists($columnName, $this->columns_Table) . "\r\n";
         // }
 
-        if (!array_key_exists($column_name, $this->columns)) {
+        if (!array_key_exists($columnName, $this->columns)) {
             $class_name = get_called_class();
-            throw new \Exception("Column `{$column_name}` does not exist" .
+            throw new \Exception("Column `{$columnName}` does not exist" .
                     " in {$class_name}.");
         }
 
-        if ($only_table && !array_key_exists($column_name, $this->columns_Table)) {
+        if ($only_table && !array_key_exists($columnName, $this->columns_Table)) {
             $class_name = get_called_class();
-            throw new \Exception("Column `{$column_name}` is not table column" .
+            throw new \Exception("Column `{$columnName}` is not table column" .
                     " in {$class_name}.");
         }
 
-        return $this->columns[$column_name];
+        return $this->columns[$columnName];
     }
 
     public function getColumnNames($only_table = false, $prefix = null)
     {
-        $column_names = null;
+        $columnNames = null;
 
         if ($only_table)
-            $column_names = array_keys($this->columns_Table);
+            $columnNames = array_keys($this->columns_Table);
         else {
-            $column_names = [];
-            foreach ($this->columns as $column_name => $column) {
+            $columnNames = [];
+            foreach ($this->columns as $columnName => $column) {
                 if (!$column['optional'])
-                    $column_names[] = $column_name;
+                    $columnNames[] = $columnName;
             }
         }
 
         if ($prefix !== null) {
-            for ($i = 0; $i < count($column_names); $i++)
-                $column_names[$i] = $prefix . $column_names[$i];
+            for ($i = 0; $i < count($columnNames); $i++)
+                $columnNames[$i] = $prefix . $columnNames[$i];
         }
 
-        return $column_names;
+        return $columnNames;
     }
 
-    public function getColumnTableRefs($tablePrefix, $fieldPrefix = '',
+    public function getColumnTableRefs($fieldPrefix = '',
             $excludedColumns = [ 'Id' ], $includedColumns = null)
     {
-        $column_refs = [];
-        foreach ($this->columns_Table as $column_name => $column_field) {
-            $column = $this->getColumn($column_name, true);
+        $columnRefs = [];
+        foreach ($this->columns as $columnName => $columnField) {
+            $column = $this->getColumn($columnName);
             if ($excludedColumns !== null) {
                 if (in_array($column['name'], $excludedColumns))
                     continue;
@@ -238,11 +241,11 @@ class TTable
                     continue;
             }
 
-            $column_refs[$fieldPrefix . $column['name']] =
-                    [ $tablePrefix . '.' . $column['name'], $column['name'] ];
+            $columnRefs[$fieldPrefix . $column['name']] =
+                    [ $column['expr'], $column['name'] ];
         }
 
-        return $column_refs;
+        return $columnRefs;
     }
 
     public function getDB()
@@ -278,17 +281,17 @@ class TTable
         return $query;
     }
 
-    public function getQuery_Select($column_names = null)
+    public function getQuery_Select($columnNames = null)
     {
-        if ($column_names === null)
-            $column_names = $this->selectColumnNames;
+        if ($columnNames === null)
+            $columnNames = $this->selectColumnNames;
 
-        if (count($column_names) === 0)
+        if (count($columnNames) === 0)
             throw new \Exception('Select columns cannot be empty.');
 
         $column_selects = [];
-        foreach ($column_names as $column_name) {
-            $column_select = $this->getQuery_SelectColumn($column_name);
+        foreach ($columnNames as $columnName) {
+            $column_select = $this->getQuery_SelectColumn($columnName);
             if ($column_select === null)
                 continue;
 
@@ -299,11 +302,11 @@ class TTable
     }
 
 
-    public function getQuery_SelectColumn($column_name)
+    public function getQuery_SelectColumn($columnName)
     {
-        $column = $this->getColumn($column_name);
+        $column = $this->getColumn($columnName);
 
-        $db_column_name = $this->db->quote($column_name);
+        $db_column_name = $this->db->quote($columnName);
         $db_column_expr = $column['expr'];
 
         if ($db_column_expr === null)
@@ -317,11 +320,11 @@ class TTable
         $this->checkColumns();
 
         /* Column Names */
-        $column_names = array_keys($this->columns);
+        $columnNames = array_keys($this->columns);
 
         $db_column_names = [];
-        foreach ($column_names as $column_name)
-            $db_column_names[] = $this->db->quote($column_name);
+        foreach ($columnNames as $columnName)
+            $db_column_names[] = $this->db->quote($columnName);
         $db_column_names_str = implode(',', $db_column_names);
 
         /* Values */
@@ -355,32 +358,32 @@ class TTable
         $this->checkColumns();
 
         $unescaped_row = [];
-        foreach ($row as $column_name => $db_column_value) {
-            if (!$this->columnExists($column_name)) {
-                $parsed_row[$column_name] = $db_column_value;
+        foreach ($row as $columnName => $db_column_value) {
+            if (!$this->columnExists($columnName)) {
+                $parsed_row[$columnName] = $db_column_value;
                 continue;
             }
 
-            $column = $this->getColumn($column_name);
-            $unescaped_row[$column_name] = $column['field']->unescape(
+            $column = $this->getColumn($columnName);
+            $unescaped_row[$columnName] = $column['field']->unescape(
                 $this->db, $db_column_value);
         }
 
         $parsed_row = [];
-        foreach ($row as $column_name => $db_column_value) {
-            if (!$this->columnExists($column_name)) {
-                $parsed_row[$column_name] = $db_column_value;
+        foreach ($row as $columnName => $db_column_value) {
+            if (!$this->columnExists($columnName)) {
+                $parsed_row[$columnName] = $db_column_value;
                 continue;
             }
 
-            $column = $this->getColumn($column_name);
+            $column = $this->getColumn($columnName);
 
             if (array_key_exists('parser', $column)) {
                 if (array_key_exists('out', $column['parser'])) {
-                    $parsed_cols = $column['parser']['out']($row, $column_name,
-                            $unescaped_row[$column_name]);
+                    $parsed_cols = $column['parser']['out']($row, $columnName,
+                            $unescaped_row[$columnName]);
                     foreach ($parsed_cols as $parsed_col_name => $parsed_col_value) {
-                        if ($parsed_col_name !== $column_name) {
+                        if ($parsed_col_name !== $columnName) {
                             if ($this->columnExists($parsed_col_name, true)) {
                                 throw new \Exception('Cannot modify existing' .
                                         ' columns inside column parsed.');
@@ -396,8 +399,8 @@ class TTable
                         $parsed_row[$parsed_col_name] = $parsed_col_value;
                     }
 
-                    if (!array_key_exists($column_name, $parsed_row)) {
-                        throw new \Exception("Column `{$column_name}` not set" .
+                    if (!array_key_exists($columnName, $parsed_row)) {
+                        throw new \Exception("Column `{$columnName}` not set" .
                                 ' in its column parser.');
                     }
 
@@ -405,13 +408,13 @@ class TTable
                 }
             }
 
-            $parsed_row[$column_name] = $unescaped_row[$column_name];
+            $parsed_row[$columnName] = $unescaped_row[$columnName];
         }
 
         return $parsed_row;
 
         // foreach ($this->columns as $col_name =>
-        //         list($column_name, $column)) {
+        //         list($columnName, $column)) {
         //
         //
         //     if (isset($row[$col_name])) {
@@ -463,10 +466,10 @@ class TTable
         ], $group_extension, $for_update);
     }
 
-    public function row_Columns($column_names, $query_extension = '',
+    public function row_Columns($columnNames, $query_extension = '',
             $group_extension = '', $for_update = false)
     {
-        $select = $this->getQuery_Select($column_names);
+        $select = $this->getQuery_Select($columnNames);
 
         if ($group_extension !== '')
             $group_extension .= ' ';
@@ -475,7 +478,7 @@ class TTable
         if ($for_update)
             $group_extension .= ' FOR UPDATE';
 
-        $rows = $this->select_Columns($column_names, $query_extension,
+        $rows = $this->select_Columns($columnNames, $query_extension,
                 $group_extension);
 
         if (count($rows) === 0)
@@ -484,7 +487,7 @@ class TTable
         return $rows[0];
     }
 
-    public function row_Columns_Where($column_names, $where_conditions,
+    public function row_Columns_Where($columnNames, $where_conditions,
             $group_extension = '', $for_update = false)
     {
         $query_extension = '';
@@ -493,7 +496,7 @@ class TTable
         if ($where !== '')
             $query_extension = 'WHERE ' . $where;
 
-        return $this->row_Columns($column_names, $query_extension, $group_extension);
+        return $this->row_Columns($columnNames, $query_extension, $group_extension);
     }
 
     public function row_Where($args = [], $group_extension = '',
@@ -514,10 +517,10 @@ class TTable
                 $group_extension);
     }
 
-    public function select_Columns($column_names, $query_extension = '',
+    public function select_Columns($columnNames, $query_extension = '',
             $group_extension = '')
     {
-        $select = $this->getQuery_Select($column_names);
+        $select = $this->getQuery_Select($columnNames);
 
         return $this->select_Custom($select, $this->getQuery_From(),
                 $query_extension, $group_extension);
@@ -575,14 +578,14 @@ class TTable
         return $this->select($where, $group_extension);
     }
 
-    public function setColumnParser($column_name, array $parser)
+    public function setColumnParser($columnName, array $parser)
     {
         foreach ($parser as $parser_type => $parser_info) {
             if ($parser_type !== 'in' && $parser_type !== 'out')
                 throw new \Exception('Wrong `parser` format.');
         }
 
-        $column = &$this->getColumnRef($column_name);
+        $column = &$this->getColumnRef($columnName);
 
         if (array_key_exists('out', $parser))
             $column['parser']['out'] = $parser['out'];
@@ -594,9 +597,9 @@ class TTable
     public function setColumns($columns)
     {
         $column_infos = [];
-        foreach ($columns as $column_name => $column) {
-            $column_infos[$column_name] = [
-                $this->prefix . $this->db->quote($column_name),
+        foreach ($columns as $columnName => $column) {
+            $column_infos[$columnName] = [
+                $this->prefix . $this->db->quote($columnName),
                 $column
             ];
         }
@@ -607,8 +610,8 @@ class TTable
     public function setColumns_Ref(TTable $table, $ref_column_names)
     {
         $ref_column_infos = [];
-        foreach ($ref_column_names as $column_name => $ref_column_name) {
-            $ref_column_infos[$column_name] = [ $this->prefix . $this->db->quote($column_name),
+        foreach ($ref_column_names as $columnName => $ref_column_name) {
+            $ref_column_infos[$columnName] = [ $this->prefix . $this->db->quote($columnName),
                     $ref_column_name];
         }
         $this->addColumns_Ref($table, $ref_column_infos, false);
@@ -641,28 +644,28 @@ class TTable
     //     $this->validators[0] = $validator_field;
     // }
     //
-    // public function setValidatorInfo($column_name, $validator_info)
+    // public function setValidatorInfo($columnName, $validator_info)
     // {
-    //     $this->validators[0] = $this->getColumn($column_name)['field']
+    //     $this->validators[0] = $this->getColumn($columnName)['field']
     //             ->getVField($validator_info);
     // }
 
-    public function setColumnVFields($column_name, $default_v_field_info,
+    public function setColumnVFields($columnName, $default_v_field_info,
             $v_fields = [])
     {
-        $column = &$this->getColumnRef($column_name);
+        $column = &$this->getColumnRef($columnName);
         $column['vFields'] = [];
         if ($default_v_field_info !== null)
             $column['vFields'][] = $column['field']->getVField($default_v_field_info);
 
-        $this->addColumnVFields($column_name, $v_fields);
+        $this->addColumnVFields($columnName, $v_fields);
     }
 
     public function stripRow($row, $table_columns_only = true)
     {
-        foreach ($row as $column_name => $column_value) {
-            if (!$this->columnExists($column_name, $table_columns_only))
-                unset($row[$column_name]);
+        foreach ($row as $columnName => $column_value) {
+            if (!$this->columnExists($columnName, $table_columns_only))
+                unset($row[$columnName]);
         }
 
         return $row;
@@ -694,9 +697,9 @@ class TTable
         foreach ($rows as $row) {
             $db_row = [];
 
-            foreach ($row as $column_name => $column_value) {
-                if (!$this->columnExists($column_name, true))
-                    unset($row[$column_name]);
+            foreach ($row as $columnName => $column_value) {
+                if (!$this->columnExists($columnName, true))
+                    unset($row[$columnName]);
             }
 
             if (count($columns) !== count($row)) {
@@ -749,8 +752,8 @@ class TTable
         $this->checkColumns();
 
         $db_sets = [];
-        foreach ($values as $column_name => $value) {
-            $column = $this->getColumn($column_name, true);
+        foreach ($values as $columnName => $value) {
+            $column = $this->getColumn($columnName, true);
             $db_sets[] = $column['name'] . '=' .
                     $this->escapeColumnValue($values, $column, $value);
         }
@@ -838,12 +841,12 @@ class TTable
                         ' 3 positions.');
             }
 
-            list($column_name, $sign, $value) = $column_condition;
+            list($columnName, $sign, $value) = $column_condition;
 
-            $column = $this->getColumn($column_name);
+            $column = $this->getColumn($columnName);
 
-            $db_column_name = $table_only ? $this->db->quote($column_name) :
-                    $this->getColumn($column_name)['expr'];
+            $db_column_name = $table_only ? $this->db->quote($columnName) :
+                    $this->getColumn($columnName)['expr'];
 
             if ($sign === null) {
                 $db_value = $value;
@@ -872,27 +875,27 @@ class TTable
         return implode(" {$logic_operator} ", $args);
     }
 
-    private function &parseColumnInfo($column_name, $column_info, $extra, $optional)
+    private function &parseColumnInfo($columnName, $column_info, $extra, $optional)
     {
         $column_optional = false;
 
         if (!is_array($column_info)) {
-            $column_expr = $this->prefix . $column_name;
-            $column_field = $column_info;
+            $column_expr = $this->prefix . $columnName;
+            $columnField = $column_info;
         } else {
             $column_expr = $column_info[0];
-            $column_field = $column_info[1];
+            $columnField = $column_info[1];
         }
 
         if ($extra && $column_expr !== null)
             $column_expr = '(' . $column_expr . ')';
 
-        $v_field = $column_field === null ? null : $column_field->getVField();
+        $v_field = $columnField === null ? null : $columnField->getVField();
         $column = [
-            'name' => $column_name,
+            'name' => $columnName,
             'optional' => $optional,
             'expr' => $column_expr,
-            'field' => $column_field,
+            'field' => $columnField,
 
             'parser' => [],
             'vFields' => [ $v_field ]

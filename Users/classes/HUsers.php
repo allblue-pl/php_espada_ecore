@@ -186,6 +186,14 @@ class HUsers
         return EC\HHash::GetPassword($password, self::HashRounds);
     }
 
+    static public function InitSPK(EC\MELibs $eLibs, $userApiUri)
+    {
+        $eLibs->addTranslations('Users');
+        $eLibs->setField('eUsers', [
+            'userApiUri' => $userApiUri,
+        ]);
+    }
+
 	static public function Update(EC\MDatabase $db, $row)
 	{
 		if (array_key_exists('Login', $row)) {

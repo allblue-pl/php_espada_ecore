@@ -40,7 +40,7 @@ class AUser extends EC\Api\ABasic
         $this->action('log-out', 'action_LogOut');
 
         $this->action('change-password', 'action_ChangePassword', [
-            'OldPassword' => true,
+            'Password' => true,
             'NewPassword' => true
         ]);
 
@@ -64,25 +64,11 @@ class AUser extends EC\Api\ABasic
         $userLogin = $user->getLogin();
 
         if (!HUsers::CheckLoginAndPassword($db, $this->user->getType(),
-                $userLogin, $args->OldPassword)) {
-            $result = CResult::Failure();
-            $result->add('error', [
-                'type' => 'wrongPassword',
-                'message' => EC\HText::_('Users:errors_WrongPassword')
-            ]);
+                $userLogin, $args->Password))
+            return CResult::Failure(EC\HText::_('Users:errors_WrongPassword'));
 
-            return $result;
-        }
-
-        if (!HUsers::CheckPasswordStrength($args->NewPassword)) {
-            $result = CResult::Failure();
-            $result->add('error', [
-                'type' => 'wrongPasswordFormat',
-                'message' => EC\HText::_('Users:errors_WrongPasswordFormat')
-            ]);
-
-            return $result;
-        }
+        if (!HUsers::CheckPasswordStrength($args->NewPassword))
+            return CResult::Failure(EC\HText::_('Users:errors_WrongPasswordFormat'));
 
         if (!HUsers::ChangePassword($db, $userId,
                 $args->NewPassword))
