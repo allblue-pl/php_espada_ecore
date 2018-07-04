@@ -15,7 +15,7 @@ class TTable
     private $join = null;
     private $groupBy = null;
 
-    private $columns = [];
+    public $columns = [];
     private $columns_Table = [];
 
     private $selectColumnNames = null;
@@ -87,7 +87,7 @@ class TTable
     }
 
     public function addColumns_Ref_All(TTable $table, $fieldPrefix = '',
-            $excludedColumns = [ 'Id' ], $includedColumns = null)
+            $excludedColumns = [], $includedColumns = null)
     {
         $this->addColumns_Ref($table, $table->getColumnTableRefs( 
                 $fieldPrefix, $excludedColumns, $includedColumns));
@@ -96,6 +96,11 @@ class TTable
     public function addColumns_Optional($columns, $extra = true)
     {
         $this->addColumns($columns, $extra, true);
+    }
+
+    public function addJoin(string $join)
+    {
+        $this->join .= ($join[0] !== ' ' ? ' ' : '') . $join;
     }
 
     public function addRowParser($parser)

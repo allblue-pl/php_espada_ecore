@@ -51,10 +51,13 @@ export default class ChangePassword extends spocky.Module
 
     submit()
     {
-        if (this.l.$elems.newPassword.value === '')
+        if (this.l.$elems.newPassword.value === '') {
             this.l.$fields.message = eLibs.eText('Users:errors_EmptyNewPassword');
-        else if (this.l.$elems.newPassword.value !== this.l.$elems.newPassword_Repeat.value)
+            return;
+        } else if (this.l.$elems.newPassword.value !== this.l.$elems.newPassword_Repeat.value) {
             this.l.$fields.message = eLibs.eText('Users:errors_PasswordsDoNotMatch');
+            return;
+        }
 
         // let uris = eLibs.eFields.get('web').uris;
 
