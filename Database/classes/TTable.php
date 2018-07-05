@@ -238,6 +238,9 @@ class TTable
         $columnRefs = [];
         foreach ($this->columns as $columnName => $columnField) {
             $column = $this->getColumn($columnName);
+            if ($column['optional'])
+                continue;
+
             if ($excludedColumns !== null) {
                 if (in_array($column['name'], $excludedColumns))
                     continue;
@@ -833,6 +836,9 @@ class TTable
                 $t_logic_operator = array_keys($column_condition)[0];
                 if ($t_logic_operator !== 'OR' && $t_logic_operator !== 'AND')
                     throw new \Exception('Unknown logic operator.');
+
+                if (count($column_condition[$t_logic_operator]) === 0)
+                    continue;
 
                 $args[] = '(' . $this->getQuery_Conditions_Helper(
                         $column_condition[$t_logic_operator], $t_logic_operator,

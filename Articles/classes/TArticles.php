@@ -8,20 +8,42 @@ use E, EC,
 class TArticles extends _TArticles
 {
 
-    public function __construct(EC\MDatabase $db)
+    static public function WhereConditions_Categories(array $categoryNames)
+    {
+        $whereConditions = [];
+        foreach ($categoryNames as $categoryName)
+            $whereConditions[] = [ "Category_{$categoryName}", '=', true ];
+
+        return [ 'OR' => $whereConditions ];
+    }
+
+
+    public function __construct(EC\MDatabase $db, string $categoriesTableName,
+           string $categoriesTableAlias, array $categoryNames)
     {
         parent::__construct($db, 'a_a');
 
         $time = $db->escapeTime_DateTime(EC\HDate::Time());
 
-        $this->addColumns_Extra([
-            'IsPublished'       => [ "a_a.Published AND a_a.Publish <= $time", 
-                    new Database\FBool(false) ],
+        /* Categories */
+        $categoryColumns = [];
+        foreach ($categoryNames as $categoryName) {
+            $categoryColumns["Category_{$categoryName}"] = [ 
+                    "{$categoriesTableAlias}.{$categoryName}",
+                    new Database\FVarchar(true, 16) ];
+        }
+        $this->addColumns_Extra($categoryColumns);
 
-            // 'Alias'             => [ null, new Database\FVarchar(false, 256) ],
-            // 'Uri'               => [ null, new Database\FVarchar(false, 256) ],
-            // 'ImageUri'          => [ null, new Database\FVarchar(false, 256) ],
+        /* Columns */
+        $this->addColumns_Extra([
+            'IsPublished' => [ "a_a.Published AND a_a.Publish <= $time", 
+                    new Database\FBool(false) ],
         ]);
+
+        $this->setJoin(
+            " INNER JOIN {$categoriesTableName} AS {$categoriesTableAlias}" .
+            " ON {$categoriesTableAlias}.Article_Id = a_a.Id"
+        );
 
         /* Validators */
         $this->setColumnVFields('Content_Raw', [
@@ -33,37 +55,37 @@ class TArticles extends _TArticles
             'chars' => null,
         ]);
 
-        // /* Parsers */
-        // $this->setColumnParser('Id', [
-        //     'out' => function($row, $name, $value) {
-        //         $colNames = [
-        //             'Title' => str_replace('Id', 'Title', $name),
-        //             'Alias' => str_replace('Id', 'Alias', $name),
-        //             'Uri' => str_replace('Id', 'Uri', $name),
-        //             'ImageUri' => str_replace('Id', 'ImageUri', $name),
-        //         ];
+        /* Parsers */
+        $this->setColumnParser('Id', [
+            'out' => function($row, $name, $value) {
+                $colNames = [
+                    'Title' => str_replace('Id', 'Title', $name),
+                    'Alias' => str_replace('Id', 'Alias', $name),
+                    'Uri' => str_replace('Id', 'Uri', $name),
+                    'ImageUri' => str_replace('Id', 'ImageUri', $name),
+                ];
 
-        //         $alias = EC\HWeb::GetAlias($value, $row[$colNames['Title']]);
+                $alias = EC\HWeb::GetAlias($value, $row[$colNames['Title']]);
 
-        //         $uri = '/';
-        //         if (((int)$row['Category']) === EC\HWeb::ArticleCategories_News) {
-        //             $uri = E\Uri::Page('news.article', [
-        //                 'article' => $alias
-        //             ]);
-        //         }
+                $uri = '/';
+                if (((int)$row['Category']) === EC\HWeb::ArticleCategories_News) {
+                    $uri = E\Uri::Page('news.article', [
+                        'article' => $alias
+                    ]);
+                }
 
-        //         $imageUri = E\Uri::Media('Web', 'articles/' . $value . '-image.jpg');
-        //         if ($imageUri === null)
-        //             $imageUri = Web\HLeagueType::FileUri('images/article-image.jpg');
+                $imageUri = E\Uri::Media('Web', 'articles/' . $value . '-image.jpg');
+                if ($imageUri === null)
+                    $imageUri = Web\HLeagueType::FileUri('images/article-image.jpg');
 
-        //         return [
-        //             $name => $value,
-        //             $colNames['Alias']     => $alias,
-        //             $colNames['Uri']  => $uri,
-        //             $colNames['ImageUri']  => $imageUri
-        //         ];
-        //     }
-        // ]);
+                return [
+                    $name => $value,
+                    $colNames['Alias']     => $alias,
+                    $colNames['Uri']  => $uri,
+                    $colNames['ImageUri']  => $imageUri
+                ];
+            }
+        ]);
     }
 
 }
