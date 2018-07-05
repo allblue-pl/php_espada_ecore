@@ -261,6 +261,11 @@ class TTable
         return $this->db;
     }
 
+    public function getJoin()
+    {
+        return $this->join;
+    }
+
     public function getTableName()
     {
         return $this->name;
