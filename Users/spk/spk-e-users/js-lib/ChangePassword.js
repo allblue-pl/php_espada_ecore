@@ -30,32 +30,36 @@ export default class ChangePassword extends spocky.Module
         this.l.$elems.newPassword.addEventListener('input', onChange);
         this.l.$elems.newPassword_Repeat.addEventListener('input', onChange);
 
+        this.clearErrorMessage();
 
         this.$view = this.l;
     }
 
     clearErrorMessage()
     {
-        this.l.$fields.message = '';
+        this.l.$fields.message = null;
+        this.l.$fields.messageType = 'dark';
     }
 
     setMessage_Error(message)
     {
         this.l.$fields.message = message;
+        this.l.$fields.messageType = 'danger';
     }
 
     setMessage_Success(message)
     {
         this.l.$fields.message = message;
+        this.l.$fields.messageType = 'success';
     }
 
     submit()
     {
         if (this.l.$elems.newPassword.value === '') {
-            this.l.$fields.message = eLibs.eText('Users:errors_EmptyNewPassword');
+            this.setMessage_Error(eLibs.eText('Users:errors_EmptyNewPassword'));
             return;
         } else if (this.l.$elems.newPassword.value !== this.l.$elems.newPassword_Repeat.value) {
-            this.l.$fields.message = eLibs.eText('Users:errors_PasswordsDoNotMatch');
+            this.setMessage_Error(eLibs.eText('Users:errors_PasswordsDoNotMatch'));
             return;
         }
 

@@ -19,8 +19,8 @@ class eLibs_Class
 
     createLayout(layoutClass) {
         let l = new layoutClass();
-        l.$fields.eField = (field) => {
-            return 'Not implemented yet.';
+        l.$fields.eField = (fieldName) => {
+            return this._getField(fieldName);
         };
         l.$fields.eText = (text) => {
             return this.eText(text);
@@ -35,6 +35,27 @@ class eLibs_Class
 
     eText(text, args = []) {
         return this.eTexts.get(text, args);
+    }
+
+
+    _getField(fieldName)
+    {
+        let fieldName_Parts = fieldName.split('.');
+
+        if (!this.eFields.exists(fieldName_Parts[0]))
+            return '#FieldNotSet#';
+
+        let path = fieldName_Parts[0];
+        let base = this.eFields.get(fieldName_Parts[0]);
+        for (let i = 1; i < fieldName_Parts.length; i++) {
+            path = path + '.' + fieldName_Parts[i];
+            if (!(fieldName_Parts[i] in base))
+                return `#FieldPartNotSet(${path})#`;
+
+            base = base[fieldName_Parts[i]];
+        }
+
+        return base;
     }
 
 }
