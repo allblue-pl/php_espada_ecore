@@ -790,11 +790,16 @@ class TTable
         }
     }
 
-    public function validateDefault(EC\Forms\CValidator $validator, $values)
+    public function validateDefault(EC\Forms\CValidator $validator, $values,
+            $ignoreColumns = [])
     {
         $fieldInfos = [];
-        foreach ($values as $columnName => $value)
+        foreach ($values as $columnName => $value) {
+            if (in_array($columnName, $ignoreColumns))
+                continue;
+                
             $fieldInfos[$columnName] = [ $columnName, $value ];
+        }
 
         return $this->validate($validator, $fieldInfos);
     }

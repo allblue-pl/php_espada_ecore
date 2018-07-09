@@ -20,7 +20,7 @@ class _TArticles extends Database\TTable
             'Published' => new Database\FBool(true),
             'AuthorName' => new Database\FVarchar(true, 128),
             'Title' => new Database\FVarchar(true, 128),
-            'Intro' => new Database\FVarchar(true, 256),
+            'Intro' => new Database\FVarchar(true, 1024),
             'Content_Raw' => new Database\FText(true, 'medium'),
             'Content_Html' => new Database\FText(true, 'medium'),
             'Gallery' => new Database\FBool(true),
