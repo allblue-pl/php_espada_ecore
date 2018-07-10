@@ -20,13 +20,20 @@ class HSPKTables
         );
     }
 
-    static public function Init(EC\MSPK $abf)
+    static public function Init(EC\MELibs $eLibs)
     {
         if (self::$Initialized)
             return;
         self::$Initialized = true;
 
-        $abf->addTexts('SPKTables');
+        $eLibs->setField('eTables_Texts', 
+                EC\HText::GetTranslations('SPKTables')->getArray());
+        
+        $script = <<<SCRIPT
+    jsLibs.require('spk-tables').setTexts(jsLibs.require('e-libs')
+            .eField('eTables_Texts')); 
+SCRIPT;
+        $eLibs->addScript($script);
     }
 
     static public function GetQueryExtensions(EC\Database\TTable $t_table,

@@ -10,10 +10,16 @@ class MELibs extends E\Module
 
     private $fields = [];
     private $texts = [];
+    private $script = '';
 
     function __construct(EC\Basic\MHeader $header)
     {
         $this->header = $header;
+    }
+
+    function addScript(string $script)
+    {
+        $this->script .= $script;
     }
 
     function addTexts(array $texts)
@@ -66,6 +72,8 @@ class MELibs extends E\Module
 
         eLibs.eFields.add({$fieldsString});
         eLibs.eTexts.add({$textsString});
+
+        {$this->script}
     })();
 </script>
 HTML;
