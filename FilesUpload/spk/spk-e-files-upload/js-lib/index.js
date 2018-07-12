@@ -12,9 +12,21 @@ const
 export class FilesUpload extends spocky.Module
 {
 
-    constructor(msgs, categoryName, id)
+    get id() {
+        if (this._id === null)
+            throw new Error(`Article 'id' not set.`);
+
+        return this._id;
+    }
+    set id(value) {
+        this._id = value;
+    }
+
+    constructor(msgs, categoryName)
     { super();
-        js0.args(arguments, require('spk-messages').Messages, 'string', 'string');
+        js0.args(arguments, require('spk-messages').Messages, 'string');
+
+        this._id = null;
 
         if (!eLibs.eFields.exists('eFilesUpload'))
             throw new Error('FilesUpload not initialized.');
@@ -29,7 +41,6 @@ export class FilesUpload extends spocky.Module
 
         this.msgs = msgs;
         this.apiUri = this.eFields.apiUri;
-        this.id = id;
 
         this._liveUpload = new spkFileUpload.LiveUpload({
             onClick: (image) => {
@@ -49,12 +60,10 @@ export class FilesUpload extends spocky.Module
             delete: eLibs.eText('FilesUpload:buttons_Delete'),
         });
 
-        this.load();
-
         this.$view = this._liveUpload;
     }
 
-    load()
+    refresh()
     {
         webABApi.json(`${this.apiUri}list`, { 
             categoryName: this.categoryName,                     
