@@ -10,9 +10,9 @@ class AFilesUpload extends EC\Api\ABasic
     private $config = null;
 
 
-    public function __construct(EC\SApi $site, $apiArgs = [ 'requiredPermissions' => [] ])
+    public function __construct(EC\SApi $site, array $apiArgs)
     {
-        parent::__construct($site, $apiArgs['requiredPermissions']);
+        parent::__construct($site, $apiArgs['userType'], $apiArgs['requiredPermissions']);
 
         $this->user = $site->m->user;
 

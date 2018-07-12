@@ -22,11 +22,13 @@ export class FilesUpload extends spocky.Module
         this._id = value;
     }
 
-    constructor(msgs, categoryName)
+    constructor(msgs, categoryName, onInsertFn = null)
     { super();
-        js0.args(arguments, require('spk-messages').Messages, 'string');
+        js0.args(arguments, require('spk-messages').Messages, 'string',
+                [ 'function', js0.Default ]);
 
         this._id = null;
+        this._onInsertFn = onInsertFn;
 
         if (!eLibs.eFields.exists('eFilesUpload'))
             throw new Error('FilesUpload not initialized.');
@@ -43,14 +45,12 @@ export class FilesUpload extends spocky.Module
         this.apiUri = this.eFields.apiUri;
 
         this._liveUpload = new spkFileUpload.LiveUpload({
-            onClick: (image) => {
-                this._files_Click(image);
-            },
             onDelete: (file) => {
                 this._files_Delete(file);
             },
-            onLink: () => {
-                this._files_Link(files);
+            onInsert: (file) => {
+                if (this._onInsertFn !== null)
+                    this._onInsertFn(file);
             },
             onUpload: (files) => {
                 this._files_Upload(files);
@@ -89,6 +89,7 @@ export class FilesUpload extends spocky.Module
                 this.msgs.showMessage_Failure(result.messsage);
         });
     }
+
 
     _escapeFileName(fileName)
     {

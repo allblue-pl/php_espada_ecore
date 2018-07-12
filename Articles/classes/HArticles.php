@@ -54,7 +54,7 @@ class HArticles
         ]);
     }
 
-    static function GetNew(EC\MDatabase $db, $userId)
+    static public function GetNew(EC\MDatabase $db, $userId)
     {
         $table = new TArticles($db);
 
@@ -72,6 +72,13 @@ class HArticles
         ]]);
 
         return $table->row_ById($db->getInsertedId());
+    }
+
+    static public function Init(EC\MELibs $eLibs, $pkgsUri)
+    {
+        $eLibs->setField('eArticles', [
+            'spkTinyMCEPkgUri' => $pkgsUri . '/node_modules/spk-tinymce',
+        ]);
     }
 
 }
