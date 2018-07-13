@@ -76,6 +76,7 @@ class HArticles
 
     static public function Init(EC\MELibs $eLibs, $pkgsUri)
     {
+        $eLibs->addTranslations('Articles');
         $eLibs->setField('eArticles', [
             'spkTinyMCEPkgUri' => $pkgsUri . '/node_modules/spk-tinymce',
         ]);
