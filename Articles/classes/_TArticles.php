@@ -15,7 +15,6 @@ class _TArticles extends Database\TTable
             'Id' => new Database\FInt(true),
             'User_Id' => new Database\FInt(true),
             'User_New' => new Database\FBool(true),
-            'Category' => new Database\FVarchar(true, 16),
             'Publish' => new Database\FDateTime(true),
             'Published' => new Database\FBool(true),
             'AuthorName' => new Database\FVarchar(true, 128),

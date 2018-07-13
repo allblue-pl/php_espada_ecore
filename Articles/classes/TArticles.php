@@ -31,6 +31,10 @@ class TArticles extends _TArticles
         ]);
 
         /* Validators */
+        $this->setColumnVFields('Intro', [
+            'required' => false,
+            'chars' => null,
+        ]);
         $this->setColumnVFields('Content_Raw', [
             'required' => false,
             'chars' => null,

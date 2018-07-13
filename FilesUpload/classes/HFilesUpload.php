@@ -53,7 +53,19 @@ class HFilesUpload
             return pathinfo($file, PATHINFO_FILENAME) === $fileName;
         });
 
-        return $files;
+        return array_values($files);
+    }
+
+    static public function GetFilePaths($categoryName, $id)
+    {
+        $dirMediaPath = HFilesUpload::GetDirMediaPath($categoryName, $id);
+        $fileBaseNames = self::GetFileBaseNames($categoryName, $id);
+
+        $files = [];
+        foreach ($fileBaseNames as &$fileBaseName)
+            $files[] = E\Path::Media('FilesUpload', "{$dirMediaPath}/{$fileBaseName}");
+
+        return array_values($files);
     }
 
     static public function GetFileUris($categoryName, $id)
@@ -77,14 +89,23 @@ class HFilesUpload
         return $fileUris[0];
     }
 
+    static public function ExistsCategory($categoryName)
+    {
+        $categories = EC\HConfig::GetRequired('FilesUpload', 'categories');
+
+        return array_key_exists($categoryName, $categories);
+    }
+
     static public function Init(EC\MELibs $eLibs, $apiUri, array $overrides = [])
     {
         $field = array_merge_recursive([
             'apiUri' => $apiUri,
             'categories' => EC\HConfig::GetRequired('FilesUpload', 'categories'),
             'uris' => [
+                'file' => E\Uri::File('FilesUpload:images/file.jpg'),
                 'loading' => E\Uri::File('FilesUpload:images/loading.gif'),
             ],
+            'texts' => EC\HText::GetTranslations('FilesUpload:spk')->getArray(),
         ], $overrides);
 
         $eLibs->setField('eFilesUpload', $field);

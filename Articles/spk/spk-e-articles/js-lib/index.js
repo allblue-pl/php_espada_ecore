@@ -30,6 +30,10 @@ export class Form extends spocky.Module
         this.galleryUpload.id = value;
     }
 
+    get content() {
+        return this.editor.getHtml();
+    }
+
     constructor(msgs)
     { super();
         js0.args(arguments, spkMessages.Messages);
@@ -54,20 +58,29 @@ export class Form extends spocky.Module
 
         /* Files Upload */
         this.introUpload = new spkEFilesUpload.FilesUpload(msgs, 'eArticles_Intro', 
-                insertImage);
+                eLibs.eText('Adm:filesUpload_Intro'), insertImage);
         this.l.$holders.introUpload.$view = this.introUpload;
 
-        this.filesUpload = new spkEFilesUpload.FilesUpload(msgs, 'eArticles_Files');
+        this.filesUpload = new spkEFilesUpload.FilesUpload(msgs, 'eArticles_Files',
+                eLibs.eText('Adm:filesUpload_Files'), insertFile);
         this.l.$holders.filesUpload.$view = this.filesUpload;
 
         this.imagesUpload = new spkEFilesUpload.FilesUpload(msgs, 'eArticles_Images',
-                insertImage);
+                eLibs.eText('Adm:filesUpload_Images'), insertImage);
         this.l.$holders.imagesUpload.$view = this.imagesUpload;
 
-        this.galleryUpload = new spkEFilesUpload.FilesUpload(msgs, 'eArticles_Gallery');
+        this.galleryUpload = new spkEFilesUpload.FilesUpload(msgs, 'eArticles_Gallery',
+                eLibs.eText('Adm:filesUpload_Gallery'), insertImage);
         this.l.$holders.galleryUpload.$view = this.galleryUpload;
 
         this.$view = this.l;
+    }
+
+    getValues() {
+        let fields = this.f.getValues();
+        fields.Content_Raw = this.content;
+
+        return fields;
     }
 
     refresh()
@@ -81,14 +94,16 @@ export class Form extends spocky.Module
 
     _insertFile(file)
     {
+        console.log(file);
+        
         this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
-                `<img src="${file.uri}" />`);
+                `<p><ul><li><a href="${file.uri}">${file.id}</a></li></ul></p>`);
     }
 
     _insertImage(file)
     {
         this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
-                `<img src="${file.uri}" />`);
+                `<p><img src="${file.uri}" /></p>`);
     }
 
 }

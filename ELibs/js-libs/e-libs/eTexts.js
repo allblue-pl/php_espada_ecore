@@ -27,6 +27,11 @@ class eTexts_Class
         return `#${text}#` + (args.length === 0 ? '' : ' (' + args.join(', ') + ')');
     }
 
+    getAll()
+    {
+        return this._texts;
+    }
+
     add(texts)
     {
         for (let text in texts)

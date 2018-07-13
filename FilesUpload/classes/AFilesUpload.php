@@ -38,7 +38,31 @@ class AFilesUpload extends EC\Api\ABasic
 
     public function action_Delete(CArgs $args)
     {
-        
+        if (!EC\HFilesUpload::ExistsCategory($args->categoryName))
+            return CResult::Failure("Upload category '{$args->categoryName}' does not exist.");
+        $category = EC\HFilesUpload::GetCategory($args->categoryName);
+
+        $dirPath = HFilesUpload::GetDirMediaPath($args->categoryName, $args->id);
+        $files = HFilesUpload::GetFilePaths($args->categoryName, $args->id);
+
+        $fileToDelete = null;
+        if ($category['multiple']) {
+            foreach ($files as $file) {
+                if (pathinfo($file, PATHINFO_BASENAME) === $args->fileName) {
+                    $fileToDelete = $file;
+                    break;
+                }
+            }
+        } else
+            $fileToDelete = $files[0];
+
+        if ($fileToDelete === null)
+            return CResult::Failure('File does not exist.' . $args->fileName);
+
+        if (!unlink($fileToDelete))
+            return CResult::Failure('Cannot delete file.');
+
+        return CResult::Success();
     }
 
     public function action_List(CArgs $args)
@@ -63,7 +87,6 @@ class AFilesUpload extends EC\Api\ABasic
 
         if (!array_key_exists($args->categoryName, $this->categories))
             return CResult::Failure("Upload category '{$args->categoryName}' does not exist.");
-
         $category = $this->categories[$args->categoryName];
 
         if (!$this->user->hasPermissions($category['permissions'])) {
@@ -78,7 +101,7 @@ class AFilesUpload extends EC\Api\ABasic
         }
 
         $fileName = pathinfo($args->fileName, PATHINFO_FILENAME);
-        $fileExt = pathinfo($args->file['name'], PATHINFO_EXTENSION);
+        $fileExt = mb_strtolower(pathinfo($args->file['name'], PATHINFO_EXTENSION));
         $fileDir = $category['alias'];
         $fileMediaPath = $category['multiple'] ? 
                 "{$fileDir}-{$args->id}/{$fileName}.{$fileExt}" :
@@ -101,7 +124,7 @@ class AFilesUpload extends EC\Api\ABasic
                 }
             }
         } else if ($category['type'] === 'file') {
-            // $this->copy($args->file['tmp_name'], $filePath);
+            $this->copy($args->file, $fileMediaPath);
         } else
             throw new \Exception("Unknown category type '{$category['type']}.");
 

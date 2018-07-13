@@ -22,9 +22,9 @@ export class FilesUpload extends spocky.Module
         this._id = value;
     }
 
-    constructor(msgs, categoryName, onInsertFn = null)
+    constructor(msgs, categoryName, title, onInsertFn = null)
     { super();
-        js0.args(arguments, require('spk-messages').Messages, 'string',
+        js0.args(arguments, require('spk-messages').Messages, 'string', 'string',
                 [ 'function', js0.Default ]);
 
         this._id = null;
@@ -44,7 +44,7 @@ export class FilesUpload extends spocky.Module
         this.msgs = msgs;
         this.apiUri = this.eFields.apiUri;
 
-        this._liveUpload = new spkFileUpload.LiveUpload({
+        this._liveUpload = new spkFileUpload.LiveUpload(title, {
             onDelete: (file) => {
                 this._files_Delete(file);
             },
@@ -55,10 +55,8 @@ export class FilesUpload extends spocky.Module
             onUpload: (files) => {
                 this._files_Upload(files);
             },
-        }, {
-            upload: eLibs.eText('FilesUpload:buttons_Upload'),
-            delete: eLibs.eText('FilesUpload:buttons_Delete'),
-        });
+                }, this.category.type === 'image' ? '.jpg, .jpeg, .png, .gif' : '*',
+                eLibs.eFields.get('eFilesUpload').texts);
 
         this.$view = this._liveUpload;
     }
@@ -71,6 +69,7 @@ export class FilesUpload extends spocky.Module
                 }, (result) => {
             if (result.isSuccess()) {
                 let fileUris = result.data.files;
+
                 for (let fileUri of fileUris) {
                     let fileBaseName = fileUri.substring(fileUri.lastIndexOf('/'));
 
@@ -78,6 +77,8 @@ export class FilesUpload extends spocky.Module
                         id: this._getFileId(fileBaseName),
                         title: fileBaseName,
                         uri: fileUri,
+                        imgUri: this.category.type === 'image' ? 
+                                fileUri : eLibs.eField('eFilesUpload').uris.file,
                     });
                 }
                 // this._liveUpload.setFile({
@@ -108,10 +109,10 @@ export class FilesUpload extends spocky.Module
     {
         this._liveUpload.deleteFile(file.id);
 
-        webABApi.json(`${this.apiUri}delete`, { 
+        webABApi.json(this.apiUri + 'delete', { 
             categoryName: this.categoryName,                     
             id: this.id,
-            fileName: this.category['multiple'] ? file.name : null,
+            fileName: this.category['multiple'] ? file.id : null,
                 }, (result) => {
             if (result.isSuccess()) {
                 
@@ -120,6 +121,8 @@ export class FilesUpload extends spocky.Module
                     id: file.id,
                     title: file.title,
                     uri: file.uri,
+                    imgUri: this.category.type === 'image' ? 
+                            file.uri : eLibs.eField('eFilesUpload').uris.file,
                 });
 
                 this.msgs.showMessage_Failure(result.message);
@@ -134,14 +137,18 @@ export class FilesUpload extends spocky.Module
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
 
-            if (file.type.match(/image.*/))
+            if (this.category.type === 'image') {
+                if (file.type.match(/image.*/))
+                    files_Valid.push(file);
+                else
+                    fileNames_Invalid.push(file.name);
+            } else
                 files_Valid.push(file);
-            else
-                fileNames_Invalid.push(file.name);
         }
 
         if (fileNames_Invalid.length > 0) {
-            this.msgs.showMessage_Failure(eLibs.eTexts.get('Sys:errors_WrongImageFormat', 
+            this.msgs.showMessage_Failure(eLibs.eTexts.get(
+                    'FilesUpload:errors_WrongImageFormat', 
                     [ fileNames_Invalid.join(', ') ]));
         }
         
@@ -149,7 +156,8 @@ export class FilesUpload extends spocky.Module
             this._liveUpload.setFile({
                 id: this._getFileId(file.name),
                 title: this._escapeFileName(file.name),
-                uri: eLibs.eField('eFilesUpload').uris.loading,
+                uri: '',
+                imgUri: eLibs.eField('eFilesUpload').uris.loading,
             });
 
             webABApi.upload(`${this.apiUri}upload`, { 
@@ -162,8 +170,12 @@ export class FilesUpload extends spocky.Module
                         id: this._getFileId(file.name),
                         title: this._escapeFileName(file.name),
                         uri: result.data.uri,
+                        imgUri: this.category.type === 'image' ? 
+                                result.data.uri : eLibs.eField('eFilesUpload').uris.file,
                     })
                 } else {
+                    this._liveUpload.deleteFile(this._getFileId(file.name));
+
                     this.msgs.showMessage_Failure(result.messsage);
                 }
             });
