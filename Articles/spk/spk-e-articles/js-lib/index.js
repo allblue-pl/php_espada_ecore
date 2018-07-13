@@ -94,8 +94,6 @@ export class Form extends spocky.Module
 
     _insertFile(file)
     {
-        console.log(file);
-        
         this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
                 `<p><ul><li><a href="${file.uri}">${file.id}</a></li></ul></p>`);
     }
