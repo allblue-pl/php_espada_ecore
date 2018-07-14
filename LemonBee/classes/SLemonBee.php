@@ -37,9 +37,9 @@ class SLemonBee extends EC\SBasic
         /* Default Setup */
         $this->defaultSetup = [
             'aliases' => [
+                'account' => 'account',
                 'main' => '',
                 'logIn' => 'log-in',
-                // 'user' => 'userInfo',
             ],
             'images' => [
                 'messages' => [],

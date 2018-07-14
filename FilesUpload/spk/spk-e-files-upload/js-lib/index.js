@@ -44,7 +44,7 @@ export class FilesUpload extends spocky.Module
         this.msgs = msgs;
         this.apiUri = this.eFields.apiUri;
 
-        this._liveUpload = new spkFileUpload.LiveUpload(title, {
+        this._liveUpload = new spkFileUpload.LiveUpload(title, this.category.type, {
             onDelete: (file) => {
                 this._files_Delete(file);
             },
@@ -55,8 +55,9 @@ export class FilesUpload extends spocky.Module
             onUpload: (files) => {
                 this._files_Upload(files);
             },
-                }, this.category.type === 'image' ? '.jpg, .jpeg, .png, .gif' : '*',
-                eLibs.eFields.get('eFilesUpload').texts);
+                }, this.category.type === 'image' ? 
+                '.jpg, .jpeg, .png, .gif' : '*', eLibs.eFields.get('eFilesUpload').texts);
+        this._liveUpload.showLoading();
 
         this.$view = this._liveUpload;
     }
@@ -67,6 +68,8 @@ export class FilesUpload extends spocky.Module
             categoryName: this.categoryName,                     
             id: this.id,
                 }, (result) => {
+            this._liveUpload.hideLoading();
+
             if (result.isSuccess()) {
                 let fileUris = result.data.files;
 

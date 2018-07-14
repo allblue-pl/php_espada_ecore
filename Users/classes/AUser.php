@@ -74,7 +74,7 @@ class AUser extends EC\Api\ABasic
                 $args->NewPassword))
             return CResult::Error();
 
-        return CResult::Success();
+        return CResult::Success(EC\HText::_('Users:successes_PasswordChanged'));
     }
 
     protected function action_Check()
