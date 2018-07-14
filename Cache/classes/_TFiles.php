@@ -13,7 +13,7 @@ class _TFiles extends Database\TTable
 
         $this->setColumns([
             'Id' => new Database\FInt(true),
-            'User_Id' => new Database\FInt(true),
+            'User_Id' => new Database\FInt(false),
             'Hash' => new Database\FVarchar(true, 128),
             'Expires' => new Database\FDateTime(true),
         ]);

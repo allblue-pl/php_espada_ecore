@@ -117,10 +117,10 @@ class AUser extends EC\Api\ABasic
 			return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'));
 		}
 
-		$user_permissions = $userInfo['permissions'];
+		$userPermissions = $userInfo['permissions'];
 
 		foreach ($this->requiredPermissions as $permission) {
-			if (!in_array($permission, $user_permissions)) {
+			if (!in_array($permission, $userPermissions)) {
 				return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'))
                     ->debug('Permission denied.');
 			}

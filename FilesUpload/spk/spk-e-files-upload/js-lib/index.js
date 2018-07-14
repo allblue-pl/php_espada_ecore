@@ -22,6 +22,7 @@ export class FilesUpload extends spocky.Module
         this._id = value;
     }
 
+
     constructor(msgs, categoryName, title, onInsertFn = null)
     { super();
         js0.args(arguments, require('spk-messages').Messages, 'string', 'string',
@@ -45,6 +46,15 @@ export class FilesUpload extends spocky.Module
         this.apiUri = this.eFields.apiUri;
 
         this._liveUpload = new spkFileUpload.LiveUpload(title, this.category.type, {
+            onCopy: (file) => {
+                let textArea = document.createElement('textarea');
+                textArea.value = file.uri;
+                textArea.select();
+
+                document.execCommand("copy");
+
+                this.msgs.showMessage_Success(eLibs.eText('FilesUpload:texts_Copied'));
+            },
             onDelete: (file) => {
                 this._files_Delete(file);
             },
@@ -64,7 +74,7 @@ export class FilesUpload extends spocky.Module
 
     refresh()
     {
-        webABApi.json(`${this.apiUri}list`, { 
+        webABApi.json(this.apiUri + 'list', { 
             categoryName: this.categoryName,                     
             id: this.id,
                 }, (result) => {
@@ -74,7 +84,7 @@ export class FilesUpload extends spocky.Module
                 let fileUris = result.data.files;
 
                 for (let fileUri of fileUris) {
-                    let fileBaseName = fileUri.substring(fileUri.lastIndexOf('/'));
+                    let fileBaseName = fileUri.substring(fileUri.lastIndexOf('/') + 1);
 
                     this._liveUpload.setFile({
                         id: this._getFileId(fileBaseName),

@@ -214,6 +214,17 @@ class HUsers
 		}
 
 		return (new TUsers($db))->update([ $row ]);
-	}
+    }
+    
+    static public function ValidateEmail(EC\MDatabase $db, $userType, 
+            EC\Forms\CValidator $validator, $fieldName, $login, $userId)
+    {
+        $excludedIds = [ -1 ];
+        if ($userId !== null)
+            $excludedIds[] = $userId;
+
+        if (self::Exists($db, $userType, $login, $excludedIds))
+            $validator->fieldError($fieldName, EC\HText::_('Users:errors_UserAlreadyExists'));
+    }
 
 }

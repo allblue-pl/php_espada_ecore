@@ -119,12 +119,13 @@ class AFilesUpload extends EC\Api\ABasic
                 if ($size === null)
                     $this->copy($args->file, "{$fileDir}{$tFileName}.{$fileExt}");
                 else {
-                    
-                    $this->copy($args->file, "${fileDir}{$tFileName}.{$fileExt}");
+                    if (!$this->scale($args->file, $fileMediaPath, $size))
+                        return CResult::Failure('Cannot scale image.');
                 }
             }
         } else if ($category['type'] === 'file') {
-            $this->copy($args->file, $fileMediaPath);
+            if (!$this->copy($args->file, $fileMediaPath))
+                return CResult::Failure('Cannot copy file.');
         } else
             throw new \Exception("Unknown category type '{$category['type']}.");
 
@@ -139,7 +140,17 @@ class AFilesUpload extends EC\Api\ABasic
         if (!file_exists(dirname($filePath)))
             mkdir(dirname($filePath), 0777, true);
 
-        copy($file['tmp_name'], $filePath);
+        return copy($file['tmp_name'], $filePath);
+    }
+
+    private function scale($file, $fileMediaPath, $size)
+    {
+        $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
+        if (!file_exists(dirname($filePath)))
+            mkdir(dirname($filePath), 0777, true);
+
+        return EC\HImages::Scale_ToMinSize($file['tmp_name'],
+                $filePath, $size[0], $size[1]);
     }
 
 }

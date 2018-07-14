@@ -35,7 +35,6 @@ class HArticles
                         'alias' => 'articles/images',
                         'sizes' => [
                             '$default' => [ 1920, 1080 ],
-                            'full' => null,
                         ],
                     ],
 
@@ -46,12 +45,19 @@ class HArticles
                         'alias' => 'articles/gallery',
                         'sizes' => [
                             '$default' => [ 1920, 1080 ],
-                            'full' => null,
                         ],
                     ],
                 ],
             ],
         ]);
+    }
+
+    static public function DeleteMedia($articleId)
+    {
+        EC\HFilesUpload::DeleteFiles('eArticles_Intro', $articleId);
+        EC\HFilesUpload::DeleteFiles('eArticles_Files', $articleId);
+        EC\HFilesUpload::DeleteFiles('eArticles_Images', $articleId);
+        EC\HFilesUpload::DeleteFiles('eArticles_Gallery', $articleId);
     }
 
     static public function GetNew(EC\MDatabase $db, $userId)

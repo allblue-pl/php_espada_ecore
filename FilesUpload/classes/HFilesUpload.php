@@ -6,6 +6,23 @@ use E, EC;
 class HFilesUpload
 {
 
+    static public function DeleteFiles($categoryName, $id)
+    {
+        $category = HFilesUpload::GetCategory($categoryName);
+
+        $filePaths = self::GetFilePaths($categoryName, $id);
+        foreach ($filePaths as $filePath)
+            unlink($filePath);
+
+        if ($category['multiple']) {
+            $dirPath = E\Path::Media('FilesUpload', self::GetDirMediaPath($categoryName, $id));
+            if (file_exists($dirPath)) {
+                if (is_dir($dirPath))
+                    rmdir($dirPath);
+            }
+        }
+    }
+
     static public function GetCategory($categoryName)
     {
         $categories = EC\HConfig::GetRequired('FilesUpload', 'categories');

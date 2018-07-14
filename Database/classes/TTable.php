@@ -70,18 +70,23 @@ class TTable
     public function addColumns_Ref(TTable $table, $ref_column_infos, $extra = true)
     {
         foreach ($ref_column_infos as $columnName => $ref_column_info) {
-            if ($this->columnExists($columnName))
-                continue;
-
             $column_expr = $ref_column_info[0];
             $ref_column = $table->getColumn($ref_column_info[1]);
+
+            if ($this->columnExists($columnName)) {
+                $column = &$this->getColumnRef($columnName);
+
+                $column['parsers'] = array_merge($column['parsers'], $ref_column['parsers']);
+
+                continue;
+            }
 
             $column_info = [ $column_expr, $ref_column['field'] ];
             $this->addColumns([ $columnName => $column_info ], $extra);
 
             $column = &$this->getColumnRef($columnName);
 
-            $column['parser'] = $ref_column['parser'];
+            $column['parsers'] = $ref_column['parsers'];
             $column['vFields'] = $ref_column['vFields'];
         }
     }
@@ -391,34 +396,41 @@ class TTable
 
             $column = $this->getColumn($columnName);
 
-            if (array_key_exists('parser', $column)) {
-                if (array_key_exists('out', $column['parser'])) {
-                    $parsed_cols = $column['parser']['out']($row, $columnName,
-                            $unescaped_row[$columnName]);
-                    foreach ($parsed_cols as $parsed_col_name => $parsed_col_value) {
-                        if ($parsed_col_name !== $columnName) {
-                            if ($this->columnExists($parsed_col_name, true)) {
-                                throw new \Exception('Cannot modify existing' .
-                                        ' columns inside column parsed.');
+            if (array_key_exists('parsers', $column)) {
+                $continue = false;
+                foreach ($column['parsers'] as $column_parser) {
+                    if (array_key_exists('out', $column_parser)) {
+                        $parsed_cols = $column_parser['out']($row, $columnName,
+                                $unescaped_row[$columnName]);
+                        foreach ($parsed_cols as $parsed_col_name => $parsed_col_value) {
+                            if ($parsed_col_name !== $columnName) {
+                                if ($this->columnExists($parsed_col_name, true)) {
+                                    throw new \Exception('Cannot modify existing' .
+                                            ' columns inside column parsed.');
+                                }
+
+                                if (!$this->columnExists($parsed_col_name, false)) {
+                                    throw new \Exception('Cannot modify undeclared ' .
+                                            "column `{$parsed_col_name}` in `" .
+                                            get_called_class() .  '`.');
+                                }
                             }
 
-                            if (!$this->columnExists($parsed_col_name, false)) {
-                                throw new \Exception('Cannot modify undeclared ' .
-                                        "column `{$parsed_col_name}` in `" .
-                                        get_called_class() .  '`.');
-                            }
+                            $parsed_row[$parsed_col_name] = $parsed_col_value;
                         }
 
-                        $parsed_row[$parsed_col_name] = $parsed_col_value;
-                    }
+                        if (!array_key_exists($columnName, $parsed_row)) {
+                            throw new \Exception("Column `{$columnName}` not set" .
+                                    ' in its column parser.');
+                        }
 
-                    if (!array_key_exists($columnName, $parsed_row)) {
-                        throw new \Exception("Column `{$columnName}` not set" .
-                                ' in its column parser.');
-                    }
 
-                    continue;
+                        $continue = true;
+                    }
                 }
+
+                if ($continue)
+                    continue;
             }
 
             $parsed_row[$columnName] = $unescaped_row[$columnName];
@@ -600,11 +612,13 @@ class TTable
 
         $column = &$this->getColumnRef($columnName);
 
+        $column['parsers'] = [];
+
         if (array_key_exists('out', $parser))
-            $column['parser']['out'] = $parser['out'];
+            $column['parsers'][0]['out'] = $parser['out'];
 
         if (array_key_exists('in', $parser))
-            $column['parser']['in'] = $parser['in'];
+            $column['parsers'][0]['in'] = $parser['in'];
     }
 
     public function setColumns($columns)
@@ -725,9 +739,10 @@ class TTable
                     throw new \Exception('Inconsistent/unknown column ' .
                             "`{$col_name}` in rows.");
 
-                if (array_key_exists('in', $columns[$col_name]['parser'])) {
-                    $col_val = $columns[$col_name]['parser']['in']($row, $col_name,
-                            $col_val);
+                foreach ($columns[$col_name]['parsers'] as $column_parser) {
+                    if (array_key_exists('in', $column_parser)) {
+                        $col_val = $column_parser['in']($row, $col_name, $col_val);
+                    }
                 }
 
                 $db_row[] = $columns[$col_name]['field']->escape($this->db, $col_val);
@@ -821,8 +836,10 @@ class TTable
 
     private function escapeColumnValue(array $row, array $column, $value)
     {
-        if (array_key_exists('in', $column['parser']))
-            $value = $column['parser']['in']($row, $column['name'], $value);
+        foreach ($column['parsers'] as $column_parser) {
+            if (array_key_exists('in', $column_parser))
+                $value = $column_parser['in']($row, $column['name'], $value);
+        }
 
         return $column['field']->escape($this->db, $value);
     }
@@ -918,7 +935,7 @@ class TTable
             'expr' => $column_expr,
             'field' => $columnField,
 
-            'parser' => [],
+            'parsers' => [],
             'vFields' => [ $v_field ]
         ];
 

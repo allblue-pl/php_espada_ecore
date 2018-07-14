@@ -69,9 +69,11 @@ export default class ChangePassword extends spocky.Module
             Password: this.l.$elems.password.value,
             NewPassword: this.l.$elems.newPassword.value,
                 }, (result) => {
-            console.log(result);
-
             if (result.isSuccess()) {
+                this.l.$elems.password.value = '';
+                this.l.$elems.newPassword.value = '';
+                this.l.$elems.newPassword_Repeat.value = '';
+
                 this.setMessage_Success(eLibs.eText('Users:successes_PasswordChanged'));
             } else
                 this.setMessage_Error(result.message);
