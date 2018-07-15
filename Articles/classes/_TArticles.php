@@ -13,7 +13,7 @@ class _TArticles extends Database\TTable
 
         $this->setColumns([
             'Id' => new Database\FInt(true),
-            'User_Id' => new Database\FInt(true),
+            'User_Id' => new Database\FInt(false),
             'User_New' => new Database\FBool(true),
             'Publish' => new Database\FDateTime(true),
             'Published' => new Database\FBool(true),
