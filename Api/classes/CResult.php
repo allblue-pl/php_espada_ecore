@@ -77,6 +77,10 @@ class CResult
 
     public function getJSON()
     {
+        // $json = mb_convert_encoding($this->outputs, 'UTF-8', 'UTF-8');
+
+        $this->escapeNonUTF($this->outputs);
+
         if (EDEBUG)
             $json_string = json_encode($this->outputs, JSON_PRETTY_PRINT);
         else
@@ -93,6 +97,15 @@ class CResult
     public function getMessage()
     {
         return $this->outputs['message'];
+    }
+
+
+    private function escapeNonUTF(array &$json)
+    {   
+        array_walk_recursive($json, function(&$item) {
+            if (is_string($item))
+                $item = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
+        });
     }
 
 }
