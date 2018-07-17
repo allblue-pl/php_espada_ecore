@@ -855,14 +855,18 @@ class TTable
             if (!is_array($column_condition))
                 throw new \Exception('`column_condition` must be an array.');
 
-            if ($key === 'OR' || $key === 'AND') {
+            if (count($column_condition) === 0) 
+                continue;
+            else if ($key === 'OR' || $key === 'AND') {
                 $args[] = '(' . $this->getQuery_Conditions_Helper($column_condition,
                         $key, $table_only) . ')';
                 continue;
             }  else if (count($column_condition) === 1) {
                 $t_logic_operator = array_keys($column_condition)[0];
-                if ($t_logic_operator !== 'OR' && $t_logic_operator !== 'AND')
-                    throw new \Exception('Unknown logic operator.');
+                if ($t_logic_operator !== 'OR' && $t_logic_operator !== 'AND') {
+                    throw new \Exception('Unknown logic operator: ' . 
+                            print_r($column_condition, true));
+                }
 
                 if (count($column_condition[$t_logic_operator]) === 0)
                     continue;
@@ -876,7 +880,7 @@ class TTable
 
             if (count($column_condition) !== 3) {
                 throw new \Exception('`column_condition` must have exactly' .
-                        ' 3 positions.');
+                        ' 3 positions: ' . print_r($column_condition, true));
             }
 
             list($columnName, $sign, $value) = $column_condition;
