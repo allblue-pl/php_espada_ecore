@@ -22,7 +22,7 @@
 
         <div id="site"></div>
         <script type="text/javascript">
-            window.addEventListener('load', () => {
+            window.addEventListener('load', function() {
                 jsLibs.require('e-lemon-bee').init(<?php echo EDEBUG ? 'true' : 'false'; ?>);
             });
         </script>

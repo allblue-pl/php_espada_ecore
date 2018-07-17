@@ -61,7 +61,7 @@ class MELibs extends E\Module
 
         $script = <<<HTML
 <script type="text/javascript">
-    (() => {
+    (function() {
         let abDate = jsLibs.require('ab-date');
         let eLibs = jsLibs.require('e-libs');
 
