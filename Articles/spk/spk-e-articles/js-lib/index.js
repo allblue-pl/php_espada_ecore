@@ -91,6 +91,12 @@ export class Form extends spocky.Module
         this.galleryUpload.refresh();
     }
 
+    setValues(values)
+    {
+        this.f.setValues(values);
+        this.editor.setHtml(values.Content_Raw);
+    }
+
 
     _insertFile(file)
     {
