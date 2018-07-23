@@ -864,8 +864,9 @@ class TTable
             }  else if (count($column_condition) === 1) {
                 $t_logic_operator = array_keys($column_condition)[0];
                 if ($t_logic_operator !== 'OR' && $t_logic_operator !== 'AND') {
-                    throw new \Exception('Unknown logic operator: ' . 
-                            print_r($column_condition, true));
+                    return $column_condition[0];
+                    // throw new \Exception('Unknown logic operator: ' . 
+                    //         print_r($column_condition, true));
                 }
 
                 if (count($column_condition[$t_logic_operator]) === 0)
