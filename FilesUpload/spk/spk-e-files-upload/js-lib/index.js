@@ -74,6 +74,8 @@ export class FilesUpload extends spocky.Module
 
     refresh()
     {
+        this._liveUpload.showLoading();
+        this._liveUpload.deleteAllFiles();
         webABApi.json(this.apiUri + 'list', { 
             categoryName: this.categoryName,                     
             id: this.id,

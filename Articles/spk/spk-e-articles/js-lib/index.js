@@ -34,6 +34,24 @@ export class Form extends spocky.Module
         return this.editor.getHtml();
     }
 
+    get mediaId() {
+        if (this._mediaId === null)
+            throw new Error(`Article 'id' not set.`);
+
+        return this._mediaId;
+    }
+    set mediaId(value) {
+        this._mediaId = value;
+
+        this.introUpload.id = value;
+        this.filesUpload.id = value;
+        this.imagesUpload.id = value;
+        this.galleryUpload.id = value;
+
+        this.refreshMedia();
+    }
+
+
     constructor(msgs)
     { super();
         js0.args(arguments, spkMessages.Messages);
@@ -48,6 +66,7 @@ export class Form extends spocky.Module
                 eLibs.eField('eArticles').spkTinyMCEPkgUri);
 
         this._id = null;
+        this._mediaId = null;
 
         let insertImage = (file) => {
             this._insertImage(file);
@@ -83,8 +102,11 @@ export class Form extends spocky.Module
         return fields;
     }
 
-    refresh()
+    refreshMedia()
     {
+        if (this._mediaId === null)
+            throw new Error('Media id not set.');
+
         this.introUpload.refresh();
         this.filesUpload.refresh();
         this.imagesUpload.refresh();

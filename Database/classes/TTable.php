@@ -187,6 +187,11 @@ class TTable
         return $this->getColumn($columnName)['field']->escape($this->db, $value);
     }
 
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
     public function getColumn($columnName, $only_table = false)
     {
         return $this->getColumnRef($columnName, $only_table);
