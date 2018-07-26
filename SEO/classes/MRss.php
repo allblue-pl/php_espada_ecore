@@ -6,28 +6,41 @@ use E, EC;
 class MRss extends E\Module
 {
 
+    private $header = null;
     private $info = null;
 
-    public function __construct(EC\Basic\MHeader $header, $is_home)
+    public function __construct(EC\Basic\MHeader $header, $isHome = true)
     {
         parent::__construct();
 
+        $this->header = $header;
+
         $this->info = [
-            'rel' => $is_home ? 'alternate' : 'home',
+            'rel' => true,
             'type' => 'application/rss+xml',
             'href' => HRss::GetFileUri()
         ];
-
-        $feed_file_path = HRss::GetFilePath();
-
-        if (file_exists($feed_file_path)) {
-            $header->addTag('link', $this->info, true);
-        }
     }
 
     public function getInfo()
     {
         return $this->info;
+    }
+
+    public function setHome($isHome)
+    {   
+        $this->info['rel'] = $isHome ? 'alternate' : 'home';
+    }
+
+
+    protected function _postInitialize(E\Site $site)
+    {
+        $feed_file_path = HRss::GetFilePath();
+
+        if (file_exists($feed_file_path))
+            $this->header->addTag('link', $this->info, true);
+        else
+            $this->header->addHTML('<!-- RSS file does not exist. -->');
     }
 
 }

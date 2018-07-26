@@ -6,16 +6,16 @@ use E, EC;
 class MOpenGraph extends E\Module
 {
 
-    private $mHeader = null;
+    private $header = null;
 
     public function __construct(EC\Basic\MHeader $m_header)
     {
-        $this->mHeader = $m_header;
+        $this->header = $m_header;
     }
 
     public function addTag($name, $value)
     {
-        $this->mHeader->addTag('meta', [
+        $this->header->addTag('meta', [
             'property' => $name,
             'content' => $value
         ], true);
