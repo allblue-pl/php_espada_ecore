@@ -6,14 +6,27 @@ use E, EC, EC\Forms;
 class VBool extends Forms\VField
 {
 
-    public function __construct()
+    private $texts = null;
+
+    public function __construct($args = [])
     {
-        parent::__construct([], []);
+        parent::__construct($args, [
+            'required' => true,
+        ]);
+
+        $this->texts = EC\Text\HText::GetTranslations('Forms:fields');
     }
 
     protected function _validate(&$value)
     {
+        $args = $this->getArgs();
 
+        if (!$value) {
+            if ($args['required'])
+                $this->error($this->texts->notChecked);
+
+            return;
+        }
     }
 
 }

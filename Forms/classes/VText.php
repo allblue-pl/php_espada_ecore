@@ -6,7 +6,7 @@ use E, EC, EC\Forms;
 class VText extends Forms\VField
 {
 
-    private $texts;
+    private $texts = null;
 
     public function __construct($args = [])
     {
