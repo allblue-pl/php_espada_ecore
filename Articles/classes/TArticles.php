@@ -17,6 +17,10 @@ class TArticles extends _TArticles
             if ($colExpr !== '')
                 $colExpr .= ', ';
             $colExpr .= "IF({$tableAlias}.Lang_{$lang}, '$lang', NULL)";
+
+            $table->setColumnVFields("Lang_{$lang}", [
+                'required' => false,
+            ]);
         }
 
         // foreach ($langs as $lang)
