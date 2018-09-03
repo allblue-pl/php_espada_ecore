@@ -11,7 +11,7 @@ class VBool extends Forms\VField
     public function __construct($args = [])
     {
         parent::__construct($args, [
-            'required' => true,
+            'required' => false,
         ]);
 
         $this->texts = EC\Text\HText::GetTranslations('Forms:fields');
