@@ -116,7 +116,8 @@ export class Form extends spocky.Module
     setValues(values)
     {
         this.f.setValues(values);
-        this.editor.setHtml(values.Content_Raw);
+        if ('Content_Raw' in values)
+            this.editor.setHtml(values.Content_Raw);
     }
 
 
