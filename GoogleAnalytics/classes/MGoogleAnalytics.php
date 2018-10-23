@@ -6,18 +6,36 @@ use E, EC;
 class MGoogleAnalytics extends E\Module
 {
 
-    public function __construct(EC\Basic\MHeader $header, $tracking_code)
+    private $trackingCode = null;
+
+
+    public function __construct(EC\Basic\MHeader $header, $trackingCode = '')
     {
         parent::__construct();
 
-        $header->addHtml("
+        $this->header = $header;
+        $this->trackingCode = $trackingCode;        
+    }
+
+    public function setTrackingCode($trackingCode)
+    {
+        $this->trackingCode = $trackingCode;
+    }
+
+
+    protected function _preDisplay(E\Site $site)
+    {
+        if ($this->trackingCode === '')
+            return;
+
+        $this->header->addHtml("
             <script>
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                 })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-                ga('create', '{$tracking_code}', 'auto');
+                ga('create', '{$this->trackingCode}', 'auto');
                 ga('send', 'pageview');
             </script>
         ");
