@@ -133,7 +133,7 @@ class TTable
 
     public function count($group_extension = '')
     {
-        $query = "SELECT COUNT(DISTINCT {$this->prefix}id) as count" .
+        $query = "SELECT COUNT(DISTINCT {$this->prefix}Id) as count" .
                 ' FROM ' . $this->getQuery_From();
 
         if ($group_extension !== '')
