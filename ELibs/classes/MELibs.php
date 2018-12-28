@@ -41,6 +41,8 @@ class MELibs extends E\Module
 
     function setField($fieldName, $fieldValue)
     {
+        $this->requireBeforePreDisplay();
+
         $this->fields[$fieldName] = $fieldValue;
     } 
 
