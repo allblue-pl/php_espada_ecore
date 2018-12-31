@@ -60,8 +60,32 @@ class TArticles extends _TArticles
 
         /* Columns */
         $this->addColumns_Extra([
-            'IsPublished' => [ "a_a.Published AND a_a.Publish <= $time", 
+            'Alias'         => [ null, new EC\Database\FVarchar(false, 128) ],
+            'IntroImage'    => [ null, new Database\FVarchar(false, 256) ],
+            'IsPublished'   => [ "a_a.Published AND a_a.Publish <= $time", 
                     new Database\FBool(false) ],
+        ]);
+
+        $this->addColumnParser('Id', [
+            'out' => function($row, $name, $value) {
+                $colNames = [
+                    'Alias' => str_replace('Id', 'Alias', $name),
+                    'IntroImage' => str_replace('Id', 'IntroImage', $name),
+                    'Title' => str_replace('Id', 'Title', $name),
+                ];
+
+                $alias = EC\HArticles::Alias_Format($row[$colNames['Title']]);
+
+                $introImages = EC\HFilesUpload::GetFileUris('eArticles_Intro', 
+                        (int)$value);
+
+                return [
+                    $name => $value,
+                    $colNames['Alias'] => $alias,
+                    $colNames['IntroImage'] => count($introImages) === 0 ? 
+                            null : $introImages[0],
+                ];
+            },
         ]);
 
         /* Validators */

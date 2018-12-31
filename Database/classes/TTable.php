@@ -37,6 +37,21 @@ class TTable
         ]);
     }
 
+    public function addColumnParser($columnName, array $parser)
+    {
+        $column = &$this->getColumnRef($columnName);
+
+        foreach ($parser as $parser_type => $parser_info) {
+            if ($parser_type !== 'in' && $parser_type !== 'out')
+                throw new \Exception('Wrong `parser` format.');
+        }
+
+        $column['parsers'][] = [
+            'out' => array_key_exists('out', $parser) ? $parser['out'] : null,
+            'in' => array_key_exists('in', $parser) ? $parser['in'] : null,
+        ];
+    }
+
     public function addColumnVFields($columnName, $v_fields)
     {
         $column = &$this->getColumnRef($columnName);
@@ -76,7 +91,8 @@ class TTable
             if ($this->columnExists($columnName)) {
                 $column = &$this->getColumnRef($columnName);
 
-                $column['parsers'] = array_merge($column['parsers'], $ref_column['parsers']);
+                $column['parsers'] = array_merge($ref_column['parsers'], $column['parsers']);
+                $column['vFields'] = array_merge($ref_column['vFields'], $column['vFields']);
 
                 continue;
             }
@@ -111,6 +127,13 @@ class TTable
     public function addRowParser($parser)
     {
         $this->rowParsers[] = $parser;
+    }
+
+    public function clearColumnParsers($columnName)
+    {
+        $column = &$this->getColumnRef($columnName);
+
+        $column['parsers'] = [];
     }
 
     public function checkColumns()
@@ -392,10 +415,10 @@ class TTable
                 $this->db, $db_column_value);
         }
 
-        $parsed_row = [];
+        $parsed_row = $row;
         foreach ($row as $columnName => $db_column_value) {
             if (!$this->columnExists($columnName)) {
-                $parsed_row[$columnName] = $db_column_value;
+                // $parsed_row[$columnName] = $db_column_value;
                 continue;
             }
 
@@ -404,9 +427,9 @@ class TTable
             if (array_key_exists('parsers', $column)) {
                 $continue = false;
                 foreach ($column['parsers'] as $column_parser) {
-                    if (array_key_exists('out', $column_parser)) {
+                    if ($column_parser['out'] !== null) {
                         $parsed_cols = $column_parser['out']($row, $columnName,
-                                $unescaped_row[$columnName]);
+                                $unescaped_row[$columnName], $parsed_row);
                         foreach ($parsed_cols as $parsed_col_name => $parsed_col_value) {
                             if ($parsed_col_name !== $columnName) {
                                 if ($this->columnExists($parsed_col_name, true)) {
@@ -610,20 +633,8 @@ class TTable
 
     public function setColumnParser($columnName, array $parser)
     {
-        foreach ($parser as $parser_type => $parser_info) {
-            if ($parser_type !== 'in' && $parser_type !== 'out')
-                throw new \Exception('Wrong `parser` format.');
-        }
-
-        $column = &$this->getColumnRef($columnName);
-
-        $column['parsers'] = [];
-
-        if (array_key_exists('out', $parser))
-            $column['parsers'][0]['out'] = $parser['out'];
-
-        if (array_key_exists('in', $parser))
-            $column['parsers'][0]['in'] = $parser['in'];
+        $this->clearColumnParsers($columnName);
+        $this->addColumnParser($columnName, $parser);
     }
 
     public function setColumns($columns)
@@ -745,7 +756,7 @@ class TTable
                             "`{$col_name}` in rows.");
 
                 foreach ($columns[$col_name]['parsers'] as $column_parser) {
-                    if (array_key_exists('in', $column_parser)) {
+                    if ($column_parser['in'] !== null) {
                         $col_val = $column_parser['in']($row, $col_name, $col_val);
                     }
                 }
@@ -842,7 +853,7 @@ class TTable
     private function escapeColumnValue(array $row, array $column, $value)
     {
         foreach ($column['parsers'] as $column_parser) {
-            if (array_key_exists('in', $column_parser))
+            if ($column_parser['in'] !== null)
                 $value = $column_parser['in']($row, $column['name'], $value);
         }
 
