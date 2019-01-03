@@ -79,22 +79,7 @@ class HArticles
 
     static public function GetNew(EC\MDatabase $db, $userId)
     {
-        $table = new TArticles($db);
-
-        $row = $table->row_Where([
-            [ 'User_Id', '=', $userId ],
-            [ 'User_New', '=', true ],
-        ]);
-
-        if ($row !== null)
-            return $row;
-
-        $table->update([[
-            'User_Id' => $userId,
-            'User_New' => true,
-        ]]);
-
-        return $table->row_ById($db->getInsertedId());
+        return TArticles::GetNew($db, $userId);
     }
 
     static public function Init(EC\MELibs $eLibs, $pkgsUri)

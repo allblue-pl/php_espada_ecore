@@ -52,11 +52,11 @@ class TTable
         ];
     }
 
-    public function addColumnVFields($columnName, $v_fields)
+    public function addColumnVFields($columnName, array $vFields)
     {
         $column = &$this->getColumnRef($columnName);
-        foreach ($v_fields as $v_field)
-            $column['vFields'][] = $v_field;
+        foreach ($vFields as $vField)
+            $column['vFields'][] = $vField;
     }
 
     public function addColumns($column_infos, $extra = false, $optional = false)
@@ -694,14 +694,14 @@ class TTable
     // }
 
     public function setColumnVFields($columnName, $default_v_field_info,
-            $v_fields = [])
+            $vFields = [])
     {
         $column = &$this->getColumnRef($columnName);
         $column['vFields'] = [];
         if ($default_v_field_info !== null)
             $column['vFields'][] = $column['field']->getVField($default_v_field_info);
 
-        $this->addColumnVFields($columnName, $v_fields);
+        $this->addColumnVFields($columnName, $vFields);
     }
 
     public function stripRow($row, $table_columns_only = true)
@@ -949,7 +949,7 @@ class TTable
         if ($extra && $column_expr !== null)
             $column_expr = '(' . $column_expr . ')';
 
-        $v_field = $columnField === null ? null : $columnField->getVField();
+        $vField = $columnField === null ? null : $columnField->getVField();
         $column = [
             'name' => $columnName,
             'optional' => $optional,
@@ -957,7 +957,7 @@ class TTable
             'field' => $columnField,
 
             'parsers' => [],
-            'vFields' => [ $v_field ]
+            'vFields' => [ $vField ]
         ];
 
         return $column;

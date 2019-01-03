@@ -42,6 +42,26 @@ class TArticles extends _TArticles
             $row["Lang_{$lang}"] = $lang === $lang_Row;
     }
 
+    static public function GetNew(EC\MDatabase $db, $userId)
+    {
+        $table = new TArticles($db);
+
+        $row = $table->row_Where([
+            [ 'User_Id', '=', $userId ],
+            [ 'User_New', '=', true ],
+        ]);
+
+        if ($row !== null)
+            return $row;
+
+        $table->update([[
+            'User_Id' => $userId,
+            'User_New' => true,
+        ]]);
+
+        return $table->row_ById($db->getInsertedId());
+    }
+
     static public function WhereConditions_Categories(array $categoryNames)
     {
         $whereConditions = [];
@@ -60,9 +80,9 @@ class TArticles extends _TArticles
 
         /* Columns */
         $this->addColumns_Extra([
-            'Alias'         => [ null, new EC\Database\FVarchar(false, 128) ],
-            'IntroImage'    => [ null, new Database\FVarchar(false, 256) ],
-            'IsPublished'   => [ "a_a.Published AND a_a.Publish <= $time", 
+            'Alias'             => [ null, new EC\Database\FVarchar(false, 128) ],
+            'IntroImageUri'     => [ null, new Database\FVarchar(false, 256) ],
+            'IsPublished'       => [ "a_a.Published AND a_a.Publish <= $time", 
                     new Database\FBool(false) ],
         ]);
 
@@ -70,7 +90,7 @@ class TArticles extends _TArticles
             'out' => function($row, $name, $value) {
                 $colNames = [
                     'Alias' => str_replace('Id', 'Alias', $name),
-                    'IntroImage' => str_replace('Id', 'IntroImage', $name),
+                    'IntroImageUri' => str_replace('Id', 'IntroImageUri', $name),
                     'Title' => str_replace('Id', 'Title', $name),
                 ];
 
@@ -82,7 +102,7 @@ class TArticles extends _TArticles
                 return [
                     $name => $value,
                     $colNames['Alias'] => $alias,
-                    $colNames['IntroImage'] => count($introImages) === 0 ? 
+                    $colNames['IntroImageUri'] => count($introImages) === 0 ? 
                             null : $introImages[0],
                 ];
             },
