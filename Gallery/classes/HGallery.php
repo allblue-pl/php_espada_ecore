@@ -14,9 +14,9 @@ class HGallery
         $gallery = [];
         foreach ($fileBaseNames as $fileBaseName) {
             $gallery[] = [
-                'image' => "{$dirUri}/{$fileBaseName}",
-                'thumb' => "{$dirUri}_thumb/{$fileBaseName}",
-                'full' => "{$dirUri}_full/{$fileBaseName}",
+                'imageUri' => "{$dirUri}/{$fileBaseName}",
+                'thumbUri' => "{$dirUri}_thumb/{$fileBaseName}",
+                'fullUri' => "{$dirUri}_full/{$fileBaseName}",
             ];
         }
 
