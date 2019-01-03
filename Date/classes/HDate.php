@@ -34,6 +34,16 @@ class HDate
         return EC\HText::_('Date:monthNames_' . $monthNr);
     }
 
+    static public function GetTimezoneOffset($timezone_name)
+    {
+        $utc_time = new \DateTime('now', new \DateTimeZone('UTC'));
+
+        $timezone = new \DateTimeZone($timezone_name);
+        $timezone_offset = $timezone->getOffset($utc_time) / 60 / 60;
+
+        return $timezone_offset;
+    }
+
     static public function Format_Date($time)
     {
         if ($time === null)
@@ -79,12 +89,7 @@ class HDate
 
     static public function SetTimezoneOffset($timezone_name)
     {
-        $utc_time = new \DateTime('now', new \DateTimeZone('UTC'));
-
-        $timezone = new \DateTimeZone($timezone_name);
-        $timezone_offset = $timezone->getOffset($utc_time) / 60 / 60;
-
-        EC\HDate::SetUTCOffset($timezone_offset);
+        EC\HDate::SetUTCOffset(self::GetTimezoneOffset($timezone_name));
     }
 
     static public function SetUTCOffset($utc_offset)
