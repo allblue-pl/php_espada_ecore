@@ -6,7 +6,8 @@ use E, EC;
 class HGallery
 {
 
-    static public function GetGallery($categoryName, $id)
+    static public function GetGallery($categoryName, $id, $hasThumbs = true,
+            $hasFull = true)
     {
         $dirUri = EC\HFilesUpload::GetDirUri($categoryName, $id);
         $fileBaseNames = EC\HFilesUpload::GetFileBaseNames($categoryName, $id);
@@ -15,12 +16,17 @@ class HGallery
         foreach ($fileBaseNames as $fileBaseName) {
             $gallery[] = [
                 'imageUri' => "{$dirUri}/{$fileBaseName}",
-                'thumbUri' => "{$dirUri}_thumb/{$fileBaseName}",
-                'fullUri' => "{$dirUri}_full/{$fileBaseName}",
+                'thumbUri' => "{$dirUri}" . ($hasThumbs ? "_thumb" : "") . "/{$fileBaseName}",
+                'fullUri' => "{$dirUri}" . ($hasFull ? "_full" : "") . "/{$fileBaseName}",
             ];
         }
 
         return $gallery;
+    }
+
+    static public function Init(E\Layout $lRoot)
+    {
+        $lRoot->addL('postBody', E\Layout::_('Gallery:gallery'));
     }
 
 }
