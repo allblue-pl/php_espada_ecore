@@ -109,6 +109,10 @@ class TArticles extends _TArticles
         ]);
 
         /* Validators */
+        $this->setColumnVFields('Title', [
+            'required' => true,
+            'chars' => EC\HStrings::GetCharsRegexp_Basic('\r\n') . '"',
+        ]);
         $this->setColumnVFields('Intro', [
             'required' => false,
             'chars' => null,
