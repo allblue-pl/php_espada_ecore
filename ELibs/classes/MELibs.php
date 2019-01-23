@@ -53,7 +53,11 @@ class MELibs extends E\Module
         $this->setField('eLang', E\Langs::Get());
 
         /* Setup */
-        $fieldsString = str_replace("'", "\\'", json_encode($this->fields));
+        $fields_JSON =  json_encode($this->fields);
+        if ($fields_JSON === false)
+            throw new \Exception('Cannot encode fields to JSON: ' . json_last_error_msg());
+
+        $fieldsString = str_replace("'", "\\'", $fields_JSON);
         $textsString = str_replace("'", "\\'", json_encode($this->texts));
 
         $date_UTCOffset = EC\HDate::GetUTCOffset();
