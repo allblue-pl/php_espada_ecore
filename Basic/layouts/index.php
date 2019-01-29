@@ -12,13 +12,11 @@
     </head>
     <body>
         <?php $eHolders->init; ?>
-
         <?php $eHolders->test; ?>
 
-		<div class="container">
-			<?php $eHolders->content; ?>
-		</div>
+        <?php $eHolders->content; ?>
 
+        <?php $eHolders->postBody; ?>
         <?php $eHolders->debug; ?>
     </body>
 </html>
