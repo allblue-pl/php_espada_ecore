@@ -21,6 +21,11 @@ class CArgs
         }
     }
 
+    public function exists($name)
+    {
+        return in_array($name, array_keys($this->args));
+    }
+
     public function &get($name)
     {
         $this->validateArg($name);
@@ -44,6 +49,13 @@ class CArgs
         return $args;
     }
 
+    public function isset($name)
+    {
+        $this->validateArg($name);
+
+        return $this->args[$name]['set'];
+    }
+
     public function &__get($name)
     {
         return $this->get($name);
@@ -51,9 +63,7 @@ class CArgs
 
     public function __isset($name)
     {
-        $this->validateArg($name);
-
-        return $this->args[$name]['set'];
+        return $this->isset($name);
     }
 
     public function __set($name, $value)
@@ -66,7 +76,7 @@ class CArgs
 
     public function __exists($name)
     {
-        return in_array($name, array_keys($this->args));
+        return $this->exists($name);
     }
 
 
