@@ -126,7 +126,7 @@ class MUser extends E\Module
 
 		$user = [];
 		$user['id'] = $user_id;
-		$user['login'] = $user_login;
+        $user['login'] = $user_login;
 
 		$this->session->set($this->session_Name, $user);
 	}
