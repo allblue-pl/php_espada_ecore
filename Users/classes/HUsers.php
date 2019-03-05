@@ -156,13 +156,15 @@ class HUsers
 	// 		return $id;
     // }
 
-	static public function Exists(EC\MDatabase $db, $type, $login, $excluded_ids = [ -1 ]) {
-		$loginHash = self::GetLoginHash($login);
+    static public function Exists(EC\MDatabase $db, string $type, string $login, 
+            array $excluded_ids = [ -1 ])
+    {
+        $loginHash = self::GetLoginHash($login);
 
 		$row = (new TUsers($db))->row_Where([
 			[ 'Id', 'NOT IN', $excluded_ids ],
 			[ 'LoginHash', '=', $loginHash ],
-		]);
+        ]);
 
 		if ($row === null)
 			return false;

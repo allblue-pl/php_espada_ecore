@@ -813,9 +813,9 @@ class TTable
         return $this->db->query_Execute($query);
     }
 
-    public function validate(EC\Forms\CValidator $validator, $field_infos)
+    public function validate(EC\Forms\CValidator $validator, $fieldInfos)
     {
-        foreach ($field_infos as $field_name => $field_info) {
+        foreach ($fieldInfos as $field_name => $field_info) {
             $validator->add($field_name, $field_info[1],
                     $this->getColumn($field_info[0])['vFields']);
         }
@@ -828,6 +828,24 @@ class TTable
         foreach ($values as $columnName => $value) {
             if (in_array($columnName, $ignoreColumns))
                 continue;
+                
+            $fieldInfos[$columnName] = [ $columnName, $value ];
+        }
+
+        return $this->validate($validator, $fieldInfos);
+    }
+
+    public function validateDefault_All(EC\Forms\CValidator $validator, $values,
+            $ignoreColumns = [])
+    {
+        $fieldInfos = [];
+        $columnNames = $this->getColumnNames(true);
+        foreach ($columnNames as $columnName) {
+            if (in_array($columnName, $ignoreColumns))
+                continue;
+
+            $value = array_key_exists($columnName, $values) ? 
+                    $values[$columnName] : null;
                 
             $fieldInfos[$columnName] = [ $columnName, $value ];
         }
