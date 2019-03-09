@@ -58,7 +58,7 @@ class HUsers
             [ 'Type', '=', $type ],
 			[ 'LoginHash', '=', $loginHash ],
 			[ 'Active', '=', true ]
-		]);
+        ]);
 
 		if ($row === null)
 			return null;

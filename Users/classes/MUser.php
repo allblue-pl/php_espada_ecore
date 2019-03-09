@@ -166,14 +166,14 @@ class MUser extends E\Module
 		$user = $this->session->get($this->session_Name);
 
 		if ($user !== null) {
-			$user_info = HUsers::Get($this->db, $user['id']);
+			$userInfo = HUsers::Get($this->db, $user['id']);
 
-			if ($user_info !== null && $user_info['Active']) {
+			if ($userInfo !== null && $userInfo['Active']) {
 				$this->id = $user['id'];
 				$this->login = $user['login'];
-				$this->groups = $user_info['Groups'];
+				$this->groups = $userInfo['Groups'];
 				$this->permissions = array_merge($this->getPermissions_Default(),
-						$user_info['Groups_Permissions']);
+						$userInfo['Groups_Permissions']);
 
 				return;
 			}

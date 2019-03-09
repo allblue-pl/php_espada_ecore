@@ -50,7 +50,9 @@ abstract class VField
         $this->validator = $validator;
         $this->name = $name;
 
-        if ($this->args['notNull'] || $value !== null)
+        if ($this->args['notNull'] && $value === null)
+            $this->error(EC\HText::_('Forms:fields.notNull'));
+        else
             $this->_validate($value);
 
         $this->name = null;

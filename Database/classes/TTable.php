@@ -82,9 +82,9 @@ class TTable
         $this->addColumns($columns, true);
     }
 
-    public function addColumns_Ref(TTable $table, $ref_column_infos, $extra = true)
+    public function addColumns_Ref(TTable $table, $refColumnInfos, $extra = true)
     {
-        foreach ($ref_column_infos as $columnName => $ref_column_info) {
+        foreach ($refColumnInfos as $columnName => $ref_column_info) {
             $column_expr = $ref_column_info[0];
             $ref_column = $table->getColumn($ref_column_info[1]);
 
@@ -650,14 +650,14 @@ class TTable
         $this->addColumns($column_infos);
     }
 
-    public function setColumns_Ref(TTable $table, $ref_column_names)
+    public function setColumns_Ref(TTable $table, $refColumnNames)
     {
-        $ref_column_infos = [];
-        foreach ($ref_column_names as $columnName => $ref_column_name) {
-            $ref_column_infos[$columnName] = [ $this->prefix . $this->db->quote($columnName),
+        $refColumnInfos = [];
+        foreach ($refColumnNames as $columnName => $ref_column_name) {
+            $refColumnInfos[$columnName] = [ $this->prefix . $this->db->quote($columnName),
                     $ref_column_name];
         }
-        $this->addColumns_Ref($table, $ref_column_infos, false);
+        $this->addColumns_Ref($table, $refColumnInfos, false);
     }
 
     public function setGroupBy($group_by)

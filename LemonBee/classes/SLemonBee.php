@@ -79,9 +79,15 @@ class SLemonBee extends EC\SBasic
             $panel = $fields['panels'][$i];
             for ($j = 0; $j < count($panel['subpanels']); $j++) {
                 $subpanel = $panel['subpanels'][$j];
-                $submodulesString .= "
+                if ($subpanel['module'] === null) {
+                    $submodulesString .= "
+    lbSetup.panels[{$i}].subpanels[{$j}].module = null;
+                    ";
+                } else {
+                    $submodulesString .= "
     lbSetup.panels[{$i}].subpanels[{$j}].module = require('{$subpanel['module']['package']}')
             .{$subpanel['module']['module']}.{$subpanel['module']['class']};";
+                }
             }
         }
 
