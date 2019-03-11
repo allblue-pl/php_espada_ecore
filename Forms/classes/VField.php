@@ -57,6 +57,8 @@ abstract class VField
                 else
                     $this->error(EC\HText::_('Forms:fields.notNull'));
             }
+
+
         } else
             $this->_validate($value);
 

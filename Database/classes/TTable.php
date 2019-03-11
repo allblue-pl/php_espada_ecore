@@ -89,6 +89,9 @@ class TTable
             $ref_column = $table->getColumn($ref_column_info[1]);
 
             if ($this->columnExists($columnName)) {
+                if ($extra)
+                    continue;
+
                 $column = &$this->getColumnRef($columnName);
 
                 $column['parsers'] = array_merge($ref_column['parsers'], $column['parsers']);
