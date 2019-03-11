@@ -177,7 +177,7 @@ class MUser extends E\Module
 
 				return;
 			}
-		}
+        }
 
 		$this->destroy();
 	}

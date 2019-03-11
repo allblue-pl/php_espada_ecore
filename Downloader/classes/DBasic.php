@@ -6,14 +6,15 @@ use E, EC;
 class DBasic extends DDownloader
 {
 
-    public function __construct(EC\SDownloader $site)
+    public function __construct(EC\SDownloader $site, array $requiredPermissions = [],
+            $userType = 'Default')
     {
         parent::__construct($site);
 
         $site->addM('session', new EC\MSession());
         $site->addM('db', new EC\MDatabase());
         $site->addM('user', new EC\Users\MUser($site->m->session,
-                $site->m->db));
+                $site->m->db, $userType));
     }
 
 }

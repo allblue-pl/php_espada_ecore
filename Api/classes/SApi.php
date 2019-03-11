@@ -85,7 +85,6 @@ class SApi extends E\Site
         $apiArgs['_debug'] = false;
         $apiArgs['_test'] = false;
         if (EDEBUG) {
-
             if (E\Args::Get_Exists('_debug')) {
                $getArgs = E\Args::Get_All();
                 foreach ($getArgs as $getArgName => $getArgValue)

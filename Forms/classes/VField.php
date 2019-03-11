@@ -50,9 +50,14 @@ abstract class VField
         $this->validator = $validator;
         $this->name = $name;
 
-        if ($this->args['notNull'] && $value === null)
-            $this->error(EC\HText::_('Forms:fields.notNull'));
-        else
+        if ($value === null) {
+            if ($this->args['notNull']) {
+                if ($this->args['required'])
+                    $this->error(EC\HText::_('Forms:fields.notSet'));
+                else
+                    $this->error(EC\HText::_('Forms:fields.notNull'));
+            }
+        } else
             $this->_validate($value);
 
         $this->name = null;
