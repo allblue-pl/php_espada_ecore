@@ -15,10 +15,13 @@ class HUsers
 	const Password_MinCharacters = 6;
 
 
-	static public function Activate(EC\MDatabase $db, $userId, $active)
+	static public function Activate(EC\MDatabase $db, int $userId, bool $active)
 	{
-		return (new TUsers($db))->update_Where([ 'active' => $active ],
-				[ 'id', '=', $userId ]);
+		return (new TUsers($db))->update_Where([ 
+            'Active' => $active 
+        ], [
+            [ 'Id', '=', $userId ]
+        ]);
 	}
 
 	static public function ChangePassword(EC\MDatabase $db, $userId,
