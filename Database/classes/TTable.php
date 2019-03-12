@@ -94,8 +94,8 @@ class TTable
 
                 $column = &$this->getColumnRef($columnName);
 
-                $column['parsers'] = array_merge($ref_column['parsers'], $column['parsers']);
-                $column['vFields'] = array_merge($ref_column['vFields'], $column['vFields']);
+                $column['parsers'] = $ref_column['parsers'];
+                $column['vFields'] = $ref_column['vFields'];
 
                 continue;
             }
