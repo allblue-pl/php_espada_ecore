@@ -34,8 +34,8 @@ class HUsers
 			[[ 'Id', '=', $userId ]]);
 	}
 
-	static public function CheckLoginAndPassword(EC\MDatabase $db, $type, $login,
-			$password)
+    static public function CheckLoginAndPassword(EC\MDatabase $db, string $type, 
+            string $login, string $password)
 	{
 		$testUsers = self::GetTestUsers();
 		foreach ($testUsers as $testUser) {
