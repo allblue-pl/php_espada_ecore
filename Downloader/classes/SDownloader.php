@@ -18,7 +18,7 @@ class SDownloader extends E\Site
 
         $uri_args = E\Args::Uri('_extra');
         if (count($uri_args) === 0)
-            throw new \Exception('Download type not set: ' . E\Uri::Get());
+            throw new \Exception('Download type not set: ' . E\Uri::Current());
 
         $this->downloadName = $uri_args[0];
     }

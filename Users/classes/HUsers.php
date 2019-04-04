@@ -39,19 +39,27 @@ class HUsers
 	{
 		$testUsers = self::GetTestUsers();
 		foreach ($testUsers as $testUser) {
-            if ($testUser['type'] === $type && $testUser['login'] === $login && 
-                    EC\HHash::CheckPassword($password, $testUser['password'])) {
+            if ($testUser['type'] !== $type || $testUser['login'] !== $login)
+                continue;
 
-				$user = [];
+            $authenticated = false;
+            if (array_key_exists('passwordHash', $testUser))
+                $authenticated = EC\HHash::CheckPassword($password, $testUser['passwordHash']);
+            else if (array_key_exists('password', $testUser))
+                $authenticated = $testUser['password'] === $password;
 
-				$user['id'] = $testUser['id'];
-				$user['login'] = $login;
-				$user['groups'] = explode(',',
-						str_replace(' ', '', $testUser['groups']));
-				$user['permissions'] = HPermissions::Get_FromGroups($user['groups']);
+            if (!$authenticated)
+                continue;
 
-				return $user;
-			}
+            $user = [];
+
+            $user['id'] = $testUser['id'];
+            $user['login'] = $login;
+            $user['groups'] = explode(',',
+                    str_replace(' ', '', $testUser['groups']));
+            $user['permissions'] = HPermissions::Get_FromGroups($user['groups']);
+            
+            return $user;
 		}
 
 		$salt = EC\HHash::Salt();
