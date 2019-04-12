@@ -8,9 +8,9 @@ use E, EC;
 class HQRCodes
 {
 
-    static public function Generate(string $text, $filePath)
+    static public function Generate(string $text, $filePath, $size = 1)
     {
-        \QRcode::png('https://allblue.pl/', $filePath);
+        \QRcode::png($text, $filePath, QR_ECLEVEL_L, $size);
     }
 
 }
