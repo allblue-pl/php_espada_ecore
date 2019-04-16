@@ -6,26 +6,37 @@ use E, EC;
 class MFacebook extends E\Module
 {
 
-    private $og = null;
-    private $appId = '';
+    private $header = null;
+    private $version = null;
 
-    public function __construct(MOpenGraph $og)
+    public function __construct(EC\Basic\MHeader $header, $version = 'v3.2')
     {
         parent::__construct();
 
-        $this->og = $og;
+        $this->header = $header;
+        $this->version = $version;
     }
+
+    public function og_AddTag($name, $value)
+    {
+        $this->header->addTag('meta', [
+            'property' => $name,
+            'content' => $value
+        ], true);
+    }
+
 
     protected function _postInitialize(E\Site $site)
     {
-        $app_id = EC\HConfig::GetRequired('Facebook', 'appId');
+        $appId = EC\HConfig::GetRequired('Facebook', 'appId');
 
-        $this->og->addTag('og:app_id', $app_id);
-        $this->og->addTag('og:type', 'article');
+        $this->og_AddTag('og:app_id', $appId);
+        $this->og_AddTag('og:type', 'article');
 
         $l_init = $site->addL('init', E\Layout::_('Facebook:init', [
-            'appId' => $app_id,
-            'langCode' => E\Langs::Get()['code']
+            'appId' => $appId,
+            'version' => $this->version,
+            'langCode' => str_replace('-', '_', E\Langs::Get()['code']),
         ]));
     }
 

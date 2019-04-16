@@ -2,19 +2,22 @@
 <script>
   window.fbAsyncInit = function() {
     FB.init({
-      appId      : '<?php echo $appId; ?>',
-      xfbml      : true,
-      version    : 'v2.5'
-    });
+            appId            : '<?php echo $_appId; ?>',
+            autoLogAppEvents : true,
+            xfbml            : true,
+            version          : '<?php echo $_version; ?>',
+        });
 
-    <?php $eHolders->afterInit; ?>
-  };
+        FB_Initialized = true; //init flag
+    };
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/<?php echo $langCode; ?>/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
+    FB_OnInit = function(callback) {
+        if(!window.FB_Initialized)
+            setTimeout(function() { FB_OnInit(callback); }, 50);
+        else {
+            if(callback)
+                callback();
+        }
+    }
 </script>
+<script async defer src="https://connect.facebook.net/<?php echo $_langCode; ?>/sdk.js"></script>
