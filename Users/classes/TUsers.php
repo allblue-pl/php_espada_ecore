@@ -17,8 +17,8 @@ class TUsers extends _TUsers
         ]);
 
         $this->setColumnParser('Groups', [
-            'out' => function($row, $name, $value) {
-                $groups = explode(',', $row[$name]);
+            'out' => function($row, $name, $value) {                
+                $groups = $value === '' ? [] : explode(',', $row[$name]);
 
                 return [
                     $name => $groups,

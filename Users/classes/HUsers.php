@@ -37,6 +37,8 @@ class HUsers
     static public function CheckLoginAndPassword(EC\MDatabase $db, string $type, 
             string $login, string $password)
 	{
+        $login = mb_strtolower($login);
+
 		$testUsers = self::GetTestUsers();
 		foreach ($testUsers as $testUser) {
             if ($testUser['type'] !== $type || $testUser['login'] !== $login)
@@ -168,17 +170,24 @@ class HUsers
     // }
 
     static public function Exists(EC\MDatabase $db, string $type, string $login, 
-            array $excluded_ids = [ -1 ])
+            $excludedIds = null, &$existingUserId = null)
     {
         $loginHash = self::GetLoginHash($login);
 
+        if ($excludedIds === null)
+            $excludedIds = [ -1 ];
+
 		$row = (new TUsers($db))->row_Where([
-			[ 'Id', 'NOT IN', $excluded_ids ],
+			[ 'Id', 'NOT IN', $excludedIds ],
 			[ 'LoginHash', '=', $loginHash ],
         ]);
 
-		if ($row === null)
-			return false;
+		if ($row === null) {
+            $existingUserId = null;
+            return false;
+        }
+            
+        $existingUserId = $row['Id'];
 
 		return true;
 	}
@@ -207,24 +216,38 @@ class HUsers
         ]);
     }
 
-	static public function Update(EC\MDatabase $db, $row)
+    static public function ResetPassword_CreateHash(EC\MDatabase $db, int $userId)
+    {
+        return (new TResetPasswordHashes($db))->update([[
+            'Id' => null,
+            'User_Id' => $userId,
+            'DateTime' => time(),
+            'Hash' => EC\HHash::Generate(128),
+        ]]);
+    }
+
+    static public function Update(EC\MDatabase $db, string $type, $id, $login = null, 
+            $email = null, $password = null, $groups = null, $active = null)
 	{
-		if (array_key_exists('Login', $row)) {
-			$row['LoginHash'] = self::GetLoginHash($row['Login']);
-			unset($row['Login']);
-		}
+        $row = [
+            'Id' => $id,
+            'Type' => $type,
+        ];
 
-		if (array_key_exists('Email', $row)) {
-			$row['EmailHash'] = self::GetEmailHash($row['Email']);
-			unset($row['Email']);
-		}
+        if ($login !== null)
+            $row['LoginHash'] = self::GetLoginHash($login);
 
-		if (array_key_exists('Password', $row)) {
-			if ($row['Password'] !== null)
-				$row['PasswordHash'] = EC\HHash::GetPassword($row['Password']);
+        if ($email !== null)
+            $row['EmailHash'] = self::GetEmailHash($email);
 
-			unset($row['Password']);
-		}
+		if ($password !== null)
+            $row['PasswordHash'] = EC\HHash::GetPassword($password);
+
+        if ($groups !== null)
+            $row['Groups'] = $groups;
+
+        if ($active !== null)
+            $row['Active'] = $active ? true : false;
 
 		return (new TUsers($db))->update([ $row ]);
     }
