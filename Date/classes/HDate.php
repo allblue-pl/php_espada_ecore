@@ -74,6 +74,16 @@ class HDate
         return EC\HText::_("Date:format_DayOfWeek_{$day_of_week}");
     }
 
+    static public function GetTime()
+    {
+        return time();
+    }
+
+    static public function GetTime_Rel()
+    {
+        return time() + self::GetUTCOffset() * self::Span_Hour;
+    }
+
     static public function GetUTCOffset()
     {
         return self::$UTCOffset;
@@ -103,11 +113,6 @@ class HDate
             return null;
 
         return strtotime($str . ' UTC');
-    }
-
-    static public function Time()
-    {
-        return time() + self::GetUTCOffset();
     }
 
 }

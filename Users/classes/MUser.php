@@ -128,7 +128,7 @@ class MUser extends E\Module
 		$user['id'] = $user_id;
         $user['login'] = $user_login;
 
-		$this->session->set($this->session_Name, $user);
+        $this->session->set($this->session_Name, $user);
 	}
 
 	public function destroy()
