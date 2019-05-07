@@ -216,13 +216,15 @@ class HUsers
         ]);
     }
 
-    static public function ResetPassword_CreateHash(EC\MDatabase $db, int $userId)
+    static public function ResetPassword_CreateHash(EC\MDatabase $db, int $userId, &$hash)
     {
-        return (new TResetPasswordHashes($db))->update([[
+        $hash = EC\HHash::Generate(128);
+
+        return (new TRecoverPasswordHashes($db))->update([[
             'Id' => null,
             'User_Id' => $userId,
             'DateTime' => time(),
-            'Hash' => EC\HHash::Generate(128),
+            'Hash' => $hash,
         ]]);
     }
 

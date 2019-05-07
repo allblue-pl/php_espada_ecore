@@ -43,8 +43,8 @@ class CTranslations
 		if (isset($this->translations[$text])) {
 			$translation = $this->translations[$text];
 
-			for ($i = 0; $i < $args_length; $i++)
-				$translation = str_replace("{{$i}}", $args[$i], $translation);
+			foreach ($args as $argName => $argValue)
+				$translation = str_replace("{{$argName}}", $argValue, $translation);
 
 			return $translation;
 		}
