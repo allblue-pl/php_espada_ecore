@@ -21,7 +21,8 @@ class CMail
 	private $ccs = [];
 	private $bcce = [];
 
-	private $attachments = [];
+    private $attachments = [];
+    private $images = [];
 
 	private $mail = null;
 
@@ -74,7 +75,15 @@ class CMail
 			$file_name = basename($file_path);
 
 		$this->attachments[] = array($file_path, $file_name);
-	}
+    }
+    
+    public function addImage($filePath, $fileName = null)
+    {
+        if ($fileName === null)
+            $fileName = basename($filePath);
+            
+        $this->images[] = [ $filePath, $fileName ];
+    }
 
 	public function addTo($mail, $name = null)
 	{
@@ -155,7 +164,10 @@ class CMail
 			$this->mail->AltBody = $text;
 
 			foreach ($this->attachments as $file_path)
-				$this->mail->addAttachment($file_path[0], $file_path[1]);
+                $this->mail->addAttachment($file_path[0], $file_path[1]);
+                
+            foreach ($this->images as $imageInfo)
+				$this->mail->addEmbeddedImage($imageInfo[0], $imageInfo[1]);
 
 			if (!$this->mail->send()) {
 				$this->error = $this->mail->ErrorInfo;
