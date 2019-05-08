@@ -29,6 +29,18 @@ class HDate
         return ($start + $diff);
     }
 
+    static public function GetDay($time)
+    {
+        return self::GetDay_UTC($time) - self::$UTCOffset * self::Span_Hour;
+    }
+
+    static public function GetDay_UTC($time)
+    {
+        $time  = floor($time / self::Span_Day) * self::Span_Day;
+
+        return $time;
+    }
+
     static public function GetMonthName($monthNr)
     {
         return EC\HText::_('Date:monthNames_' . $monthNr);
