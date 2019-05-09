@@ -6,22 +6,14 @@ use E, EC;
 class MSession extends E\Module
 {
 
-	public function __construct()
+	public function __construct($expirationTime = 0, $base = '/')
 	{
-
+        session_set_cookie_params($expirationTime, $base);
 	}
 
 	protected function _preInitialize(E\Site $site)
 	{
 		session_start();
-
-		if (EC\HConfig::Get('session_CheckIP', true)) {
-			if (isset($_SESSION['ip'])) {
-				if ($_SESSION['ip'] !== $_SERVER['REMOTE_ADDR'])
-					session_unset();
-			} else
-				$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-		}
 	}
 
 	protected function _postInitialize(E\Site $site)
@@ -84,8 +76,6 @@ class MSession extends E\Module
 		$_SESSION = [];
 
 		session_destroy();
-
-		echo "HM?";
 	}
 
 	public function &__get($name)
