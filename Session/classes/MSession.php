@@ -8,7 +8,7 @@ class MSession extends E\Module
 
 	public function __construct($expirationTime = 0, $base = '/')
 	{
-        session_set_cookie_params($expirationTime, $base);
+        // session_set_cookie_params($expirationTime, $base);
 	}
 
 	protected function _preInitialize(E\Site $site)
