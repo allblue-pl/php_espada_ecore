@@ -69,10 +69,10 @@ export class Form extends spocky.Module
         this._mediaId = null;
 
         let insertImage = (file) => {
-            this._insertImage(file);
+            this.insertImage(file);
         };
         let insertFile = (file) => {
-            this._insertFile(file);
+            this.insertFile(file);
         };
 
         /* Files Upload */
@@ -102,6 +102,18 @@ export class Form extends spocky.Module
         return fields;
     }
 
+    insertFile(file)
+    {
+        this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
+                `<p><ul><li><a href="${file.uri}">${file.id}</a></li></ul></p>`);
+    }
+
+    insertImage(file)
+    {
+        this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
+                `<p><img src="${file.uri}" /></p>`);
+    }
+
     refreshMedia()
     {
         if (this._mediaId === null)
@@ -118,19 +130,6 @@ export class Form extends spocky.Module
         this.f.setValues(values);
         if ('Content_Raw' in values)
             this.editor.setHtml(values.Content_Raw);
-    }
-
-
-    _insertFile(file)
-    {
-        this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
-                `<p><ul><li><a href="${file.uri}">${file.id}</a></li></ul></p>`);
-    }
-
-    _insertImage(file)
-    {
-        this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
-                `<p><img src="${file.uri}" /></p>`);
     }
 
 }
