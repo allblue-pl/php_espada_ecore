@@ -76,7 +76,7 @@ class TArticles extends _TArticles
     {
         parent::__construct($db, 'a_a');
 
-        $time = $db->escapeTime_DateTime(EC\HDate::Time());
+        $time = $db->escapeTime_DateTime(EC\HDate::GetTime());
 
         /* Columns */
         $this->addColumns_Extra([
