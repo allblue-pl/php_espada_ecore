@@ -64,7 +64,7 @@ class SApi extends E\Site
         if (array_key_exists('json', $post_args)) {
             $apiArgs = json_decode($post_args['json'], true);
             if ($apiArgs === null)
-                return CResult::Failure('Cannot parse json.');
+                return CResult::Failure('Cannot decode json arg.');
         } else
             $apiArgs = [];
 
