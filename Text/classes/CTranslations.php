@@ -50,8 +50,19 @@ class CTranslations
 		}
 
 		$translation = $this->package . ':' . $this->path . '.' . $text;
-		if ($args_length > 0)
-			$translation .= '(' . implode(', ', $args) . ')';
+		if ($args_length > 0) {
+            $translation .= '(';
+            $first = true;
+            foreach ($args as $argName => $argValue) {
+                if (!$first)
+                    $translation .= ', ';
+                else
+                    $first = false;
+
+                $translation .= "$argName => $argValue";
+            }
+            $translation .= ')';
+        }
 
 		return '#' . $translation . '#';
 	}
