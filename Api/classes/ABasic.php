@@ -23,7 +23,7 @@ class ABasic extends AApi
                 $site->m->db, $userType));
     }
 
-    public function actionR($action_name, $fn, $arg_infos = [],
+    public function actionR(string $action_name, string $fn, $arg_infos = [],
             $requiredPermissions = [])
     {
         $this->actionRequiredPermissions[$action_name] = $requiredPermissions;

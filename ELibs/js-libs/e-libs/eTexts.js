@@ -9,7 +9,7 @@ class eTexts_Class
 
     constructor()
     {
-        this._texts = {};
+        this._texts = [];
     }
 
     get(text, args = [])
