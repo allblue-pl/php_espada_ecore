@@ -67,10 +67,15 @@ class CResult
         return $this->outputs['result'] === self::ERROR;
     }
 
+    public function exists($name)
+    {
+        return array_key_exists($name, $this->outputs);
+    }
+
     public function get($name)
     {
-        if (!isset($this->outputs[$name]))
-            return null;
+        if (!$this->exists($name))
+            throw new \Exception("Output '{$name}' does not exist.");
 
         return $this->outputs[$name];
     }
@@ -97,6 +102,11 @@ class CResult
     public function getMessage()
     {
         return $this->outputs['message'];
+    }
+
+    public function isset($name)
+    {
+        return array_key_exists($name, $this->outputs);
     }
 
 
