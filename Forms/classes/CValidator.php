@@ -9,7 +9,8 @@ class CValidator
     private $info = [
         'valid' => true,
         'fields' => [],
-        'state' => ''
+        'state' => '',
+        'errors' => [],
     ];
 
     public function __construct()
@@ -42,6 +43,13 @@ class CValidator
     {
         return $this->info;
     }
+
+    public function error($message)
+    {
+        $this->info['valid'] = false;
+
+        $this->errors[] = $message;
+    }   
 
     public function fieldError($field_name, $message = null)
     {
