@@ -646,11 +646,24 @@ class TTable
         foreach ($columns as $columnName => $column) {
             $column_infos[$columnName] = [
                 $this->prefix . $this->db->quote($columnName),
-                $column
+                $column,
             ];
         }
 
         $this->addColumns($column_infos);
+    }
+
+    public function setColumns_Optional(array $columnNames)
+    {
+        foreach ($columnNames as $columnName) { 
+            $column = $this->getColumnRef($columnName);
+            $selectColumnNames_Index = array_search($columnName, 
+                    $this->selectColumnNames);
+
+            if ($selectColumnNames_Index !== false) {
+                array_splice($this->selectColumnNames, $selectColumnNames_Index, 1);
+            }
+        }
     }
 
     public function setColumns_Ref(TTable $table, $refColumnNames)
