@@ -268,6 +268,11 @@ class TTable
         return $columnNames;
     }
 
+    public function getColumnNames_Select()
+    {
+        return $this->selectColumnNames;
+    }
+
     public function getColumnTableRefs($fieldPrefix = '',
             $excludedColumns = [ 'Id' ], $includedColumns = null)
     {
@@ -541,6 +546,14 @@ class TTable
             return null;
 
         return $rows[0];
+    }
+
+    public function row_Columns_ById($columnNames, $id, $group_extension = '', 
+            $for_update = false)
+    {
+        return $this->row_Columns_Where($columnNames, [
+            [ 'Id', '=', $id ]
+        ], $group_extension, $for_update);
     }
 
     public function row_Columns_Where($columnNames, $where_conditions,
