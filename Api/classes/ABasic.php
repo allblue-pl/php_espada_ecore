@@ -17,8 +17,8 @@ class ABasic extends AApi
 
         $this->requiredPermissions = $requiredPermissions;
 
-        $site->addM('session', new EC\MSession());
         $site->addM('db', new EC\MDatabase());
+        $site->addM('session', new EC\MSession($site->m->db));
         $site->addM('user', new EC\Users\MUser($site->m->session,
                 $site->m->db, $userType));
     }

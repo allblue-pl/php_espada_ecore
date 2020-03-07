@@ -6,9 +6,23 @@ use E, EC;
 class MSession extends E\Module
 {
 
-	public function __construct($expirationTime = 0, $base = '/')
+    private $db = null;
+
+	public function __construct(EC\MDatabase $db, $expirationTime = 0, $base = '/')
 	{
-        // session_set_cookie_params($expirationTime, $base);
+        $this->db = $db;
+
+        ini_set('session.cookie_lifetime', $expirationTime);
+        ini_set('session.gc_maxlifetime', $expirationTime);
+
+        session_set_save_handler(  
+            [ $this, "_sessionHandlers_Open" ],  
+            [ $this, "_sessionHandlers_Close" ],  
+            [ $this, "_sessionHandlers_Read" ],  
+            [ $this, "_sessionHandlers_Write" ],  
+            [ $this, "_sessionHandlers_Destroy" ],  
+            [ $this, "_sessionHandlers_GC" ],  
+        );
 	}
 
 	protected function _preInitialize(E\Site $site)
@@ -91,6 +105,64 @@ class MSession extends E\Module
 	public function getToken()
 	{
 		return session_id();
-	}
+    }
+    
+
+    /* Session Handlers */
+    public function _sessionHandlers_Close()
+    {
+        return true;
+    }
+
+    public function _sessionHandlers_Destroy($id)
+    {
+        if (!(new TSessions($this->db))->delete_Where([
+            [ 'Id', '=', $id ],
+                ]))
+            return false;
+        
+        return true;
+    }
+
+    public function _sessionHandlers_GC($max)
+    {
+        if (!(new TSessions($this->db))->delete_Where([
+            [ 'Access', '<', $max ],
+                ]))
+            return false;
+        
+        return true;
+    }
+
+    public function _sessionHandlers_Open()
+    {
+        return true;
+    }
+
+    public function _sessionHandlers_Read($id)
+    {
+        $row = (new TSessions($this->db))->row_Where([
+            [ 'Id', '=', $id ],
+        ]);
+        
+        if ($row === null)
+            return '';
+
+        return $row['Data'];
+    }
+
+    public function _sessionHandlers_Write($id, $data)
+    {
+        if (!(new TSessions($this->db))->update([[
+            'Id' => $id,
+            'Data' => $data,
+            'Access' => time(),
+                ]]))
+            return false;
+        
+        return true;
+    }
+    /* / Session Handlers */
+
 
 }
