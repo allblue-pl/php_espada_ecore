@@ -21,7 +21,7 @@ class MSession extends E\Module
             [ $this, "_sessionHandlers_Read" ],  
             [ $this, "_sessionHandlers_Write" ],  
             [ $this, "_sessionHandlers_Destroy" ],  
-            [ $this, "_sessionHandlers_GC" ],  
+            [ $this, "_sessionHandlers_GC" ]
         );
 	}
 
