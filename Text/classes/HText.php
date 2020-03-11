@@ -13,7 +13,7 @@ class HText
 		$text_array = self::ParseText($text);
 
 		if ($text_array[0] === '' || $text_array[2] === '')
-			return $text;
+			return '#' . $text . '#';
 
 		$translations_key = self::GetTranslationsKey($text_array[0],
 				$text_array[1]);
