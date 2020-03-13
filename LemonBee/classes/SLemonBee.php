@@ -85,7 +85,7 @@ class SLemonBee extends EC\SBasic
                     ";
                 } else {
                     $submodulesString .= "
-    lbSetup.panels[{$i}].subpanels[{$j}].module = require('{$subpanel['module']['package']}')
+    lbSetup.panels[{$i}].subpanels[{$j}].module = jsLibs.require('{$subpanel['module']['package']}')
             .{$subpanel['module']['module']}.{$subpanel['module']['class']};";
                 }
             }

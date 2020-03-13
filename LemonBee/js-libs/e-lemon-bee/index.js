@@ -14,7 +14,7 @@ const
 spocky.ext(new spkForms.Ext());
 
 
-const spk = new spocky.Site()
+const spk = new spocky.App()
     .config(($app, $cfg) => {
         $cfg.container('site', Site);
     });

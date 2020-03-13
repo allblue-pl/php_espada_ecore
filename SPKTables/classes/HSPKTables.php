@@ -288,7 +288,7 @@ SCRIPT;
     }
 
     static private function GetQueryInfo_Limit(EC\Database\TTable $t_table,
-            $spk_table, $table_args)
+            $spk_table, $table_args, $maxLimit = null)
     {
         $spk_table = self::ParseInfo($spk_table);
 
@@ -299,6 +299,9 @@ SCRIPT;
             $offset = intval($table_args['offset']);
         if (isset($table_args['limit']))
             $limit = intval($table_args['limit']);
+
+        if ($maxLimit !== null)
+            $limit = min($maxLimit, 10000);
 
         return  [
             'offset' => $offset,
