@@ -13,8 +13,8 @@ class SLemonBee extends EC\SBasic
         parent::__construct();
 
         /* Modules */
-        $this->addM('session', new EC\MSession());
         $this->addM('db', new EC\MDatabase());
+        $this->addM('session', new EC\MSession($this->m->db));
         $this->addM('user', new EC\Users\MUser($this->m->session, $this->m->db, 
                 $userType));
 

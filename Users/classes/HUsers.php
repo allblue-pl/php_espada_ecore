@@ -39,7 +39,7 @@ class HUsers
 	{
         $login = mb_strtolower($login);
 
-		$testUsers = self::GetTestUsers();
+        $testUsers = self::GetTestUsers();
 		foreach ($testUsers as $testUser) {
             if ($testUser['type'] !== $type || $testUser['login'] !== $login)
                 continue;
