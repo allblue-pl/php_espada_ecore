@@ -6,8 +6,10 @@ use E, EC;
 class HDate
 {
 
-    const Span_Hour = 3600;
-    const Span_Day = 86400;
+    const Span_Second = 1;
+    const Span_Minute = 60;
+    const Span_Hour = 60 * self::Span_Minute;
+    const Span_Day = 24 * self::Span_Hour;
     const Span_Year = 365 * self::Span_Day;
 
 
