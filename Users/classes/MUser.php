@@ -23,7 +23,7 @@ class MUser extends E\Module
 
 	private $salt = '';
 
-    public function __construct(EC\MSession $session, EC\MDatabase $database,
+    public function __construct($session, EC\MDatabase $database,
             $type = 'Default')
 	{
 		parent::__construct();
@@ -117,7 +117,35 @@ class MUser extends E\Module
 	public function getLogin()
 	{
 		return $this->login;
-	}
+    }
+    
+    public function initUser()
+	{
+		$user = $this->session->get($this->session_Name);
+
+        if ($user === null) {
+            $this->destroy();
+            return;
+        }
+
+        $this->initUser_SetId($user['id'], $user['login']);
+    }
+    
+    public function initUser_SetId($user_id, $user_login)
+    {
+        $userInfo = HUsers::Get($this->db, $user_id);
+
+        if ($userInfo === null || !$userInfo['Active']) {
+            $this->destroy();
+            return;
+        }
+
+        $this->id = $user_id;
+        $this->login = $user_login;
+        $this->groups = $userInfo['Groups'];
+        $this->permissions = array_merge($this->getPermissions_Default(),
+                $userInfo['Groups_Permissions']);
+    }
 
 	/* Session */
 	public function startSession($user_id, $user_login)
@@ -129,6 +157,8 @@ class MUser extends E\Module
         $user['login'] = $user_login;
 
         $this->session->set($this->session_Name, $user);
+
+        $this->initUser();
 	}
 
 	public function destroy()
@@ -151,7 +181,7 @@ class MUser extends E\Module
 	protected function _preInitialize(E\Site $site)
 	{
 		$this->_preInitialize_Config();
-		$this->_preInitialize_User();
+		$this->initUser();
 		// $this->_preInitialize_Permissions();
 	}
 
@@ -159,27 +189,6 @@ class MUser extends E\Module
 	{
 		$this->testUsers = HUsers::GetTestUsers();
 		$this->salt = EC\HConfig::GetRequired('Hash', 'salt');
-	}
-
-	private function _preInitialize_User()
-	{
-		$user = $this->session->get($this->session_Name);
-
-		if ($user !== null) {
-			$userInfo = HUsers::Get($this->db, $user['id']);
-
-			if ($userInfo !== null && $userInfo['Active']) {
-				$this->id = $user['id'];
-				$this->login = $user['login'];
-				$this->groups = $userInfo['Groups'];
-				$this->permissions = array_merge($this->getPermissions_Default(),
-						$userInfo['Groups_Permissions']);
-
-				return;
-			}
-        }
-
-		$this->destroy();
 	}
 
 	// private function _preInitialize_Permissions()

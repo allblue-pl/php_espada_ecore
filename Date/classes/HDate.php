@@ -93,6 +93,11 @@ class HDate
         return time();
     }
 
+    static public function GetTimeMillis()
+    {
+        return round(microtime(true) * 1000);
+    }
+
     static public function GetTime_Rel()
     {
         return time() + self::GetUTCOffset() * self::Span_Hour;

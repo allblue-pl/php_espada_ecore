@@ -88,8 +88,16 @@ class MDatabase extends E\Module
 		if ($value === null)
 			return 'NULL';
 
-		return (string)((int)$value);
-	}
+        return (string)((int)$value);
+    }
+    
+    public function escapeLong($value)
+    {
+        if ($value === null)
+			return 'NULL';
+
+        return (string)($value + 0);
+    }
 
 	public function escapeString($value)
 	{
@@ -235,6 +243,14 @@ class MDatabase extends E\Module
 			return null;
 
 		return (int)$value;
+    }
+    
+    public function unescapeLong($value)
+	{
+		if ($value === null)
+			return null;
+
+		return $value + 0;
 	}
 
 	public function unescapeString($value)

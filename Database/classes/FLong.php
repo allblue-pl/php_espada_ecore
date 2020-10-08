@@ -20,12 +20,12 @@ class FLong extends FField
 
     protected function _escape(EC\MDatabase $db, $value)
     {
-        return $db->escapeInt($value);
+        return $db->escapeLong($value);
     }
 
     protected function _unescape(EC\MDatabase $db, $value)
     {
-        return $db->unescapeInt($value);
+        return $db->unescapeLong($value);
     }
 
 }
