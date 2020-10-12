@@ -95,7 +95,12 @@ class MSession extends E\Module
 	public function &__get($name)
 	{
 		return $this->get($name);
-	}
+    }
+    
+    public function __isset($name)
+    {
+        return isset($_SESSION[$name]);
+    }
 
 	public function __set($name, $value)
 	{
