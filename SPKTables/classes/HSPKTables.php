@@ -144,8 +144,9 @@ SCRIPT;
 
         /* Api Uri */
         if (!array_key_exists('apiUri', $table_info))
-            throw new \Exception('`apiUri` not set.');
-        $table['apiUri'] = $table_info['apiUri'];
+            $table['apiUri'] = null;
+        else
+            $table['apiUri'] = $table_info['apiUri'];
 
         /* Image */
         if (array_key_exists('image', $table_info))

@@ -319,8 +319,20 @@ class TTable
 
     public function getQuery_Conditions($column_values, $table_only = false)
     {
-        return $this->getQuery_Conditions_Helper($column_values, 'AND',
+        return $this->getQuery_Conditions_Helper($column_values, 'AND', 
                 $table_only);
+
+        // if (is_array($column_values)) {
+        //     if (count($column_values) === 2) {
+        //         if ($column_values[0] === 'AND' || $column_values[0] === 'OR') {
+        //             return $this->getQuery_Conditions_Helper($column_values[1], 
+        //                     $column_values[0], $table_only);
+        //         }
+        //     }
+        // }
+
+        // return $this->getQuery_Conditions_Helper($column_values, 'AND',
+        //         $table_only);
     }
 
     public function getQuery_From()
@@ -367,6 +379,11 @@ class TTable
             return null;
 
         return "{$db_column_expr} AS {$db_column_name}";
+    }
+
+    public function hasColumn($columnName)
+    {
+        return array_key_exists($columnName, $this->columns);
     }
 
     public function insert($rows)
@@ -518,6 +535,13 @@ class TTable
             return null;
 
         return $rows[0];
+    }
+
+    public function row_ByCol($colName, $colValue, $group_extension = '', $for_update = false)
+    {
+        return $this->row_Where([
+            [ $colName, '=', $colValue ]
+        ], $group_extension, $for_update);
     }
 
     public function row_ById($id, $group_extension = '', $for_update = false)
@@ -913,10 +937,24 @@ class TTable
         if (!is_array($column_values))
             throw new \Exception('`column_values` must be an array.');
 
+        if (count($column_values) === 0)
+            return '';
+
+        if (count($column_values) === 2) {
+            if ($column_values[0] === 'AND' || $column_values[0] === 'OR') {
+                return $this->getQuery_Conditions_Helper($column_values[1], 
+                        $column_values[0], $table_only);
+            }
+        }
+
         $args = [];
         foreach ($column_values as $key => $column_condition) {
-            if (!is_array($column_condition))
+            if (!is_array($column_condition)) {
+                // echo "Test: \r\n";
+                // print_r($column_values);
+                // print_r($column_condition);
                 throw new \Exception('`column_condition` must be an array.');
+            }
 
             if (count($column_condition) === 0) 
                 continue;
@@ -927,9 +965,8 @@ class TTable
             }  else if (count($column_condition) === 1) {
                 $t_logic_operator = array_keys($column_condition)[0];
                 if ($t_logic_operator !== 'OR' && $t_logic_operator !== 'AND') {
-                    return $column_condition[0];
-                    // throw new \Exception('Unknown logic operator: ' . 
-                    //         print_r($column_condition, true));
+                    return $args[] = '(' . $this->getQuery_Conditions_Helper(
+                            [ 'AND', $column_condition ], $table_only) . ')';
                 }
 
                 if (count($column_condition[$t_logic_operator]) === 0)
@@ -941,6 +978,15 @@ class TTable
                 continue;
             } else if (!is_int($key))
                 throw new \Exception("Unknown logic operator `{$key}`.");
+
+            if (count($column_condition) === 2) {
+                if ($column_condition[0] === 'OR' || $column_condition[0] === 'AND') {
+                    $args[] = '(' . $this->getQuery_Conditions_Helper(
+                            $column_condition[1], $column_condition[0], 
+                            $table_only) . ')';
+                    continue;
+                }
+            }
 
             if (count($column_condition) !== 3) {
                 throw new \Exception('`column_condition` must have exactly' .

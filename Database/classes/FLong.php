@@ -13,7 +13,7 @@ class FLong extends FField
 
     public function getVField($info = [])
     {
-        return new EC\Forms\VInt(array_merge([
+        return new EC\Forms\VLong(array_merge([
             'notNull' => $this->isNotNull()
         ], $info));
     }
