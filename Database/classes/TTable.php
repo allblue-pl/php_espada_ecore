@@ -844,6 +844,53 @@ class TTable
         return $this->db->query_Execute($query);
     }
 
+    public function update_ByColumns($rows, $whenColumns)
+    {
+        $existing_Conditions = [];
+        for ($i = 0; $i < count($rows); $i++) {
+            $row = $rows[$i];
+
+            $existing_Condition = [];
+            foreach ($whenColumns as $whenColumn) {
+                if (!array_key_exists($whenColumn, $row))
+                    throw new \Exception("'whenColumn' in row '{$i}' does not exist.");
+
+                $existing_Condition[] = [ $whenColumn, '=', $row[$whenColumn] ];
+            }
+
+            $existing_Conditions[] = [ 'OR', $existing_Condition ];
+        }
+
+        $existing_Rows = $this->select_Where($existing_Conditions);
+
+        $update_Rows = [];
+        $left_Rows = [];
+        foreach ($rows as $row) {
+            $rowMatch = false;
+            foreach ($existing_Rows as $existing_Row) {
+                $whenMatch = true;
+                foreach ($whenColumns as $whenColumn) {
+                    if ($row[$whenColumn] !== $existing_Row[$whenColumn]) {
+                        $whenMatch = false;
+                        break;
+                    }
+                }
+
+                if ($whenMatch === true) {
+                    $row['_Id'] = $existing_Row['_Id'];
+                    $update_Rows[] = $row;
+
+                    $rowMatch = true;
+                }
+            }
+
+            if (!$rowMatch)
+                $update_Rows[] = $row;
+        }
+
+        return $this->update($update_Rows);
+    }
+
     public function update_Where($values, $where_conditions = [])
     {
         $this->checkColumns();
