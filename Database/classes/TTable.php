@@ -194,6 +194,13 @@ class TTable
         return $this->db->query_Execute($query);
     }
 
+    public function delete_ByCol($colName, $colValue)
+    {
+        return $this->delete_Where([
+            [ $colName, '=', $colValue ]
+        ]);
+    }
+
     public function delete_ById($id)
     {
         return $this->delete_Where([
