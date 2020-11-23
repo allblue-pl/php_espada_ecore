@@ -183,10 +183,11 @@ class TTable
         return $this->count($group_extension);
     }
 
-    public function delete($query_extension = '')
+    public function delete($query_extension = '', bool $tableOnly = false)
     {
         $query = 'DELETE ' . $this->db->quote($this->alias) . ' FROM ' .
-                $this->getQuery_From();
+                ($tableOnly ? $this->getTableName_Quoted() . " AS {$this->alias}" :
+                $this->getQuery_From());
 
         if ($query_extension !== '')
             $query .= ' ' . $query_extension;
@@ -194,25 +195,24 @@ class TTable
         return $this->db->query_Execute($query);
     }
 
-    public function delete_ByCol($colName, $colValue)
+    public function delete_ByColumn($colName, $colValue, bool $tableOnly = false)
     {
         return $this->delete_Where([
             [ $colName, '=', $colValue ]
-        ]);
+        ], $tableOnly);
     }
 
     public function delete_ById($id)
     {
         return $this->delete_Where([
             [ 'Id', '=', $id ]
-        ]);
+        ], true);
     }
 
-    public function delete_Where($conditions)
+    public function delete_Where($conditions, $tableOnly = false)
     {
-        return $this->delete(
-            'WHERE ' . $this->getQuery_Conditions($conditions)
-        );
+        return $this->delete('WHERE ' . $this->getQuery_Conditions($conditions, 
+                $tableOnly), $tableOnly);
     }
 
     public function escapeColumn($columnName, $value)
@@ -544,7 +544,7 @@ class TTable
         return $rows[0];
     }
 
-    public function row_ByCol($colName, $colValue, $group_extension = '', $for_update = false)
+    public function row_ByColumn($colName, $colValue, $group_extension = '', $for_update = false)
     {
         return $this->row_Where([
             [ $colName, '=', $colValue ]
@@ -898,7 +898,7 @@ class TTable
         return $this->update($update_Rows);
     }
 
-    public function update_Where($values, $where_conditions = [])
+    public function update_Where($values, $where_conditions = [], $tableOnly = false)
     {
         $this->checkColumns();
 
@@ -909,9 +909,11 @@ class TTable
                     $this->escapeColumnValue($values, $column, $value);
         }
 
-        $where = $this->getQuery_Conditions($where_conditions, false);
+        $where = $this->getQuery_Conditions($where_conditions, $tableOnly);
 
-        $query = 'UPDATE ' . $this->getQuery_From() .
+        $query = 'UPDATE ' . ($tableOnly ? 
+                $this->getTableName_Quoted() . " AS {$this->alias}" : 
+                $this->getQuery_From()) .
                 ' SET ' . implode(',', $db_sets);
 
         if ($where !== '')

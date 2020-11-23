@@ -15,7 +15,7 @@ class HUsers
 	const Password_MinCharacters = 6;
 
 
-	static public function Activate(EC\MDatabase $db, int $userId, bool $active)
+	static public function Activate(EC\MDatabase $db, $userId, bool $active)
 	{
 		return (new TUsers($db))->update_Where([ 
             'Active' => $active 
@@ -107,6 +107,11 @@ class HUsers
 
 		return true;
 	}
+
+    static public function Delete(EC\MDatabase $db, $userId)
+    {
+        return (new TUsers($db))->delete_ById($userId);
+    }
 
 	static public function Get(EC\MDatabase $db, $userId)
 	{
