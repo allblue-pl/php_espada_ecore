@@ -104,7 +104,7 @@ class MUser extends E\Module
 	public function isLoggedIn()
 	{
 		if ($this->id === -1)
-			return false;
+            return false;
 
 		return true;
 	}

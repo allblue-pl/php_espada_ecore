@@ -250,7 +250,7 @@ class MDatabase extends E\Module
 		if ($value === null)
 			return null;
 
-		return $value + 0;
+		return (float)$value;
 	}
 
 	public function unescapeString($value)
