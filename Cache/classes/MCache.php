@@ -27,7 +27,7 @@ class MCache extends E\Module
         return $this->dir;
     }
 
-    public function newFile($user_id = null, $expires = 15 * 60)
+    public function newFile($user_id = null, $expires = 60 * 60)
     {
         $this->requirePreInitialize();
 
@@ -88,6 +88,20 @@ class MCache extends E\Module
         parent::_preInitialize($site);
 
         $this->filesTable = new TFiles($this->db);
+
+        $rFiles_Expired = $this->filesTable->select_Where([
+            [ 'Expires', '<', time() ],
+        ]);
+
+        foreach ($rFiles_Expired as $rFile) {
+            $filePath = $this->getFilePath($rFile['Id'], $rFile['Hash']);
+            if (file_exists($filePath))
+                unlink($filePath);
+        }
+
+        $this->filesTable->delete_Where([
+            [ 'Expires', '<', time() ],
+        ]);
     }
 
     protected function _deinitialize()
