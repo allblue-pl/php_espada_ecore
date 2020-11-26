@@ -342,8 +342,11 @@ class TTable
         //         $table_only);
     }
 
-    public function getQuery_From()
+    public function getQuery_From($tableOnly = false)
     {
+        if ($tableOnly)
+            return $this->getTableName_Quoted() . " AS {$this->alias}";
+
         $query = $this->getDB()->quote($this->name);
         if ($this->alias !== null)
             $query .= " AS {$this->alias}";
@@ -611,18 +614,22 @@ class TTable
         return $this->row($where, $group_extension, $for_update);
     }
 
-    public function select($query_extension = '', $group_extension = '')
+    public function select($query_extension = '', $group_extension = '',
+            $tableOnly = false)
     {
-        return $this->select_Columns($this->selectColumnNames, $query_extension,
-                $group_extension);
+        $selectColumnNames = $tableOnly ? 
+                $this->getColumnNames(true) : $this->selectColumnNames;
+
+        return $this->select_Columns($selectColumnNames, $query_extension,
+                $group_extension, $tableOnly);
     }
 
     public function select_Columns($columnNames, $query_extension = '',
-            $group_extension = '')
+            $group_extension = '', $tableOnly = false)
     {
         $select = $this->getQuery_Select($columnNames);
 
-        return $this->select_Custom($select, $this->getQuery_From(),
+        return $this->select_Custom($select, $this->getQuery_From($tableOnly),
                 $query_extension, $group_extension);
     }
 
@@ -667,15 +674,16 @@ class TTable
         return $this->db->query_Select($query);
     }
 
-    public function select_Where($conditions = [], $group_extension = '')
+    public function select_Where($conditions = [], $group_extension = '', 
+            $tableOnly = false)
     {
         $where = '';
 
-        $conditions = $this->getQuery_Conditions($conditions);
+        $conditions = $this->getQuery_Conditions($conditions, $tableOnly);
         if ($conditions !== '')
             $where .= 'WHERE ' . $conditions;
 
-        return $this->select($where, $group_extension);
+        return $this->select($where, $group_extension, $tableOnly);
     }
 
     public function setColumnParser($columnName, array $parser)
