@@ -1,0 +1,9 @@
+/.idea/*
+/coverage/*
+/vendor/*
+/xdebug/*
+/composer.phar
+/composer
+debug*
+composer.lock
+/.php_cs.cache
