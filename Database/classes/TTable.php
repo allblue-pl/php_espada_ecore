@@ -434,6 +434,14 @@ class TTable
         return $this->db->query_Execute($query);
     }
 
+    public function parseColumnValue($columnName, $value)
+    {
+        $column = $this->getColumn($columnName);
+
+        return $column['field']->unescape($this->db, 
+                $column['field']->escape($this->db, $value));
+    }
+
     public function parseRow($row)
     {
         $this->checkColumns();
