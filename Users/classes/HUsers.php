@@ -221,7 +221,7 @@ class HUsers
         ]);
     }
 
-    static public function ResetPassword_CreateHash(EC\MDatabase $db, int $userId, &$hash)
+    static public function ResetPassword_CreateHash(EC\MDatabase $db, $userId, &$hash)
     {
         $hash = EC\HHash::Generate(128);
 
