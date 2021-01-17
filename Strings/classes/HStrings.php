@@ -33,9 +33,9 @@ class HStrings
         return $chars . self::EscapeRegexpChars($extra);
     }
 
-    static public function GetCharsRegexp_Basic()
+    static public function GetCharsRegexp_Basic($extra = '')
     {
-        return self::GetCharsRegexp([ 'digits', 'letters', 'special' ]);
+        return self::GetCharsRegexp([ 'digits', 'letters', 'special' ], $extra);
     }
 
     static public function GetLangsSpecialCharacters($langs = null)

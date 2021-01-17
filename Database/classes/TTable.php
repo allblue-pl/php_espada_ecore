@@ -1086,9 +1086,13 @@ class TTable
 
                     $sign = '';
                 } else {
-                    if (is_array($value))
-                        $db_value = ' ' . $this->escapeArray($column['field'], $value);
-                    else
+                    if (is_array($value)) {
+                        if (count($value) === 0 && $sign === 'IN') {
+                            $args[] = 'TRUE = FALSE';
+                            continue;
+                        } else
+                            $db_value = ' ' . $this->escapeArray($column['field'], $value);
+                    } else
                         $db_value = ' ' . $column['field']->escape($this->db, $value);
                 }
             }

@@ -1,7 +1,7 @@
 <?php namespace EC\PDF;
 defined('_ESPADA') or die(NO_ACCESS);
 
-include(__DIR__ . '/../3rdparty/PDFParser/vendor/autoload.php');
+include(__DIR__ . '/../3rdparty/pdfparser/vendor/autoload.php');
 
 use E, EC;
 
