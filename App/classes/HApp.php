@@ -23,7 +23,7 @@ class HApp
         return $info_row;
     }
 
-    static public function CreateAppInfo(EC\MDatabase $db, $user_id)
+    static public function CreateAppInfo(EC\MDatabase $db, $userId, $data = [])
     {
         if ($db->transaction_IsAutocommit())
             throw new \Exception('Transaction required.');
@@ -34,9 +34,9 @@ class HApp
 
         if (!($table->update([[
             'Id' => null,
-            'User_Id' => $user_id,
+            'User_Id' => $userId,
             'AuthenticationHash' => EC\HHash::GetPassword($authentication_hash),
-            'TablesIds' => []
+            'Data' => (Object)$data,
                 ]])))
             return null;
 

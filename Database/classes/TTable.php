@@ -211,6 +211,9 @@ class TTable
 
     public function delete_Where($conditions, $tableOnly = false)
     {
+        if (count($conditions) === 0)
+            return true;
+
         return $this->delete('WHERE ' . $this->getQuery_Conditions($conditions, 
                 $tableOnly), $tableOnly);
     }
@@ -831,13 +834,19 @@ class TTable
                     throw new \Exception('Inconsistent/unknown column ' .
                             "`{$col_name}` in rows.");
 
-                foreach ($columns[$col_name]['parsers'] as $column_parser) {
-                    if ($column_parser['in'] !== null) {
-                        $col_val = $column_parser['in']($row, $col_name, $col_val);
-                    }
-                }
+                $db_row[] = $this->escapeColumnValue($row, $columns[$col_name], 
+                        $col_val);
 
-                $db_row[] = $columns[$col_name]['field']->escape($this->db, $col_val);
+                // if ($col_val instanceof CRawValue) {
+                //     foreach ($columns[$col_name]['parsers'] as $column_parser) {
+                //         if ($column_parser['in'] !== null) {
+                //             $col_val = $column_parser['in']($row, $col_name, $col_val);
+                //         }
+                //     }
+
+                //     $db_row[] = $columns[$col_name]['field']->escape($this->db, $col_val);
+                // } else 
+                //     $db_row[] = $col_val->getValue();
             }
 
             $db_values_array[] = '(' . implode(',', $db_row) . ')';
@@ -995,6 +1004,9 @@ class TTable
 
     private function escapeColumnValue(array $row, array $column, $value)
     {
+        if ($value instanceof CRawValue)
+            return $value->getValue();
+
         foreach ($column['parsers'] as $column_parser) {
             if ($column_parser['in'] !== null)
                 $value = $column_parser['in']($row, $column['name'], $value);
@@ -1024,8 +1036,7 @@ class TTable
             if (!is_array($column_condition)) {
                 // echo "Test: \r\n";
                 // print_r($column_values);
-                // print_r($column_condition);
-                throw new \Exception('`column_condition` must be an array.');
+                throw new \Exception('`column_condition` must be an array');
             }
 
             if (count($column_condition) === 0) 

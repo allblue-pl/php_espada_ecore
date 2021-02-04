@@ -15,7 +15,7 @@ class _TInfos extends Database\TTable
             'Id' => new Database\FInt(true),
             'User_Id' => new Database\FInt(true),
             'AuthenticationHash' => new Database\FVarchar(true, 256),
-            'TablesIds' => new Database\FText(true, 'medium'),
+            'Data' => new Database\FText(true, 'medium'),
         ]);
     }
 

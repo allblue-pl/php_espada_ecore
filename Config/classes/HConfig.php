@@ -9,7 +9,8 @@ class HConfig
     static private $Properties = null;
     static private $DBCache = [];
 
-    static public function DB_Get(EC\MDatabase $db, $name, $defaultValue = null)
+    static public function DB_Get(EC\MDatabase $db, $name, $defaultValue = null,
+            $forUpdate = false)
     {
         if (array_key_exists($name, HConfig::$DBCache))
             return HConfig::$DBCache[$name];
@@ -17,7 +18,7 @@ class HConfig
         $table = new TSettings($db);
         $row = $table->row_Where([
             [ 'Name', '=', $name ],
-        ]);
+        ], '', $forUpdate);
 
         if ($row === null) {
             $defaultValues = HConfig::Get('Config', 'DB', []);

@@ -12,6 +12,12 @@ class HDate
     const Span_Day = 24 * self::Span_Hour;
     const Span_Year = 365 * self::Span_Day;
 
+    const Millis_Span_Second = 1000;
+    const Millis_Span_Minute = 60 * self::Millis_Span_Second;
+    const Millis_Span_Hour = 60 * self::Millis_Span_Minute;
+    const Millis_Span_Day = 24 * self::Millis_Span_Hour;
+    const Millis_Span_Year = 365 * self::Millis_Span_Day;
+
 
     static private $UTCOffset = 0;
 
