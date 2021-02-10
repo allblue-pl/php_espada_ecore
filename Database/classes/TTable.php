@@ -183,11 +183,10 @@ class TTable
         return $this->count($group_extension);
     }
 
-    public function delete($query_extension = '', bool $tableOnly = false)
+    public function delete($query_extension = '')
     {
         $query = 'DELETE ' . $this->db->quote($this->alias) . ' FROM ' .
-                ($tableOnly ? $this->getTableName_Quoted() . " AS {$this->alias}" :
-                $this->getQuery_From());
+                $this->getQuery_From();
 
         if ($query_extension !== '')
             $query .= ' ' . $query_extension;
@@ -195,11 +194,11 @@ class TTable
         return $this->db->query_Execute($query);
     }
 
-    public function delete_ByColumn($colName, $colValue, bool $tableOnly = false)
+    public function delete_ByColumn($colName, $colValue)
     {
         return $this->delete_Where([
             [ $colName, '=', $colValue ]
-        ], $tableOnly);
+        ]);
     }
 
     public function delete_ById($id)
@@ -209,13 +208,13 @@ class TTable
         ], true);
     }
 
-    public function delete_Where($conditions, $tableOnly = false)
+    public function delete_Where($conditions)
     {
         if (count($conditions) === 0)
             return true;
 
         return $this->delete('WHERE ' . $this->getQuery_Conditions($conditions, 
-                $tableOnly), $tableOnly);
+                false));
     }
 
     public function escapeColumn($columnName, $value)
@@ -345,11 +344,8 @@ class TTable
         //         $table_only);
     }
 
-    public function getQuery_From($tableOnly = false)
+    public function getQuery_From()
     {
-        if ($tableOnly)
-            return $this->getTableName_Quoted() . " AS {$this->alias}";
-
         $query = $this->getDB()->quote($this->name);
         if ($this->alias !== null)
             $query .= " AS {$this->alias}";
@@ -625,22 +621,20 @@ class TTable
         return $this->row($where, $group_extension, $for_update);
     }
 
-    public function select($query_extension = '', $group_extension = '',
-            $tableOnly = false)
+    public function select($query_extension = '', $group_extension = '')
     {
-        $selectColumnNames = $tableOnly ? 
-                $this->getColumnNames(true) : $this->selectColumnNames;
+        $selectColumnNames = $this->selectColumnNames;
 
         return $this->select_Columns($selectColumnNames, $query_extension,
-                $group_extension, $tableOnly);
+                $group_extension);
     }
 
     public function select_Columns($columnNames, $query_extension = '',
-            $group_extension = '', $tableOnly = false)
+            $group_extension = '')
     {
         $select = $this->getQuery_Select($columnNames);
 
-        return $this->select_Custom($select, $this->getQuery_From($tableOnly),
+        return $this->select_Custom($select, $this->getQuery_From(),
                 $query_extension, $group_extension);
     }
 
@@ -685,16 +679,15 @@ class TTable
         return $this->db->query_Select($query);
     }
 
-    public function select_Where($conditions = [], $group_extension = '', 
-            $tableOnly = false)
+    public function select_Where($conditions = [], $group_extension = '')
     {
         $where = '';
 
-        $conditions = $this->getQuery_Conditions($conditions, $tableOnly);
+        $conditions = $this->getQuery_Conditions($conditions, false);
         if ($conditions !== '')
             $where .= 'WHERE ' . $conditions;
 
-        return $this->select($where, $group_extension, $tableOnly);
+        return $this->select($where, $group_extension);
     }
 
     public function setColumnParser($columnName, array $parser)
@@ -923,7 +916,7 @@ class TTable
         return $this->update($update_Rows);
     }
 
-    public function update_Where($values, $where_conditions = [], $tableOnly = false)
+    public function update_Where($values, $where_conditions = [])
     {
         $this->checkColumns();
 
@@ -934,12 +927,10 @@ class TTable
                     $this->escapeColumnValue($values, $column, $value);
         }
 
-        $where = $this->getQuery_Conditions($where_conditions, $tableOnly);
+        $where = $this->getQuery_Conditions($where_conditions, false);
 
-        $query = 'UPDATE ' . ($tableOnly ? 
-                $this->getTableName_Quoted() . " AS {$this->alias}" : 
-                $this->getQuery_From()) .
-                ' SET ' . implode(',', $db_sets);
+        $query = 'UPDATE ' . $this->getQuery_From() . ' SET ' . 
+                implode(',', $db_sets);
 
         if ($where !== '')
             $query .= ' WHERE ' . $where;

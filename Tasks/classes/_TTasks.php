@@ -7,7 +7,7 @@ use E, EC,
 class _TTasks extends Database\TTable
 {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix)
+    public function __construct(EC\MDatabase $db, $tablePrefix = 't')
     {
         parent::__construct($db, 'Tasks_Tasks', $tablePrefix);
 
