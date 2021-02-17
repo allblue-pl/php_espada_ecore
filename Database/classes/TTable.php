@@ -441,7 +441,7 @@ class TTable
                 $column['field']->escape($this->db, $value));
     }
 
-    public function parseRow($row)
+    public function parseRow($row, $columnNames = null)
     {
         $this->checkColumns();
 
@@ -474,6 +474,11 @@ class TTable
                                 $unescaped_row[$columnName], $parsed_row);
                         foreach ($parsed_cols as $parsed_col_name => $parsed_col_value) {
                             if ($parsed_col_name !== $columnName) {
+                                if ($columnNames !== null) {
+                                    if (!in_array($parsed_col_name, $columnNames))
+                                        continue;
+                                }
+
                                 if ($this->columnExists($parsed_col_name, true)) {
                                     throw new \Exception('Cannot modify existing' .
                                             ' columns inside column parsed.');
@@ -521,12 +526,12 @@ class TTable
         // return $this->_parseRow($row);
     }
 
-    public function parseRows($rows)
+    public function parseRows($rows, $columns = null)
     {
         $parsed_rows = [];
         for ($i = 0; $i < count($rows); $i++) {
             $row = $rows[$i];
-            $parsed_row = $this->parseRow($row);
+            $parsed_row = $this->parseRow($row, $columns);
             foreach ($this->rowParsers as $row_parser)
                 $row_parser($parsed_row, $i);
 
@@ -648,8 +653,10 @@ class TTable
         if ($where !== '')
             $query_extension = 'WHERE ' . $where;
 
-        return $this->select_Custom($select, $this->getQuery_From(),
-                $query_extension, $group_extension);
+        $rows = $this->select_Raw($select, $this->getQuery_From(), $query_extension,
+                $group_extension);
+        
+        return $this->parseRows($rows, $columns);
     }
 
     public function select_Custom($select, $from, $query_extension = '',
@@ -658,7 +665,7 @@ class TTable
         $rows = $this->select_Raw($select, $from, $query_extension,
                 $group_extension);
 
-        return $this->parseRows($rows);
+        return $this->parseRows($rows, null);
     }
 
     public function select_Raw($select, $from, $query_extension,
