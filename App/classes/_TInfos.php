@@ -12,7 +12,7 @@ class _TInfos extends Database\TTable
         parent::__construct($db, 'App_Infos', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FInt(true),
+            'Id' => new Database\FLong(true),
             'User_Id' => new Database\FInt(true),
             'AuthenticationHash' => new Database\FVarchar(true, 256),
             'Data' => new Database\FText(true, 'medium'),
