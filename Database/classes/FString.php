@@ -3,7 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class FVarchar extends FField
+class FString extends FField
 {
 
     private $maxLength = 0;

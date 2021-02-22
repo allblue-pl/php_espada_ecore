@@ -14,8 +14,8 @@ class _TFiles extends Database\TTable
         $this->setColumns([
             'Id' => new Database\FLong(true),
             'User_Id' => new Database\FLong(false),
-            'Hash' => new Database\FVarchar(true, 128),
-            'Expires' => new Database\FDateTime(true),
+            'Hash' => new Database\FString(true, 128),
+            'Expires' => new Database\FTime(true),
         ]);
     }
 

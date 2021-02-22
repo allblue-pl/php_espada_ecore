@@ -14,8 +14,8 @@ class _TResetPasswordHashes extends Database\TTable
         $this->setColumns([
             'Id' => new Database\FInt(true),
             'User_Id' => new Database\FInt(true),
-            'DateTime' => new Database\FDateTime(true),
-            'Hash' => new Database\FVarchar(true, 128),
+            'DateTime' => new Database\FTime(true),
+            'Hash' => new Database\FString(true, 128),
         ]);
     }
 

@@ -13,8 +13,8 @@ class TFiles extends EC\Database\TTable
         $this->setColumns([
             'Id'        => new EC\Database\FInt(true, 11),
             'User_Id'   => new EC\Database\FInt(true, 11),
-            'Hash'      => new EC\Database\FVarchar(true, 128),
-            'Expires'   => new EC\Database\FDateTime(true)
+            'Hash'      => new EC\Database\FString(true, 128),
+            'Expires'   => new EC\Database\FTime(true)
         ]);
 
         $this->setJoin(

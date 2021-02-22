@@ -29,7 +29,7 @@ class TArticles extends _TArticles
         $colExpr = "CONCAT_WS(', '," . $colExpr . ')';
 
         $table->addColumns_Extra([ 
-            'Langs' => [ $colExpr, new EC\Database\FVarchar(true, 2) ],
+            'Langs' => [ $colExpr, new EC\Database\FString(true, 2) ],
         ]);
     }
 
@@ -80,8 +80,8 @@ class TArticles extends _TArticles
 
         /* Columns */
         $this->addColumns_Extra([
-            'Alias'             => [ null, new EC\Database\FVarchar(false, 128) ],
-            'IntroImageUri'     => [ null, new Database\FVarchar(false, 256) ],
+            'Alias'             => [ null, new EC\Database\FString(false, 128) ],
+            'IntroImageUri'     => [ null, new Database\FString(false, 256) ],
             'IsPublished'       => [ "a_a.Published AND a_a.Publish <= $time", 
                     new Database\FBool(false) ],
         ]);

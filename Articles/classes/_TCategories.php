@@ -13,8 +13,8 @@ class _TCategories extends Database\TTable
 
         $this->setColumns([
             'Id' => new Database\FInt(true),
-            'Name' => new Database\FVarchar(true, 16),
-            'Title' => new Database\FVarchar(true, 64),
+            'Name' => new Database\FString(true, 16),
+            'Title' => new Database\FString(true, 64),
         ]);
     }
 

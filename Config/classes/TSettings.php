@@ -12,7 +12,7 @@ class TSettings extends Database\TTable
         parent::__construct($db, 'Config_Settings', 's');
 
         $this->setColumns([
-            'Name'  => new Database\FVarchar(true, 32),
+            'Name'  => new Database\FString(true, 32),
             'Value' => new Database\FText(true, 'medium'),
         ]);
 

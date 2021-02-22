@@ -12,7 +12,7 @@ class _TSessions extends Database\TTable
         parent::__construct($db, 'Session_Sessions', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FVarchar(true, 32),
+            'Id' => new Database\FString(true, 32),
             'Access' => new Database\FInt(false),
             'Data' => new Database\FText(false, 'regular'),
         ]);

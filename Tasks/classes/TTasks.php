@@ -12,10 +12,10 @@ class TTasks extends Database\TTable
         parent::__construct($db, 'Tasks_Tasks', 'r');
 
         $this->setColumns([
-            'Hash'      => new Database\FVarchar(true, 128),
+            'Hash'      => new Database\FString(true, 128),
             'User_Id'   => new Database\FInt(true, 11),
 
-            'DateTime'  => new Database\FDateTime(true),
+            'DateTime'  => new Database\FTime(true),
 
             'Finished'  => new Database\FBool(true),
             'Info'      => new Database\FText(true, 'medium'),
