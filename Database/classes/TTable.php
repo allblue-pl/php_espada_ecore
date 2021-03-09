@@ -205,7 +205,7 @@ class TTable
     {
         return $this->delete_Where([
             [ 'Id', '=', $id ]
-        ], true);
+        ]);
     }
 
     public function delete_Where($conditions)
@@ -985,10 +985,10 @@ class TTable
         return $this->validate($validator, $fieldInfos);
     }
 
-    // public function validateRow($row)
-    // {
-    //
-    // }
+    public function validateRow($row)
+    {
+    
+    }
 
 
     private function escapeArray(FField $column, $values)
