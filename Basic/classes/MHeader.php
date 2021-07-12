@@ -80,7 +80,7 @@ class MHeader extends E\Module
 
     protected function _preDisplay(E\Site $site)
     {
-        $site->addL('header', E\Layout::_('Basic:raw', function() {
+        $site->addL('head', E\Layout::_('Basic:raw', function() {
             $header = '';
 
             /* Meta Data */
