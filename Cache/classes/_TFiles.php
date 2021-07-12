@@ -12,10 +12,10 @@ class _TFiles extends Database\TTable
         parent::__construct($db, 'Cache_Files', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FLong(true),
-            'User_Id' => new Database\FLong(false),
+            'Id' => new Database\FInt(true),
+            'User_Id' => new Database\FInt(false),
             'Hash' => new Database\FString(true, 128),
-            'Expires' => new Database\FTime(true),
+            'Expires' => new Database\FDateTime(true),
         ]);
     }
 

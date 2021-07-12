@@ -7,7 +7,7 @@ use E, EC,
 class _TArticles extends Database\TTable
 {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix)
+    public function __construct(EC\MDatabase $db, $tablePrefix = 't')
     {
         parent::__construct($db, 'Articles_Articles', $tablePrefix);
 
@@ -15,7 +15,7 @@ class _TArticles extends Database\TTable
             'Id' => new Database\FInt(true),
             'User_Id' => new Database\FInt(false),
             'User_New' => new Database\FBool(true),
-            'Publish' => new Database\FTime(true),
+            'Publish' => new Database\FDateTime(true),
             'Published' => new Database\FBool(true),
             'AuthorName' => new Database\FString(true, 128),
             'Title' => new Database\FString(true, 128),

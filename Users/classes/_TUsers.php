@@ -12,7 +12,7 @@ class _TUsers extends Database\TTable
         parent::__construct($db, 'Users_Users', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FLong(true),
+            'Id' => new Database\FInt(true),
             'Type' => new Database\FString(true, 16),
             'LoginHash' => new Database\FString(true, 256),
             'EmailHash' => new Database\FString(true, 256),

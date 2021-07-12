@@ -13,8 +13,8 @@ class _TTasks extends Database\TTable
 
         $this->setColumns([
             'Hash' => new Database\FString(true, 128),
-            'User_Id' => new Database\FLong(false),
-            'DateTime' => new Database\FTime(true),
+            'User_Id' => new Database\FInt(false),
+            'DateTime' => new Database\FDateTime(true),
             'Finished' => new Database\FBool(true),
             'Info' => new Database\FText(true, 'medium'),
             'Data' => new Database\FText(true, 'medium'),
