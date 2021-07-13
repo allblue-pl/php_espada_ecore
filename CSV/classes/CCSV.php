@@ -12,7 +12,10 @@ class CCSV
     private $separator = '';
 
     private $file = null;
-    private $rowIndex = 0;
+    private $textArr = null;
+    private $textArr_Current = 0;
+
+    private $line_Index = -1;
     private $line0 = null;
     private $line1 = null;
 
@@ -56,34 +59,113 @@ class CCSV
         $this->line0 = null;
         $this->line1 = null;
 
-        $this->line0 = $this->nextLine();
+        $this->line0 = $this->getNextLine_Helper();
         if ($this->line0 === null)
             return true;
 
-        $this->line1 = $this->nextLine();
+        $this->line1 = $this->getNextLine_Helper();
 
         $this->determineSeparator();
 
         return true;
     }
 
+    public function openText($text)
+    {
+        $text = str_replace("\r\n", "\n", $text);
+        $this->textArr = explode("\n", $text);
+
+        $this->line0 = $this->getNextLine_Helper();
+        if ($this->line0 === null)
+            return;
+        $this->line1 = $this->getNextLine_Helper();
+
+        $this->determineSeparator();
+    }
+
     public function nextRow()
     {
-        $line = null;
-        $row = null;
-        if ($this->rowIndex === 0)
-            $line = $this->line0;
-        else if ($this->rowIndex === 1)
-            $line = $this->line1;
-        else
-            $line = $this->nextLine();
-
+        $line = $this->getNextLine();
         if ($line === null)
             return null;
 
-        $row = $this->readRow($line);
+        $row = new CRow();
 
-        $this->rowIndex++;
+        $index = 0;
+        $quoted = false;
+        $quoteSign = '"';
+        $column = null;
+
+        while(true) {
+            if ($index >= mb_strlen($line)) {
+                if ($quoted) {
+                    $line_Next = $this->getNextLine();
+                    if ($line_Next === null) {
+                        $row->addColumn($column);
+                        break;
+                    } else if ($line_Next === '') {
+                        continue;
+                    } else {
+                        $line .= "\r\n" . $line_Next;
+                    }
+                } else {
+                    $row->addColumn($column);
+                    break;
+                }
+            }
+
+            /* Char */
+            $escaped = false;
+            $char = mb_substr($line, $index, 1);
+            $index++;
+            $char_Next = $index < mb_strlen($line) ? 
+                    mb_substr($line, $index, 1) : null;
+
+            if ($char === '\\') {
+                if ($char_Next !== null) {
+                    $escaped = true;
+                    $char = $char_Next;
+                    $index++;
+                }
+            }
+            /* / Char */
+
+            if ($escaped) {
+                $column .= $char;
+                continue;
+            }
+
+            if ($column === null) {
+                $column = '';
+
+                if ($char === $quoteSign) {
+                    $quoted = true;
+                    continue;
+                }
+            }
+
+            if ($quoted) {
+                if ($char === $quoteSign && ($char_Next === $this->separator || 
+                        $char_Next === null)) {
+                    // echo "Here?";
+                    if ($char_Next === $this->separator)
+                        $index++;
+
+                    $row->addColumn($column);
+                    $column = null;
+                    $quoted = false;
+                    continue;
+                }
+            } else {
+                if ($char === $this->separator) {
+                    $row->addColumn($column);
+                    $column = null;
+                    continue;
+                }
+            }
+
+            $column .= $char;
+        }
 
         return $row;
     }
@@ -123,15 +205,36 @@ class CCSV
             throw new \Exception('Cannot determine separator.');
     }
 
-    private function nextLine()
+    private function getNextLine()
     {
-        $line = fgets($this->file);
-        if ($line === false)
-            return null;
-        if (preg_match("#(^|{$this->separator})\"(.*?)$#", $line)) {
-            $line_part = fgets($this->file);
-            if ($line_part !== null)
-                $line .= $line_part;
+        $this->line_Index++;
+
+        if ($this->line_Index === 0)
+            return $this->line0;
+        if ($this->line_Index === 1)
+            return $this->line1;
+        
+        return $this->getNextLine_Helper();
+    }
+
+    private function getNextLine_Helper()
+    {
+        $line = null;
+
+        if ($this->file !== null) {
+            $line = fgets($this->file);
+            if ($line === false)
+                return null;
+
+            $line = str_replace("\r\n", "\n", $line);
+            $line = str_replace("\n", "", $line);
+        } else if ($this->textArr !== null) {
+            if ($this->textArr_Current >= count($this->textArr))
+                return null;
+
+            $line = $this->textArr[$this->textArr_Current];
+
+            $this->textArr_Current++;
         }
 
         if ($this->charset !== '')
@@ -158,7 +261,11 @@ class CCSV
 
     private function readRow_ParseQuatations($line)
     {
-        $regexp = "#(^|{$this->separator})'(.*?)\"({$this->separator}|$)#s";
+        $quote = false;
+
+
+
+        $regexp = "#(^|{$this->separator})\"(.*?)\"({$this->separator}|$)#s";
 
         preg_match_all($regexp, $line, $matches, PREG_SET_ORDER);
 
