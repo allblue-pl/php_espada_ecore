@@ -13,7 +13,7 @@ class MMeta extends E\Module
     public $type = 'article';
     public $imageUris = [];
 
-    public function __construct(EC\Basic\MHeader $header, EC\Facebook\MOpenGraph $og)
+    public function __construct(EC\Basic\MHead $header, EC\Facebook\MOpenGraph $og)
     {
         parent::__construct();
 

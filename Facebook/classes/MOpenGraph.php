@@ -8,7 +8,7 @@ class MOpenGraph extends E\Module
 
     private $header = null;
 
-    public function __construct(EC\Basic\MHeader $m_header)
+    public function __construct(EC\Basic\MHead $m_header)
     {
         $this->header = $m_header;
     }

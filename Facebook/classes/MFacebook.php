@@ -9,7 +9,7 @@ class MFacebook extends E\Module
     private $header = null;
     private $version = null;
 
-    public function __construct(EC\Basic\MHeader $header, $version = 'v3.2')
+    public function __construct(EC\Basic\MHead $header, $version = 'v3.2')
     {
         parent::__construct();
 

@@ -10,7 +10,7 @@ class SBasic extends E\Site
     {
         parent::__construct();
 
-        $this->addM('postHead', new \EC\Basic\MHeader());
+        $this->addM('head', new \EC\Basic\MHead());
     }
 
     protected function _initialize()

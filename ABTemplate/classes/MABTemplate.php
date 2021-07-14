@@ -9,7 +9,7 @@ class MABTemplate extends \E\Module
     private $name = null;
     private $header = null;
 
-    public function __construct(\EC\Basic\MHeader $header, $name)
+    public function __construct(\EC\Basic\MHead $header, $name)
     {
         $this->header = $header;
         $this->name = $name;

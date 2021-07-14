@@ -26,8 +26,6 @@ class MHead extends E\Module
     public function __construct()
     {
         parent::__construct();
-
-        throw new \Exception("Deprecated. Use 'MHead' instead.");
     }
 
     public function addHtml($html)

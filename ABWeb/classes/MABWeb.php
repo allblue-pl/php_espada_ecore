@@ -6,7 +6,7 @@ use E, EC;
 class MABWeb extends E\Module
 {
 
-    public function __construct(EC\Basic\MHeader $header, $dirPath)
+    public function __construct(EC\Basic\MHead $header, $dirPath)
     {
         $this->_header = $header;
         $this->_dirPath = $dirPath;

@@ -9,7 +9,7 @@
         <link rel="apple-touch-icon" href="<?php echo $_images['appleTouchIcon']; ?>" />
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600&amp;subset=latin-ext" rel="stylesheet">
 
-        <?php $eHolders->header; ?>
+        <?php $eHolders->postHead; ?>
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>

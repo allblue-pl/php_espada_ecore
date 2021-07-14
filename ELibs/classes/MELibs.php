@@ -12,7 +12,7 @@ class MELibs extends E\Module
     private $texts = [];
     private $script = '';
 
-    function __construct(EC\Basic\MHeader $header)
+    function __construct(EC\Basic\MHead $header)
     {
         $this->header = $header;
     }

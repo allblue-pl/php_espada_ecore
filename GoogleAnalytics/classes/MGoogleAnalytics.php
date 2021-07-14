@@ -9,7 +9,7 @@ class MGoogleAnalytics extends E\Module
     private $trackingCode = null;
 
 
-    public function __construct(EC\Basic\MHeader $header, $trackingCode = '')
+    public function __construct(EC\Basic\MHead $header, $trackingCode = '')
     {
         parent::__construct();
 

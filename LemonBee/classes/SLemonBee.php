@@ -8,7 +8,8 @@ class SLemonBee extends EC\SBasic
     private $defaultSetup = null;
     private $setup = [];
 
-    public function __construct(string $abWebBuildPath, string $userType = 'LemonBee')
+    public function __construct(string $abWebBuildPath, 
+            string $userType = 'LemonBee', string $userApiUri = '/api/user/')
     {
         parent::__construct();
 
@@ -18,10 +19,10 @@ class SLemonBee extends EC\SBasic
         $this->addM('user', new EC\Users\MUser($this->m->session, $this->m->db, 
                 $userType));
 
-        $this->addM('abWeb', new EC\MABWeb($this->m->header, $abWebBuildPath));
-        $this->addM('eLibs', new EC\MELibs($this->m->header));
+        $this->addM('abWeb', new EC\MABWeb($this->m->head, $abWebBuildPath));
+        $this->addM('eLibs', new EC\MELibs($this->m->head));
 
-        // $this->addM('spk', new EC\MSPK($this->m->header,
+        // $this->addM('spk', new EC\MSPK($this->m->head,
         //         $this->m->abTemplate));
 
         /* Root Layout */
@@ -34,6 +35,10 @@ class SLemonBee extends EC\SBasic
 
         // print_r(EC\HText::GetTranslations('LemonBee:spk')->getArray());
 
+        $this->m->eLibs->addTranslations('LemonBee');
+
+        $packageBase = '/dev/node_modules/spk-lemon-bee/';
+
         /* Default Setup */
         $this->defaultSetup = [
             'aliases' => [
@@ -42,18 +47,22 @@ class SLemonBee extends EC\SBasic
                 'logIn' => 'log-in',
             ],
             'images' => [
-                'messages' => [],
+                'logo' => $packageBase . 'images/logo.png',
+                'logo_Main' => $packageBase . 'images/logo.png',
+                'messages' => [
+                    'loading' => $packageBase . 'images/messages/loading.gif',
+                    'success' => $packageBase . 'images/messages/success.png',
+                    'failure' => $packageBase . 'images/messages/failure.png',
+                ],
             ],
             'panels' => [],
-            'texts' => EC\HText::GetTranslations('LemonBee:spk')->getArray(),
             'uris' => [
-                'base' => E\Uri::Base(),
-                'api' => E\Uri::Base() . '/api',
+                'userApi' => $userApiUri,
             ],
             'user' => [
-                'loggedIn' => false,
-                'login' => 'guest',
-                'permissions' => [],
+                'loggedIn' => $this->m->user->isLoggedIn(),
+                'login' => $this->m->user->getLogin(),
+                'permissions' => $this->m->user->getPermissions(),
             ],
         ];
 
@@ -70,48 +79,9 @@ class SLemonBee extends EC\SBasic
     {
         parent::_postInitialize();
 
-        $fields = array_replace_recursive($this->defaultSetup, $this->setup);
-        $fieldsString = str_replace("'", "\\'", json_encode($fields));
+        $setup = array_replace_recursive($this->defaultSetup, $this->setup);
 
-        /* Replace submodules modules with require. */
-        $submodulesString = '';
-        for ($i = 0; $i < count($fields['panels']); $i++) {
-            $panel = $fields['panels'][$i];
-            for ($j = 0; $j < count($panel['subpanels']); $j++) {
-                $subpanel = $panel['subpanels'][$j];
-                if ($subpanel['module'] === null) {
-                    $submodulesString .= "
-    lbSetup.panels[{$i}].subpanels[{$j}].module = null;
-                    ";
-                } else {
-                    $submodulesString .= "
-    lbSetup.panels[{$i}].subpanels[{$j}].module = jsLibs.require('{$subpanel['module']['package']}')
-            .{$subpanel['module']['module']}.{$subpanel['module']['class']};";
-                }
-            }
-        }
-
-        $script = <<<HTML
-<script type="text/javascript">
-    let eLibs = jsLibs.require('e-libs');
-    let lbSetup = JSON.parse('${fieldsString}');
-
-${submodulesString}
-
-    eLibs.eFields.set('lbSetup', lbSetup);
-</script>
-HTML;
-
-        $this->m->header->addHtml($script);
-
-        // $this->m->spkEFields->add('lb', $fields);
-
-        // $this->m->spk->addAppScript(
-        //     "SPK.\$abNotifications.SetImages({$images_json});" .
-        //     "SPK.\$abDate.utcOffset = 0;" .
-
-        //     "SPK.\$eLang.tag = 'pl-PL';"
-        // ); 
+        $this->m->eLibs->setField('lbSetup', $setup);
     }
     /* / E\Site */
 

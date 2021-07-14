@@ -105,7 +105,11 @@ class AUser extends EC\Api\ABasic
 
         if ($user->isLoggedIn()) {
 			$result = CResult::Failure('Users:errors_LogOutFirst');
-			$result->add('login', $user->getLogin());
+			$result
+                ->add('user', [
+                    'login' => $this->user->getLogin(),
+                    'permissions' => $this->user->getPermissions(),
+                ]);
 
 			return $result;
         }
@@ -114,7 +118,11 @@ class AUser extends EC\Api\ABasic
                 $login, $password);
 
 		if ($userInfo === null) {
-			return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'));
+			return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'))
+                ->add('user', [
+                    'login' => null,
+                    'permissions' => [],
+                ]);
 		}
 
 		$userPermissions = $userInfo['permissions'];
@@ -122,13 +130,21 @@ class AUser extends EC\Api\ABasic
 		foreach ($this->requiredPermissions as $permission) {
 			if (!in_array($permission, $userPermissions)) {
 				return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'))
+                    ->add('user', [
+                        'login' => null,
+                        'permissions' => [],
+                    ])
                     ->debug('Permission denied.');
 			}
 		}
 
 		$user->startSession($userInfo['id'], $login);
 
-		return CResult::Success();
+		return CResult::Success()
+            ->add('user', [
+                'login' => $this->user->getLogin(),
+                'permissions' => $this->user->getPermissions(),
+            ]);
     }
 
     protected function action_LogOut()

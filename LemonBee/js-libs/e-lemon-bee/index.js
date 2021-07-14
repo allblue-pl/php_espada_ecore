@@ -34,7 +34,68 @@ class Site extends spocky.Module {
         let pager = new abPager.Pager(base);
         let lb = new spkLemonBee.System(pager);
 
-        lb.setup(lbSetup);
+        lb.setup({
+            actions: {
+                changePassword_Async: async(oldPassword, newPassword) => {
+                    let result = await webABApi.json_Async(
+                            lbSetup.uris['userApi'] + 'change-password', 
+                            { Password: oldPassword, NewPassword: newPassword });
+
+                    if (result.isSuccess()) {
+                        return {
+                            success: true,
+                            message: result.data.message,
+                        }
+                    } else {
+                        return {
+                            success: false,
+                            message: result.data.message,
+                        };
+                    }
+                },
+                logIn_Async: async (login, password) => {
+                    let result = await webABApi.json_Async(
+                            lbSetup.uris['userApi'] + 'log-in', 
+                            { Login: login, Password: password });
+
+                    return {
+                        user: {
+                            loggedIn: result.data.user.login !== null,
+                            login: result.data.user.login === null ? 
+                                    '' : result.data.user.login,
+                            permissions: result.data.user.permissions,
+                        },
+                        error: result.isSuccess() ? null : result.data.message,
+                    };
+                },
+                logOut_Async: async () => {
+                    let result = await webABApi.json_Async(
+                            lbSetup.uris['userApi'] + 'log-out', {});
+
+                    if (result.success) {
+                        // app.setUser(null);
+                        // this.lb.setPanels([]);
+                    }
+                },
+            },
+
+            aliases: {
+                account: 'account',
+                main: '',
+                logIn: 'log-in',
+            },
+            images: lbSetup['images'],
+            panels: [],
+
+            textFn: (text) => {
+                return eLibs.eText('LemonBee:' + text);
+            },
+            uris: {
+                package: '',
+            }
+        });
+
+        lb.setUser(lbSetup.user);
 
         lb.init();
         pager.init();

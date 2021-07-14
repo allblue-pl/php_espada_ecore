@@ -9,7 +9,7 @@ class MRss extends E\Module
     private $header = null;
     private $info = null;
 
-    public function __construct(EC\Basic\MHeader $header, $isHome = true)
+    public function __construct(EC\Basic\MHead $header, $isHome = true)
     {
         parent::__construct();
 

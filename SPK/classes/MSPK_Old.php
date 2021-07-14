@@ -19,7 +19,7 @@ class MSPK extends E\Module
 
     private $appScripts = [];
 
-    public function __construct(EC\Basic\MHeader $header,
+    public function __construct(EC\Basic\MHead $header,
             EC\MABTemplate $ab_template)
     {
         parent::__construct();
