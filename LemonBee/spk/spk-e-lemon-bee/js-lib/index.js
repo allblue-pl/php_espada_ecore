@@ -13,13 +13,7 @@ const
 
 spocky.ext(new spkForms.Ext());
 
-
-const spk = new spocky.App()
-    .config(($app, $cfg) => {
-        $cfg.container('site', Site);
-    });
-
-class Site extends spocky.Module {
+export class Site extends spocky.Module {
 
     constructor() {
         super();
@@ -72,10 +66,17 @@ class Site extends spocky.Module {
                     let result = await webABApi.json_Async(
                             lbSetup.uris['userApi'] + 'log-out', {});
 
-                    if (result.success) {
-                        // app.setUser(null);
-                        // this.lb.setPanels([]);
+                    if (result.isSuccess()) {
+                        return {
+                            success: true,
+                            error: null,
+                        };
                     }
+
+                    return {
+                        success: false,
+                        error: result.data.message,
+                    };
                 },
             },
 
@@ -85,7 +86,7 @@ class Site extends spocky.Module {
                 logIn: 'log-in',
             },
             images: lbSetup['images'],
-            panels: [],
+            panels: this.createPanels(),
 
             textFn: (text) => {
                 return eLibs.eText('LemonBee:' + text);
@@ -103,15 +104,25 @@ class Site extends spocky.Module {
         this.$view = lb.module;
     }
 
+    createPanels()
+    {
+        return [];
+    }
+
 }
 
-export function init(debug)
+export function init(modulePath, debug)
 {
     spocky.setDebug(debug);
     spkForms.setDebug(debug);
     webABApi.setDebug(debug);
 
     spkForms.setLang(eLibs.eLang.code.substring(0, 2));
+
+    let spk = new spocky.App()
+        .config(($app, $cfg) => {
+            $cfg.container('site', require(modulePath).Site);
+        });
 
     spk.init(debug); 
 }

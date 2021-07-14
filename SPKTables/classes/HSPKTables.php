@@ -127,9 +127,13 @@ SCRIPT;
         foreach ($table_info['columns'] as $column_info) {
             $column = [
                 'name' => '',
+                'refColumnName' => null,
                 'header' => '',
+                'class' => '',
+                'style' => '',
+                'textStyle' => '',
                 'orderBy' => null,
-                'filter' => true
+                'filter' => true,
             ];
 
             foreach ($column_info as $prop_name => $prop) {
@@ -270,7 +274,7 @@ SCRIPT;
         }
 
         uasort($order_columns, function($col_a, $col_b) {
-            return $col_b['orderBy'][0] - $col_a['orderBy'][0];
+            return $col_b['orderBy']['priority'] - $col_a['orderBy']['priority'];
         });
 
         if ($first_order_column_name === null)
@@ -282,7 +286,7 @@ SCRIPT;
         $order_by = [ $first_order_column_expr . ($order_type ? ' DESC' : '') ];
         foreach ($order_columns as $column_name => $column) {
             $table_column = $t_table->getColumn($column_name);
-            $order_by[] = $table_column['expr'] . ($column['orderBy'][1] ? ' DESC' : '');
+            $order_by[] = $table_column['expr'] . ($column['orderBy']['reverse'] ? ' DESC' : '');
         }
 
         return implode(',', $order_by);

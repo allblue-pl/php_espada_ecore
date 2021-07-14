@@ -5,13 +5,18 @@ use E, EC;
 
 class SLemonBee extends EC\SBasic
 {
+
+    private $modulePath = null;
+
     private $defaultSetup = null;
     private $setup = [];
 
-    public function __construct(string $abWebBuildPath, 
+    public function __construct(string $abWebBuildPath, string $modulePath,
             string $userType = 'LemonBee', string $userApiUri = '/api/user/')
     {
         parent::__construct();
+
+        $this->modulePath = $modulePath;
 
         /* Modules */
         $this->addM('db', new EC\MDatabase());
@@ -27,6 +32,7 @@ class SLemonBee extends EC\SBasic
 
         /* Root Layout */
         $this->setRootL(E\Layout::_('LemonBee:index', [
+            'ModulePath' => $modulePath,
             'images' => [
                 'favicon' => E\Uri::File('LemonBee:images/favicon.ico'),
                 'appleTouchIcon' => E\Uri::File('LemonBee:images/appleTouchIcon.png'),
