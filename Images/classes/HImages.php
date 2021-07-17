@@ -9,7 +9,7 @@ class HImages
     static public function Create($file_path)
     {
         if (!file_exists($file_path))
-            throw new \Exception('`image_path` does not exist.');
+            throw new \Exception("File path '{$file_path}'  does not exist.");
 
         $mime = getimagesize($file_path)['mime'];
 

@@ -104,14 +104,13 @@ export class Form extends spocky.Module
 
     insertFile(file)
     {
-        this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
-                `<p><ul><li><a href="${file.uri}">${file.id}</a></li></ul></p>`);
+        this.editor.insertHtml_AtCursor(this.editor.getHtml() + '\r\n' + 
+                `<ul><li><a href="${file.uri}">${file.id}</a></li></ul>`);
     }
 
     insertImage(file)
     {
-        this.editor.setHtml(this.editor.getHtml() + '\r\n' + 
-                `<p><img src="${file.uri}" /></p>`);
+        this.editor.insertHtml_AtCursor(`<img src="${file.uri}" />`);
     }
 
     refreshMedia()
