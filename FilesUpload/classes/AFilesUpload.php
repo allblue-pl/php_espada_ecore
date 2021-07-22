@@ -94,6 +94,10 @@ class AFilesUpload extends EC\Api\ABasic
                 ->debug('Required permissions: ' . implode(', ', $category['permissions']));
         }
 
+        if ($args->file['tmp_name'] === '') {
+            return CResult::Failure(EC\HText::_('FilesUpload:error_CannotUploadFile'));
+        }
+
         if (!(EC\HStrings::ValidateChars($args->fileName, 'a-z0-9._-', 
                 $invalidChars))) {
             return CResult::Failure(EC\HText::_('FilesUpload:errors_InvalidCharsInFileName', 

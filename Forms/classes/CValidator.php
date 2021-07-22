@@ -48,7 +48,7 @@ class CValidator
     {
         $this->info['valid'] = false;
 
-        $this->errors[] = $message;
+        $this->info['errors'][] = $message;
     }   
 
     public function fieldError($field_name, $message = null)
