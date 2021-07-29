@@ -6,6 +6,40 @@ use E, EC;
 class HArticles
 {
 
+    static public function AddColumnParsers(EC\Database\TTable $table)
+    {
+        $time = $table->getDB()->escapeTime_DateTime(EC\HDate::GetTime());
+
+        // $table->addColumns_Extra([
+        //     'Alias'             => [ null, new EC\Database\FString(false, 128) ],
+        //     'IntroImageUri'     => [ null, new EC\Database\FString(false, 256) ],
+        //     'IsPublished'       => [ "a_a.Published AND a_a.Publish <= $time", 
+        //             new EC\Database\FBool(false) ],
+        // ]);
+
+        $table->addColumnParser('Id', [
+            'out' => function($row, $name, $value) {
+                $colNames = [
+                    'Alias' => str_replace('Id', 'Alias', $name),
+                    'IntroImageUri' => str_replace('Id', 'IntroImageUri', $name),
+                    'Title' => str_replace('Id', 'Title', $name),
+                ];
+
+                $alias = EC\HArticles::Alias_Format($row[$colNames['Title']]);
+
+                $introImages = EC\HFilesUpload::GetFileUris('eArticles_Intro', 
+                        (int)$value);
+
+                return [
+                    $name => $value,
+                    $colNames['Alias'] => $alias,
+                    $colNames['IntroImageUri'] => count($introImages) === 0 ? 
+                            null : $introImages[0],
+                ];
+            },
+        ]);
+    }
+
     static public function Alias_Format($str)
     {
         $str = trim(mb_strtolower($str));
@@ -21,6 +55,19 @@ class HArticles
     static public function Alias_Get($id, $title)
     {
         return intval($id) . '-' . self::Alias_Format($title);
+    }
+
+    static public function Alias_Parse($alias)
+    {
+        $regexp = "#^([0-9]+)-(.*)#";
+
+        if (!preg_match($regexp, $alias, $match))
+            return null;
+
+        return [
+            'id' => $match[1],
+            'alias' => $match[2],
+        ];
     }
 
     static function Config(EC\Config\CConfig_Setter $eConfig)

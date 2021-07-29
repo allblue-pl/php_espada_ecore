@@ -2,19 +2,25 @@
 <div class="row">
     <div class="col-md">
         <spk-form-field _hide="hide.form.Title" form="Form" name="Title"
-        type="Input" input-type="text" label="$eText('Articles:labels_Title')"
-        placeholder="$eText('Articles:labels_Title')..." />
+                type="Input" input-type="text" label="$eText('Articles:labels_Title')"
+                placeholder="$eText('Articles:labels_Title')..." />
     </div>
     <div class="col-md-3">
         <spk-form-field _hide="hide.form.Publish" form="Form" name="Publish"
-        type="DateTime" label="$eText('Articles:labels_Publish')"
-        placeholder="$eText('Articles:labels_Publish')..." />
+                type="DateTime" label="$eText('Articles:labels_Publish')"
+                placeholder="$eText('Articles:labels_Publish')..." />
     </div>
     <div class="col-md-3">
         <spk-form-field _hide="hide.form.Published" form="Form" name="Published"
-        type="Checkbox" div-class="form-check my-4"
-        label="$eText('Articles:labels_Published')"
-        placeholder="$eText('Articles:labels_Published')..." /> 
+                type="Checkbox" div-class="form-check my-4"
+                label="$eText('Articles:labels_Published')"
+                placeholder="$eText('Articles:labels_Published')..." /> 
+                
+    </div>
+    <div class="col-md">
+        <spk-form-field form="Form" name="AuthorName"
+                type="Input" input-type="text" label="$eText('Articles:labels_Author')"
+                placeholder="$eText('Articles:labels_Author')..." />
     </div>
 </div>
 <spk-form-field _hide="hide.form.Intro" form="Form" name="Intro"

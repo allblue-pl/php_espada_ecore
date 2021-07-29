@@ -346,7 +346,7 @@ class TTable
 
     public function getQuery_From()
     {
-        $query = $this->getDB()->quote($this->name);
+        $query = $this->getTableName_Quoted();
         if ($this->alias !== null)
             $query .= " AS {$this->alias}";
 

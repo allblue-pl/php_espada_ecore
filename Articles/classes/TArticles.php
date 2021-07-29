@@ -8,40 +8,6 @@ use E, EC,
 class TArticles extends _TArticles
 {
 
-    static public function AddColumns_Langs(EC\Database\TTable $table, array $langs)
-    {
-        $tableAlias = $table->getAlias();
-
-        $colExpr = '';
-        foreach ($langs as $lang) {
-            if ($colExpr !== '')
-                $colExpr .= ', ';
-            $colExpr .= "IF({$tableAlias}.Lang_{$lang}, '$lang', NULL)";
-
-            $table->setColumnVFields("Lang_{$lang}", [
-                'required' => false,
-            ]);
-        }
-
-        // foreach ($langs as $lang)
-        //     $colExpr .= ')';
-
-        $colExpr = "CONCAT_WS(', '," . $colExpr . ')';
-
-        $table->addColumns_Extra([ 
-            'Langs' => [ $colExpr, new EC\Database\FString(true, 2) ],
-        ]);
-    }
-
-    static public function FormatRow_Langs(array $langs, array &$row)
-    {
-        $lang_Row = $row['Lang'];
-        unset($row['Lang']);
-
-        foreach ($langs as $lang)
-            $row["Lang_{$lang}"] = $lang === $lang_Row;
-    }
-
     static public function GetNew(EC\MDatabase $db, $userId)
     {
         $table = new TArticles($db);
@@ -62,13 +28,14 @@ class TArticles extends _TArticles
         return $table->row_ById($db->getInsertedId());
     }
 
-    static public function WhereConditions_Categories(array $categoryNames)
+    static public function GetWhereConditions_Published()
     {
-        $whereConditions = [];
-        foreach ($categoryNames as $categoryName)
-            $whereConditions[] = [ "Category_{$categoryName}", '=', true ];
+        $whereConditions = [
+            [ 'Publish', '<=', time() ],
+            [ 'Published', '=', true ],
+        ];
 
-        return [ 'OR' => $whereConditions ];
+        return $whereConditions;
     }
 
 
