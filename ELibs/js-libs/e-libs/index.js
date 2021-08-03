@@ -4,12 +4,24 @@
 class eLibs_Class
 {
 
+    get eField() {
+        return (fieldName) => {
+            return this.eFields.get(fieldName);
+        }
+    }
+
     get eFields() {
         return require('./eFields');
     }
 
     get eLang() {
         return this.eFields.get('eLang');
+    }
+
+    get eText() {
+        return (text, args = []) => {
+            return this.eTexts.get(text, args);
+        }
     }
 
     get eTexts() {
@@ -27,14 +39,6 @@ class eLibs_Class
         };
 
         return l;
-    }
-
-    eField(fieldName) {
-        return this.eFields.get(fieldName);
-    }
-
-    eText(text, args = []) {
-        return this.eTexts.get(text, args);
     }
 
 

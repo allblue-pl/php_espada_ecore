@@ -16,8 +16,6 @@ class SApi extends E\Site
     {
         parent::__construct();
 
-        $this->setRootL(E\Layout::_('Basic:raw'));
-
         $this->parseArgs(E\Args::Uri('_extra'));
     }
 
@@ -34,9 +32,9 @@ class SApi extends E\Site
 
         $result_json = $result->getJSON();
 
-        $this->getRootL()->setFields([
-            'raw' => $result->getJSON()
-        ]);
+        $this->setRootL(E\Layout::_('Basic:raw', [
+            'raw' => $result->getJSON(),
+        ])); 
     }
 
     private function parseArgs($args)

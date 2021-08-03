@@ -9,7 +9,7 @@ class MGoogleAnalytics extends E\Module
     private $trackingCode = null;
 
 
-    public function __construct(EC\Basic\MHead $header, $trackingCode = '')
+    public function __construct(EC\Basic\MHead $header, $trackingCode = null)
     {
         parent::__construct();
 
@@ -25,8 +25,8 @@ class MGoogleAnalytics extends E\Module
 
     protected function _preDisplay(E\Site $site)
     {
-        if ($this->trackingCode === '')
-            return;
+        if ($this->trackingCode === null)
+            throw new \Exception('Google Analytics tracking code not set.');
 
         $this->header->addHtml("
             <script>

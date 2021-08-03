@@ -24,9 +24,9 @@ class HGallery
         return $gallery;
     }
 
-    static public function Init(E\Layout $lRoot)
+    static public function Init(E\Site $site)
     {
-        $lRoot->addL('postBody', E\Layout::_('Gallery:gallery'));
+        $site->addL('postBody', E\Layout::_('Gallery:gallery'));
     }
 
 }

@@ -42,14 +42,7 @@ class HArticles
 
     static public function Alias_Format($str)
     {
-        $str = trim(mb_strtolower($str));
-        $str = EC\HStrings::EscapeLangCharacters($str);
-        $str = str_replace(' ', '-', $str);
-        $str = EC\HStrings::RemoveCharacters($str,
-                'qwertyuiopasdfghjklzxcvbnm0123456789-');
-        $str = EC\HStrings::RemoveDoubles($str, '-');
-
-        return $str;
+        return EC\HRouter::GetAlias($str);
     }
 
     static public function Alias_Get($id, $title)

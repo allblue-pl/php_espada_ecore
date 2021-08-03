@@ -72,6 +72,7 @@ class SLemonBee extends EC\SBasic
             ],
         ];
 
+        
     }
 
     public function lbSetup(array $setup)
