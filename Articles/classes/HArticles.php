@@ -117,6 +117,26 @@ class HArticles
         EC\HFilesUpload::DeleteFiles('eArticles_Gallery', $articleId);
     }
 
+    static public function GetMediaUris_Files($articleId)
+    {
+        return EC\HFilesUpload::GetFileUris('eArticles_Files', $articleId);
+    }
+
+    static public function GetMediaUris_Gallery($articleId)
+    {
+        return EC\HFilesUpload::GetFileUris('eArticles_Gallery', $articleId);
+    }
+
+    static public function GetMediaUris_Images($articleId)
+    {
+        return EC\HFilesUpload::GetFileUris('eArticles_Images', $articleId);
+    }
+
+    static public function GetMediaUris_Intro($articleId)
+    {
+        return EC\HFilesUpload::GetFileUris('eArticles_Intro', $articleId);
+    }
+
     static public function GetNew(EC\MDatabase $db, $userId)
     {
         return TArticles::GetNew($db, $userId);
