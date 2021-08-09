@@ -9,6 +9,7 @@ class CHttpRequest
 {
 
     private $auth = null;
+    private $headers = null;
 
     public function __construct()
     {
@@ -69,6 +70,8 @@ class CHttpRequest
     {
         if ($this->auth !== null)
             $extra['auth'] = $this->auth;
+        if ($this->headers !== null)
+            $extra['headers'] = $this->headers;
 
         return $this->client->request($type, $url, $extra);
     }
@@ -76,6 +79,11 @@ class CHttpRequest
     public function setAuth(string $user, string $password)
     {
         $this->auth = [ $user, $password ];
+    }
+
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
     }
 
 }

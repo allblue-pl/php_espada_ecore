@@ -14,7 +14,7 @@ export class FilesUpload extends spocky.Module
 
     get id() {
         if (this._id === null)
-            throw new Error(`Article 'id' not set.`);
+            throw new Error(`'id' not set.`);
 
         return this._id;
     }
@@ -87,6 +87,7 @@ export class FilesUpload extends spocky.Module
 
                 for (let fileUri of fileUris) {
                     let fileBaseName = fileUri.substring(fileUri.lastIndexOf('/') + 1);
+
 
                     this._liveUpload.setFile({
                         id: this._getFileId(fileBaseName),
@@ -191,7 +192,7 @@ export class FilesUpload extends spocky.Module
                 } else {
                     this._liveUpload.deleteFile(this._getFileId(file.name));
 
-                    this.msgs.showMessage_Failure(result.messsage);
+                    this.msgs.showMessage_Failure(result.message);
                 }
             });
         }

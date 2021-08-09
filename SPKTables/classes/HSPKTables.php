@@ -25,13 +25,13 @@ class HSPKTables
         if (self::$Initialized)
             return;
         self::$Initialized = true;
-
-        $eLibs->setField('eTables_Texts', 
-                EC\HText::GetTranslations('SPKTables')->getArray());
         
+        $eLibs->addTranslations('SPKTables');
+
         $script = <<<SCRIPT
-    jsLibs.require('spk-tables').setTexts(jsLibs.require('e-libs')
-            .eField('eTables_Texts')); 
+jsLibs.require('spk-tables').setTextFn((text) => {
+    return jsLibs.require('e-libs').eText('SPKTables:' + text);
+}); 
 SCRIPT;
         $eLibs->addScript($script);
     }

@@ -106,7 +106,7 @@ export class Form extends spocky.Module
     {
         this.editor.insertHtml_AtCursor(this.editor.getHtml() + '\r\n' + 
                 `<ul><li><a href="${file.uri}">${file.id}</a></li></ul>`);
-    }
+    }null
 
     insertImage(file)
     {
@@ -124,9 +124,9 @@ export class Form extends spocky.Module
         this.galleryUpload.refresh();
     }
 
-    setValues(values)
+    setValues(values, ignoreNotExisting = false)
     {
-        this.f.setValues(values);
+        this.f.setValues(values, ignoreNotExisting);
         if ('Content_Raw' in values)
             this.editor.setHtml(values.Content_Raw);
     }

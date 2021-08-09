@@ -55,11 +55,6 @@ class SLemonBee extends EC\SBasic
             'images' => [
                 'logo' => $packageBase . 'images/logo.png',
                 'logo_Main' => $packageBase . 'images/logo.png',
-                'messages' => [
-                    'loading' => $packageBase . 'images/messages/loading.gif',
-                    'success' => $packageBase . 'images/messages/success.png',
-                    'failure' => $packageBase . 'images/messages/failure.png',
-                ],
             ],
             'panels' => [],
             'uris' => [
@@ -69,6 +64,14 @@ class SLemonBee extends EC\SBasic
                 'loggedIn' => $this->m->user->isLoggedIn(),
                 'login' => $this->m->user->getLogin(),
                 'permissions' => $this->m->user->getPermissions(),
+            ],
+
+            'spkMessages' => [
+                'images' => [
+                    'loading' => $packageBase . 'images/messages/loading.gif',
+                    'success' => $packageBase . 'images/messages/success.png',
+                    'failure' => $packageBase . 'images/messages/failure.png',
+                ],
             ],
         ];
 

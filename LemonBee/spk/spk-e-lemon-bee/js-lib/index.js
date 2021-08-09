@@ -7,6 +7,8 @@ const
     js0 = require('js0'),
     spkForms = require('spk-forms'),
     spkLemonBee = require('spk-lemon-bee'),
+    spkMessages = require('spk-messages'),
+    spkTables = require('spk-tables'),
     spocky = require('spocky'),
     webABApi = require('web-ab-api')
 ;
@@ -85,7 +87,7 @@ export class Site extends spocky.Module {
                 main: '',
                 logIn: 'log-in',
             },
-            images: lbSetup['images'],
+            images: lbSetup.images,
             panels: this.createPanels(),
 
             textFn: (text) => {
@@ -93,7 +95,9 @@ export class Site extends spocky.Module {
             },
             uris: {
                 package: '',
-            }
+            },
+
+            spkMessages: lbSetup.spkMessages,
         });
 
         lb.setUser(lbSetup.user);
@@ -118,6 +122,9 @@ export function init(modulePath, debug)
     webABApi.setDebug(debug);
 
     spkForms.setLang(eLibs.eLang.code.substring(0, 2));
+    spkMessages.setTextFn((text) => {
+        return eLibs.eText('LemonBee:SPKMessages_' + text);
+    });
 
     let spk = new spocky.App()
         .config(($app, $cfg) => {

@@ -34,6 +34,11 @@ class MMeta extends E\Module
         $this->description = $description;
     }
 
+    public function setKeywords($keywords)
+    {
+        $this->keywords = $keywords;
+    }
+
     public function setTitle($title)
     {
         $this->title = $title;        

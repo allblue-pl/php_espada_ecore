@@ -121,40 +121,20 @@ class AFilesUpload extends EC\Api\ABasic
                     $tFileName = "-{$args->id}{$tSizeName}";
 
                 if ($size === null)
-                    $this->copy($args->file, "{$fileDir}{$tFileName}.{$fileExt}");
+                    HFilesUpload::Copy($args->file, "{$fileDir}{$tFileName}.{$fileExt}");
                 else {
-                    if (!$this->scale($args->file, $fileMediaPath, $size))
+                    if (!HFilesUpload::Scale($args->file, $fileMediaPath, $size))
                         return CResult::Failure('Cannot scale image.');
                 }
             }
         } else if ($category['type'] === 'file') {
-            if (!$this->copy($args->file, $fileMediaPath))
+            if (!HFilesUpload::Copy($args->file, $fileMediaPath))
                 return CResult::Failure('Cannot copy file.');
         } else
             throw new \Exception("Unknown category type '{$category['type']}.");
 
         return CResult::Success()
             ->add('uri', E\Uri::Media('FilesUpload', $fileMediaPath));
-    }
-
-
-    private function copy($file, $fileMediaPath)
-    {
-        $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
-        if (!file_exists(dirname($filePath)))
-            mkdir(dirname($filePath), 0777, true);
-
-        return copy($file['tmp_name'], $filePath);
-    }
-
-    private function scale($file, $fileMediaPath, $size)
-    {
-        $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
-        if (!file_exists(dirname($filePath)))
-            mkdir(dirname($filePath), 0777, true);
-
-        return EC\HImages::Scale_ToMinSize($file['tmp_name'],
-                $filePath, $size[0], $size[1]);
     }
 
 }

@@ -49,6 +49,15 @@ class MELibs extends E\Module
     function _preDisplay(E\Site $site)
     {
         /* Defaults */
+        $uris = [
+            'base' => E\Uri::Base(),
+            'pages' => [],
+        ];
+        $pages = E\Pages::GetAll();
+        foreach ($pages as $page)
+            $uris['pages'][$page->getName()] = str_replace('*', '', $page->getUri_Raw(''));
+        $this->setField('eUris', $uris);
+
         $this->addTranslations('Date');
         $this->setField('eLang', E\Langs::Get());
 
