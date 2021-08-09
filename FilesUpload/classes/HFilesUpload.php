@@ -82,6 +82,16 @@ class HFilesUpload
         return array_values($files);
     }
 
+    static public function GetFilePath($categoryName, $id)
+    {
+        $filePaths = self::GetFilePaths($categoryName, $id);
+        if (count($filePaths) === 0) {
+            return null;
+        }
+
+        return $filePaths[0];
+    }
+
     static public function GetFilePaths($categoryName, $id)
     {
         $dirMediaPath = HFilesUpload::GetDirMediaPath($categoryName, $id);
@@ -94,6 +104,15 @@ class HFilesUpload
         return array_values($files);
     }
 
+    static public function GetFileUri($categoryName, $id)
+    {
+        $fileUris = self::GetFileUris($categoryName, $id);
+        if (count($fileUris) === 0)
+            return null;
+
+        return $fileUris[0];
+    }
+
     static public function GetFileUris($categoryName, $id)
     {
         $dirMediaPath = HFilesUpload::GetDirMediaPath($categoryName, $id);
@@ -104,15 +123,6 @@ class HFilesUpload
             $files[] = E\Uri::Media('FilesUpload', "{$dirMediaPath}/{$fileBaseName}");
 
         return array_values($files);
-    }
-
-    static public function GetFileUris_Single($categoryName, $id)
-    {
-        $fileUris = self::GetFileUris($categoryName, $id);
-        if (count($fileUris) === 0)
-            return null;
-
-        return $fileUris[0];
     }
 
     static public function ExistsCategory($categoryName)

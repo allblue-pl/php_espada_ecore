@@ -109,6 +109,11 @@ class HDate
         return time() + self::GetUTCOffset() * self::Span_Hour;
     }
 
+    static public function GetTime_RelNeg()
+    {
+        return time() - self::GetUTCOffset() * self::Span_Hour;
+    }
+
     static public function GetUTCOffset()
     {
         return self::$UTCOffset;
