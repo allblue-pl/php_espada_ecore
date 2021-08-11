@@ -249,6 +249,10 @@ class HUsers
 
 		if ($password !== null)
             $row['PasswordHash'] = EC\HHash::GetPassword($password);
+		else if ($row['Id'] !== null) {
+			$row_DB = (new TUsers($db))->row_ById($row['Id']);
+			$row['PasswordHash'] = $row_DB['PasswordHash'];
+		}
 
         if ($groups !== null)
             $row['Groups'] = $groups;

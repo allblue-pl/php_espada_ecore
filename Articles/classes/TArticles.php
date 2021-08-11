@@ -23,6 +23,13 @@ class TArticles extends _TArticles
         $table->update([[
             'User_Id' => $userId,
             'User_New' => true,
+            'Publish' => time(),
+            'Published' => true,
+            'AuthorName' => '',
+            'Title' => '',
+            'Intro' => '',
+            'Content_Raw' => '',
+            'Content_Html' => '',
         ]]);
 
         return $table->row_ById($db->getInsertedId());
@@ -91,6 +98,9 @@ class TArticles extends _TArticles
         $this->setColumnVFields('Content_Html', [
             'required' => false,
             'chars' => null,
+        ]);
+        $this->setColumnVFields('AuthorName', [
+            'required' => false,
         ]);
     }
 

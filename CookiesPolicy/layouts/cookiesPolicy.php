@@ -6,7 +6,7 @@ use E, EC; ?>
 <div id="ECookiesPolicy_Modal" class="modal fade" data-bs-backdrop="static" 
         data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content modal-cookies">
             <div class="modal-header">
                 <h5 class="modal-title"><?php echo $_Title; ?></h5>
                 <button id="eCookiesPolicy_Close" type="button" class="btn-close" 

@@ -22,7 +22,6 @@ class _TArticles extends Database\TTable
             'Intro' => new Database\FString(true, 1024),
             'Content_Raw' => new Database\FText(true, 'medium'),
             'Content_Html' => new Database\FText(true, 'medium'),
-            'Gallery' => new Database\FBool(true),
         ]);
     }
 
