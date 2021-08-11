@@ -12,7 +12,7 @@ class SLemonBee extends EC\SBasic
     private $setup = [];
 
     public function __construct(string $abWebBuildPath, string $modulePath,
-            string $userType = 'LemonBee', string $userApiUri = '/api/user/')
+            string $userType = 'LemonBee')
     {
         parent::__construct();
 
@@ -58,7 +58,7 @@ class SLemonBee extends EC\SBasic
             ],
             'panels' => [],
             'uris' => [
-                'userApi' => $userApiUri,
+                'base' => E\Uri::Base(),
             ],
             'user' => [
                 'loggedIn' => $this->m->user->isLoggedIn(),

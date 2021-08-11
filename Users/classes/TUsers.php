@@ -9,7 +9,7 @@ class TUsers extends _TUsers
 
     public function __construct(EC\MDatabase $db)
     {
-        parent::__construct($db, 'Users_Users', 'uu');
+        parent::__construct($db, 'u_u');
 
         /* Columns - Extra */
         $this->addColumns_Extra([
