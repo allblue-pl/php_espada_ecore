@@ -23,7 +23,7 @@ class MUser extends E\Module
 
 	private $salt = '';
 
-    public function __construct($session, EC\MDatabase $database,
+    public function __construct(EC\MSession $session, EC\MDatabase $database,
             $type = 'Default')
 	{
 		parent::__construct();
