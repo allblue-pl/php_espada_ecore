@@ -9,8 +9,12 @@ class HFilesUpload
     static public function Copy($file, $fileMediaPath)
     {
         $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
-        if (!file_exists(dirname($filePath)))
-            mkdir(dirname($filePath), 0777, true);
+        EC\HFiles::Dir_Create_Safe(dirname($filePath));
+        
+        // if (!file_exists(dirname($filePath))) {
+
+        // }
+        //     mkdir(dirname($filePath), 0777, true);
 
         return copy($file['tmp_name'], $filePath);
     }
@@ -150,8 +154,9 @@ class HFilesUpload
     static public function Scale($file, $fileMediaPath, $size)
     {
         $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
-        if (!file_exists(dirname($filePath)))
-            mkdir(dirname($filePath), 0777, true);
+        EC\HFiles::Dir_Create_Safe(dirname($filePath));
+        // if (!file_exists(dirname($filePath)))
+        //     mkdir(dirname($filePath), 0777, true);
 
         return EC\HImages::Scale_ToMinSize($file['tmp_name'],
                 $filePath, $size[0], $size[1]);
