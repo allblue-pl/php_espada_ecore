@@ -18,7 +18,7 @@ class _TArticles extends Database\TTable
             'Publish' => new Database\FDateTime(true),
             'Published' => new Database\FBool(true),
             'AuthorName' => new Database\FString(true, 128),
-            'Title' => new Database\FString(true, 128),
+            'Title' => new Database\FString(true, 256),
             'Intro' => new Database\FString(true, 1024),
             'Content_Raw' => new Database\FText(true, 'medium'),
             'Content_Html' => new Database\FText(true, 'medium'),
