@@ -28,6 +28,9 @@ class MMeta extends E\Module
     public function setDescription($description)
     {
         $description = strip_tags($description);
+        $description = EC\HStrings::RemoveCharacters($description, 
+                EC\HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
+        $description = EC\HStrings::RemoveDoubles($description, ' ');
         if (mb_strlen($description) >= 300)
             $description = mb_substr($description, 0, 300);
 
@@ -41,6 +44,11 @@ class MMeta extends E\Module
 
     public function setTitle($title)
     {
+        $title = strip_tags($title);
+        $title = EC\HStrings::RemoveCharacters($title, 
+                EC\HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
+        $title = EC\HStrings::RemoveDoubles($title, ' ');
+
         $this->title = $title;        
     }
 

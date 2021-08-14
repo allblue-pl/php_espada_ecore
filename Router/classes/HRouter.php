@@ -11,8 +11,7 @@ class HRouter
         $str = trim(mb_strtolower($str));
         $str = EC\HStrings::EscapeLangCharacters($str);
         $str = str_replace(' ', '-', $str);
-        $str = EC\HStrings::RemoveCharacters($str,
-                'qwertyuiopasdfghjklzxcvbnm0123456789-');
+        $str = EC\HStrings::RemoveCharacters($str, 'a-z0-9\\-');
         $str = EC\HStrings::RemoveDoubles($str, '-');
 
         return $str;

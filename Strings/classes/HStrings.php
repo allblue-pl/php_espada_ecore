@@ -70,12 +70,26 @@ class HStrings
         return str_replace($replace_from, $replace_to, $string);
     }
 
-    static public function RemoveCharacters($string, $allowed_characters_string)
+    // static public function RemoveCharacters_ByString($string, $allowed_characters_string)
+    // {
+    //     $new_str = '';
+    //     for ($i = 0; $i < mb_strlen($string); $i++) {
+    //         if (mb_strpos($allowed_characters_string, $string[$i]) > -1)
+    //             $new_str .= (string)$string[$i];
+    //     }
+
+    //     return $new_str;
+    // }
+
+    static public function RemoveCharacters($string, $allowedRegexp)
     {
+        $allowedRegexp = str_replace('#', '\\#', $allowedRegexp);
+
         $new_str = '';
         for ($i = 0; $i < mb_strlen($string); $i++) {
-            if (mb_strpos($allowed_characters_string, $string[$i]) > -1)
+            if (preg_match('#[' . $allowedRegexp . ']#', $string[$i])) {
                 $new_str .= (string)$string[$i];
+            }
         }
 
         return $new_str;
