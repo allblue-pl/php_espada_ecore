@@ -227,7 +227,7 @@ SCRIPT;
                     continue;
 
                 $db_column_name = $t_table->getColumn($column_name)['expr'];
-                if ($db_column_name === null)
+                if ($db_column_name === null) 
                     continue;
 
                 $filter = EC\HStrings::EscapeLangCharacters($filter);
@@ -266,11 +266,13 @@ SCRIPT;
         $order_columns = [];
         $i = -1;
         foreach ($spk_table['columns'] as $column_name => $column) {
-            if ($column_name === $first_order_column_name)
+            if ($column_name === $first_order_column_name) {
                 continue;
+            }
 
-            if ($column['orderBy'] !== null)
+            if ($column['orderBy'] !== null) {
                 $order_columns[$column_name] = $column;
+            }
         }
 
         uasort($order_columns, function($col_a, $col_b) {
@@ -286,6 +288,10 @@ SCRIPT;
         $order_by = [ $first_order_column_expr . ($order_type ? ' DESC' : '') ];
         foreach ($order_columns as $column_name => $column) {
             $table_column = $t_table->getColumn($column_name);
+            if ($table_column['expr'] === null) { 
+                continue; 
+            }
+
             $order_by[] = $table_column['expr'] . ($column['orderBy']['reverse'] ? ' DESC' : '');
         }
 
