@@ -87,8 +87,8 @@ class HStrings
 
         $new_str = '';
         for ($i = 0; $i < mb_strlen($string); $i++) {
-            if (preg_match('#[' . $allowedRegexp . ']#', $string[$i])) {
-                $new_str .= (string)$string[$i];
+            if (preg_match('#[' . $allowedRegexp . ']#u', mb_substr($string, $i, 1))) {
+                $new_str .= (string)mb_substr($string, $i, 1);
             }
         }
 
