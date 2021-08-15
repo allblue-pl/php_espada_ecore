@@ -38,7 +38,7 @@ class SBasic extends E\Site
         foreach ($notices as $notice) {
             $message = str_replace("'", "\\'", $notice['message']);
 
-            $js .= '<script type="text/javascript">';
+            $js .= '<script>';
             $js .= "console.groupCollapsed('Espada: {$message}');";
             foreach ($notice['stack'] as $stackPart)
                 $js .= "console.warn('  ' + " . json_encode($stackPart) . ");";

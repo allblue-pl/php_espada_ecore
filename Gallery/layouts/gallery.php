@@ -37,7 +37,7 @@ use E, EC; ?>
         </div>
     </div>
 </div>
-<script type="text/javascript">
+<script>
     new EGallery.Class();
 </script>
 <!-- / Gallery -->

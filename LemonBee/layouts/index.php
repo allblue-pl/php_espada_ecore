@@ -21,7 +21,7 @@
         <?php $eHolders->init; ?>
 
         <div id="site"></div>
-        <script type="text/javascript">
+        <script>
             window.addEventListener('load', function() {
                 jsLibs.require('spk-e-lemon-bee').init('<?php echo $_ModulePath; ?>', <?php echo EDEBUG ? 'true' : 'false'; ?>);
             });

@@ -21,7 +21,7 @@
         <?php $eHolders->init; ?>
 
         <div id="site"></div>
-        <script type="text/javascript">
+        <script>
             window.addEventListener('load', function() {
                 jsLibs.require('<?php echo $_sitePackage; ?>').init(<?php echo EDEBUG ? 'true' : 'false'; ?>);
             });

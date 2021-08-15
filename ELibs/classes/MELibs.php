@@ -75,7 +75,7 @@ class MELibs extends E\Module
         $date_Formats_Time = EC\HText::_('ELibs:date_Formats_Time');
 
         $script = <<<HTML
-<script type="text/javascript">
+<script>
     (function() {
         let abDate = jsLibs.require('ab-date');
         let eLibs = jsLibs.require('e-libs');

@@ -106,7 +106,7 @@ class MSPK extends E\Module
             $this->header->addScript($uri);
 
         /* Script */
-        $html = '<script type="text/javascript">';
+        $html = '<script>';
 
         /* App Scripts */
         foreach ($this->appScripts as $app_script)
