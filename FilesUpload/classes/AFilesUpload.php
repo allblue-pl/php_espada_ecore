@@ -21,6 +21,9 @@ class AFilesUpload extends EC\Api\ABasic
             'id' => true,
             'fileName' => true,
         ]);
+        $this->action('fix', 'action_Fix', [
+
+        ]);
         $this->action('list', 'action_List', [
             'categoryName' => true,
             'id' => true,
@@ -38,31 +41,39 @@ class AFilesUpload extends EC\Api\ABasic
 
     public function action_Delete(CArgs $args)
     {
-        if (!EC\HFilesUpload::ExistsCategory($args->categoryName))
-            return CResult::Failure("Upload category '{$args->categoryName}' does not exist.");
-        $category = EC\HFilesUpload::GetCategory($args->categoryName);
-
-        $dirPath = HFilesUpload::GetDirMediaPath($args->categoryName, $args->id);
-        $files = HFilesUpload::GetFilePaths($args->categoryName, $args->id);
-
-        $fileToDelete = null;
-        if ($category['multiple']) {
-            foreach ($files as $file) {
-                if (pathinfo($file, PATHINFO_BASENAME) === $args->fileName) {
-                    $fileToDelete = $file;
-                    break;
-                }
-            }
-        } else
-            $fileToDelete = $files[0];
-
-        if ($fileToDelete === null)
-            return CResult::Failure('File does not exist.' . $args->fileName);
-
-        if (!unlink($fileToDelete))
-            return CResult::Failure('Cannot delete file.');
+        try {
+            HFilesUpload::DeleteFile($args->categoryName, $args->id, 
+                    $args->fileName);
+        } catch (\Exception $e) {
+            if (EDEBUG)
+                throw $e;
+                
+            return CResult::Failure($e->getMessage());
+        }
 
         return CResult::Success();
+    }
+
+    public function action_Fix()
+    {
+        $dirPath = E\Path::Media('FilesUpload', 'articles');
+        $files = scandir($dirPath);
+        foreach ($files as $file) {
+            if (mb_strpos($file, 'intro-') !== 0)
+                continue;
+
+            $filePath = "{$dirPath}/$file";
+            $fileName = pathinfo($filePath, PATHINFO_FILENAME);
+            
+            echo $fileName . "\r\n";
+            
+            mkdir("{$dirPath}/{$fileName}");
+            HFilesUpload::Scale($filePath, "{$dirPath}/{$fileName}/{$fileName}.jpg",
+                [ 960, 640 ]);
+            HFilesUpload::Scale($filePath, "{$dirPath}/{$fileName}/{$fileName}_thumbnail.jpg",
+                [ 320, 280 ]);
+            unlink($filePath);
+        }
     }
 
     public function action_List(CArgs $args)
@@ -85,56 +96,25 @@ class AFilesUpload extends EC\Api\ABasic
             ];
         }
 
-        if (!array_key_exists($args->categoryName, $this->categories))
-            return CResult::Failure("Upload category '{$args->categoryName}' does not exist.");
-        $category = $this->categories[$args->categoryName];
-
-        if (!$this->user->hasPermissions($category['permissions'])) {
-            return CResult::Failure('Permission denied.')
-                ->debug('Required permissions: ' . implode(', ', $category['permissions']));
+        try {
+            HFilesUpload::Upload($args->categoryName, $args->id, $args->file);
+        } catch (\Exception $e) {
+            if (EDEBUG)
+                throw $e;
+                
+            return CResult::Failure($e->getMessage());
         }
 
-        if ($args->file['tmp_name'] === '') {
-            return CResult::Failure(EC\HText::_('FilesUpload:error_CannotUploadFile'));
-        }
-
-        if (!(EC\HStrings::ValidateChars($args->fileName, 'a-z0-9._-', 
-                $invalidChars))) {
-            return CResult::Failure(EC\HText::_('FilesUpload:errors_InvalidCharsInFileName', 
-                    [ implode(', ', $invalidChars) ]));
-        }
-
-        $fileName = pathinfo($args->fileName, PATHINFO_FILENAME);
-        $fileExt = mb_strtolower(pathinfo($args->file['name'], PATHINFO_EXTENSION));
-        $fileDir = $category['alias'];
-        $fileMediaPath = $category['multiple'] ? 
-                "{$fileDir}-{$args->id}/{$fileName}.{$fileExt}" :
-                "{$fileDir}-{$args->id}.{$fileExt}";
-
-        if ($category['type'] === 'image') {
-            foreach ($category['sizes'] as $sizeName => $size) {
-                $tSizeName = $sizeName === '$default' ? '' : "_{$sizeName}";
-
-                if ($category['multiple'])
-                    $tFileName = "-{$args->id}{$tSizeName}/{$fileName}";
-                else
-                    $tFileName = "-{$args->id}{$tSizeName}";
-
-                if ($size === null)
-                    HFilesUpload::Copy($args->file, "{$fileDir}{$tFileName}.{$fileExt}");
-                else {
-                    if (!HFilesUpload::Scale($args->file, $fileMediaPath, $size))
-                        return CResult::Failure('Cannot scale image.');
-                }
-            }
-        } else if ($category['type'] === 'file') {
-            if (!HFilesUpload::Copy($args->file, $fileMediaPath))
-                return CResult::Failure('Cannot copy file.');
+        $category = HFilesUpload::GetCategory($args->categoryName);
+        $uri = null;
+        if ($category['multiple']) {
+            $uri = HFilesUpload::GetFileUri_Multiple($args->categoryName, 
+                    $args->id, $args->file['name']);
         } else
-            throw new \Exception("Unknown category type '{$category['type']}.");
+            $uri = HFilesUpload::GetFileUri_Single($args->categoryName, $args->id);
 
         return CResult::Success()
-            ->add('uri', E\Uri::Media('FilesUpload', $fileMediaPath));
+            ->add('uri', $uri);
     }
 
 }

@@ -27,14 +27,11 @@ class HArticles
 
                 $alias = EC\HArticles::Alias_Format($row[$colNames['Title']]);
 
-                $introImages = EC\HFilesUpload::GetFileUris('eArticles_Intro', 
-                        (int)$value);
-
                 return [
                     $name => $value,
                     $colNames['Alias'] => $alias,
-                    $colNames['IntroImageUri'] => count($introImages) === 0 ? 
-                            null : $introImages[0],
+                    $colNames['IntroImageUri'] => EC\HFilesUpload::GetFileUri_Single(
+                            'eArticles_Intro', (int)$value),
                 ];
             },
         ]);
@@ -63,14 +60,16 @@ class HArticles
         ];
     }
 
-    static function Config(EC\Config\CConfig_Setter $eConfig)
+    static function Config(EC\Config\CConfig_Setter $eConfig, array $overwrites = [])
     {
-        $eConfig->set([
+        $eConfig->set(array_replace_recursive([
             'FilesUpload' => [
                 'categories' => [
                     'eArticles_Intro' => [
                         'permissions' => [ 'Articles_Articles' ],
                         'type' => 'image',
+                        'exts' => [ 'jpg', 'jpeg', 'png', 'gif' ],
+                        'compress' => true,
                         'multiple' => false,
                         'alias' => 'articles/intro',
                         'sizes' => [
@@ -81,6 +80,7 @@ class HArticles
                     'eArticles_Files' => [
                         'permissions' => [ 'Articles_Articles' ],
                         'type' => 'file',
+                        'exts' => null,
                         'multiple' => true,
                         'alias' => 'articles/files',
                     ],
@@ -88,6 +88,8 @@ class HArticles
                     'eArticles_Images' => [
                         'permissions' => [ 'Articles_Articles' ],
                         'type' => 'image',
+                        'exts' => [  'jpg', 'jpeg', 'png', 'gif' ],
+                        'compress' => true,
                         'multiple' => true,
                         'alias' => 'articles/images',
                         'sizes' => [
@@ -98,6 +100,8 @@ class HArticles
                     'eArticles_Gallery' => [
                         'permissions' => [ 'Articles_Articles' ],
                         'type' => 'image',
+                        'exts' => [  'jpg', 'jpeg', 'png', 'gif' ],
+                        'compress' => true,
                         'multiple' => true,
                         'alias' => 'articles/gallery',
                         'sizes' => [
@@ -106,15 +110,15 @@ class HArticles
                     ],
                 ],
             ],
-        ]);
+        ], $overwrites));
     }
 
     static public function DeleteMedia($articleId)
     {
-        EC\HFilesUpload::DeleteFiles('eArticles_Intro', $articleId);
-        EC\HFilesUpload::DeleteFiles('eArticles_Files', $articleId);
-        EC\HFilesUpload::DeleteFiles('eArticles_Images', $articleId);
-        EC\HFilesUpload::DeleteFiles('eArticles_Gallery', $articleId);
+        EC\HFilesUpload::Delete('eArticles_Intro', $articleId);
+        EC\HFilesUpload::Delete('eArticles_Files', $articleId);
+        EC\HFilesUpload::Delete('eArticles_Images', $articleId);
+        EC\HFilesUpload::Delete('eArticles_Gallery', $articleId);
     }
 
     static public function GetMediaUris_Files($articleId)

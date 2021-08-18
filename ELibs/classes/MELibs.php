@@ -9,6 +9,7 @@ class MELibs extends E\Module
     private $header = null;
 
     private $fields = [];
+    private $fieldFns = [];
     private $texts = [];
     private $script = '';
 
@@ -41,12 +42,26 @@ class MELibs extends E\Module
 
     function setField($fieldName, $fieldValue)
     {
-        $this->requireBeforePreDisplay();
+        // $this->requireBeforePreDisplay();
 
         $this->fields[$fieldName] = $fieldValue;
     } 
 
-    function _preDisplay(E\Site $site)
+    function setFieldFn($fieldName, $fieldFn)
+    {
+        $this->fieldFns[$fieldName] = $fieldFn;
+    }
+
+    function _preInitialize(E\Site $site)
+    {
+        $site->addL('postBodyInit', E\Layout::_('Basic:raw', function() {
+            return [
+                'raw' => $this->getScript(),
+            ];
+        }));
+    }
+
+    function getScript()
     {
         /* Defaults */
         $uris = [
@@ -62,6 +77,10 @@ class MELibs extends E\Module
         $this->setField('eLang', E\Langs::Get());
 
         /* Setup */
+        foreach ($this->fieldFns as $fieldName => $fieldFn) {
+            $this->setField($fieldName, $fieldFn());
+        }
+
         $fields_JSON =  json_encode($this->fields);
         if ($fields_JSON === false)
             throw new \Exception('Cannot encode fields to JSON: ' . json_last_error_msg());
@@ -92,8 +111,8 @@ class MELibs extends E\Module
     })();
 </script>
 HTML;
-        
-        $this->header->addHtml($script);
+
+        return $script;
     }
 
 }

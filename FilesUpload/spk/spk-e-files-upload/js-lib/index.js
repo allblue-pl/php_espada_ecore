@@ -182,13 +182,18 @@ export class FilesUpload extends spocky.Module
                     fileName: this._escapeFileName(file.name), 
                     }, { file: file }, (result) => {
                 if (result.isSuccess()) {
+                    let uriArr = result.data.uri.split('/');
+                    let fileId = this._getFileId(uriArr[uriArr.length - 1]);
+                    if (fileId !== this._getFileId(file.name))
+                        this._liveUpload.deleteFile(this._getFileId(file.name));
+
                     this._liveUpload.setFile({
-                        id: this._getFileId(file.name),
+                        id: this._getFileId(fileId),
                         title: this._escapeFileName(file.name),
                         uri: result.data.uri,
                         imgUri: this.category.type === 'image' ? 
                                 result.data.uri : eLibs.eField('eFilesUpload').uris.file,
-                    })
+                    });
                 } else {
                     this._liveUpload.deleteFile(this._getFileId(file.name));
 

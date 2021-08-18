@@ -24,6 +24,3 @@ use E, EC; ?>
         </div>
     </div>
 </div>
-<script>
-    jsLibs.require('e-cookies-policy').init();
-</script>

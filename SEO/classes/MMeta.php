@@ -22,6 +22,9 @@ class MMeta extends E\Module
 
     public function addImage($imageUri)
     {
+        if (in_array($imageUri, $this->imageUris))
+            return;
+
         array_unshift($this->imageUris, $imageUri);
     }
 
@@ -31,8 +34,8 @@ class MMeta extends E\Module
         $description = EC\HStrings::RemoveCharacters($description, 
                 EC\HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
         $description = EC\HStrings::RemoveDoubles($description, ' ');
-        if (mb_strlen($description) >= 300)
-            $description = mb_substr($description, 0, 300);
+        if (mb_strlen($description) > 300)
+            $description = mb_substr($description, 0, 297) . '...';
 
         $this->description = $description;
     }

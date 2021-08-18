@@ -9,15 +9,23 @@ class HGallery
     static public function GetGallery($categoryName, $id, $hasThumbs = true,
             $hasFull = true)
     {
-        $dirUri = EC\HFilesUpload::GetDirUri($categoryName, $id);
-        $fileBaseNames = EC\HFilesUpload::GetFileBaseNames($categoryName, $id);
+        $category = EC\HFilesUpload::GetCategory($categoryName);
+        $fileUris = EC\HFilesUpload::GetFileUris($categoryName, $id);
+        // $fileUris = [];
+        // foreach ([ '$default', 'thumbnail', 'full' ] as $sizeName) {
+        //     $fileUris[$sizeName] = [];
+        //     if (array_key_exists($sizeName, $category['sizes'])) {
+        //         $fileUris[$sizeName] = EC\HFilesUpload::GetFileUris($categoryName, 
+        //                 $id, $sizeName);
+        //     }
+        // }
 
         $gallery = [];
-        foreach ($fileBaseNames as $fileBaseName) {
+        foreach ($fileUris as $fileUri) {
             $gallery[] = [
-                'imageUri' => "{$dirUri}/{$fileBaseName}",
-                'thumbUri' => "{$dirUri}" . ($hasThumbs ? "_thumb" : "") . "/{$fileBaseName}",
-                'fullUri' => "{$dirUri}" . ($hasFull ? "_full" : "") . "/{$fileBaseName}",
+                'imageUri' => $fileUri,
+                'thumbUri' => $fileUri,
+                'fullUri' => $fileUri,
             ];
         }
 
@@ -27,6 +35,9 @@ class HGallery
     static public function Init(E\Site $site)
     {
         $site->addL('postBody', E\Layout::_('Gallery:gallery'));
+        $site->addL('postBodyInit', new EC\Basic\LScript("
+            new EGallery.Class();
+        "));
     }
 
 }

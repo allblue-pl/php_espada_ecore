@@ -34,8 +34,11 @@ class HImages
         $image_width = imagesx($image);
         $image_height = imagesy($image);
 
-        if ($image_width < $min_width || $image_height < $min_height)
-            return copy($file_path, $dest_file_path);
+        if ($image_width < $min_width || $image_height < $min_height) {
+            $result = imagejpeg($image, $dest_file_path, $quality);
+            imagedestroy($image);
+            return $result;
+        }
 
         $width_factor = $min_width / $image_width;
         $height_factor = $min_height / $image_height;

@@ -5,7 +5,7 @@ SPK
 .Module('eText', [], [null, {
 $: {
 
-    _texts: {},
+    _Texts: {},
 
     add: function(file_path, texts)
     {

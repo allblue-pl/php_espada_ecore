@@ -25,6 +25,16 @@ class MABWeb extends E\Module
 
             $this->_header->addHtml($headerHtml);
         }
+
+        $bodyPath = $this->_dirPath . '/body.html';
+        if (file_exists($bodyPath)) {
+            $bodyHtml = file_get_contents($bodyPath);
+            $bodyHtml = str_replace("{{base}}", SITE_BASE, $bodyHtml);
+
+            $site->addL('postBodyInit', E\Layout::_('Basic:raw', [
+                'raw' => $bodyHtml,
+            ]));
+        }
     }
 
 }

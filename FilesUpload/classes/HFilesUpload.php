@@ -6,52 +6,143 @@ use E, EC;
 class HFilesUpload
 {
 
-    static public function Copy($file, $fileMediaPath)
+    static public function Copy($filePath_Src, $filePath)
     {
-        $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
         EC\HFiles::Dir_Create_Safe(dirname($filePath));
-        
-        // if (!file_exists(dirname($filePath))) {
 
-        // }
-        //     mkdir(dirname($filePath), 0777, true);
-
-        return copy($file['tmp_name'], $filePath);
+        return copy($filePath_Src, $filePath);
     }
 
-    static public function DeleteFiles($categoryName, $id)
+    static public function Delete($categoryName, $id)
     {
-        $category = HFilesUpload::GetCategory($categoryName);
-
-        $filePaths = self::GetFilePaths($categoryName, $id);
-        foreach ($filePaths as $filePath)
-            unlink($filePath);
+        $category = self::GetCategory($categoryName);
 
         if ($category['multiple']) {
-            $dirPath = E\Path::Media('FilesUpload', self::GetDirMediaPath($categoryName, $id));
-            if (file_exists($dirPath)) {
-                if (is_dir($dirPath))
-                    rmdir($dirPath);
-            }
+            return self::DeleteFile_Multiple($categoryName, $id, null);
+        } else {
+            return self::DeleteFile_Single($categoryName, $id);
         }
     }
 
-    static public function GetCategory($categoryName)
+    static public function DeleteFile($categoryName, $id, $fileName = null)
+    {
+        $category = EC\HFilesUpload::GetCategory($categoryName);  
+        if ($category['multiple'])
+            return self::DeleteFile_Multiple($categoryName, $id, [ $fileName ]);
+        else
+            return self::DeleteFile_Single($categoryName, $id);
+    }
+
+    static public function DeleteFile_Single($categoryName, $id)
+    {
+        $category = EC\HFilesUpload::GetCategory($categoryName);  
+
+        foreach ($category['sizes'] as $sizeName => $size) {
+            $filePath = HFilesUpload::GetFilePath($categoryName, $id, $sizeName);
+            if ($filePath !== null) {
+                if (!unlink($filePath))
+                    throw new \Exception("Cannot delete file '{$filePath}'.");
+            }
+        }
+
+        $dirPath = self::GetDirPath($categoryName, $id);
+        if (file_exists($dirPath)) {
+            if (is_dir($dirPath))
+                return rmdir($dirPath);
+        }
+
+        return true;
+    }
+
+    static public function DeleteFile_Multiple($categoryName, $id, 
+            ?array $fileNames = null)
+    {
+        $category = self::GetCategory($categoryName);
+
+        foreach ($category['sizes'] as $sizeName => $size) {
+            $filePaths = HFilesUpload::GetFilePaths($categoryName, $id, $sizeName);
+            $filePathToDelete = null;
+
+            if ($fileNames === null) {
+                foreach ($filePaths as $filePath) {
+                    if (!unlink($filePath))
+                        throw new \Exception("Cannot delete file '{$filePathToDelete}'.");
+                }
+            } else {
+                foreach ($fileNames as $fileName) {
+                    $deleted = false;
+                    foreach ($filePaths as $filePath) {
+                        $fileName_Raw = pathinfo($filePath, PATHINFO_BASENAME);
+                        if ($fileName_Raw === $fileName) {
+                            if (!unlink($filePath))
+                                throw new \Exception("Cannot delete file '{$filePathToDelete}'.");
+                            $deleted = true;
+                            break;
+                        }
+                    }
+    
+                    if (!$deleted)
+                        throw new \Exception("File '{$fileName}' does not exist.");
+                }
+            }            
+
+            $deleteDir = false;
+            if ($fileNames === null)
+                $deleteDir = true;
+            else if (count($filePaths) === count($fileNames))
+                $deleteDir = true;
+
+            if ($deleteDir) {
+                $size_Postfix = $sizeName === '$default' ? '' : "_{$sizeName}";
+                $dirPath = self::GetDirPath($categoryName, $id) . $size_Postfix;
+                if (file_exists($dirPath)) {
+                    if (is_dir($dirPath)) {
+                        if (!rmdir($dirPath))
+                            throw new \Exception("Cannot delete dir '{$dirPath}'.");
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    static public function GetCategory(string $categoryName)
     {
         $categories = EC\HConfig::GetRequired('FilesUpload', 'categories');
         if (!array_key_exists($categoryName, $categories))
             throw new \Exception("FilesUpload category '{$categoryName}' does not exist.");
 
-        return $categories[$categoryName];
+        $category = array_replace_recursive([
+            'permissions' => [],
+            'type' => 'file',
+            'exts' => null,
+            'compress' => false,
+            'multiple' => false,
+            'alias' => 'file',
+            'sizes' => [ '$default' => null, ],
+        ], $categories[$categoryName]);
+
+        if ($category['type'] === 'file') {
+            $category['compress'] = false;
+            $category['sizes'] = [ '$default' => null, ];
+        }
+
+        return $category;
     }
 
-    static public function GetDirMediaPath($categoryName, $id)
+    static public function GetDirMediaPath(string $categoryName, $id)
     {
-        $category = HFilesUpload::GetCategory($categoryName);
+        $category = self::GetCategory($categoryName);
 
-        return $category['multiple'] ?
-                "{$category['alias']}-{$id}" :
-                mb_substr($category['alias'], 0, mb_strrpos($category['alias'], '/'));
+        $dirMediaPath = "{$category['alias']}-{$id}";
+
+        return $dirMediaPath;
+    }
+
+    static public function GetDirPath($categoryName, $id)
+    {
+        return E\Path::Media('FilesUpload', self::GetDirMediaPath($categoryName, $id));
     }
 
     static public function GetDirUri($categoryName, $id)
@@ -59,36 +150,102 @@ class HFilesUpload
         return E\Uri::Media('FilesUpload', self::GetDirMediaPath($categoryName, $id));
     }
 
-    static public function GetFileBaseNames($categoryName, $id)
+    static public function GetFileMediaPath_Multiple($categoryName, $id, 
+            $fileFullName, $sizeName = '$default')
     {
-        $category = HFilesUpload::GetCategory($categoryName);
+        $fileName = pathinfo($fileFullName, PATHINFO_FILENAME);
+        $fileName_Parsed = self::ParseFileName($fileName);
+        $fileExt = mb_strtolower(pathinfo($fileFullName, PATHINFO_EXTENSION));
 
-        $dirMediaPath = HFilesUpload::GetDirMediaPath($categoryName, $id);
-        $dirPath = E\Path::Media('FilesUpload', $dirMediaPath);
+        $category = self::GetCategory($categoryName);
+        $dirMediaPath = self::GetDirMediaPath($categoryName, $id);
+    
+        $sizeName_Postfix = '';
+        if ($sizeName !== '$default') {
+            $sizeName_Postfix = "_{$sizeName}";
+        }
 
-        if (!file_exists($dirPath))
-            return [];
-
-        $files = array_filter(array_diff(scandir($dirPath), [ '.', '..' ]), 
-                function($file) use ($category, $id, $dirPath) {
-            if (is_dir("{$dirPath}/$file"))
-                    return false;
-
-            if ($category['multiple'])
-                return true;
-            
-            $fileName = mb_substr($category['alias'], mb_strrpos($category['alias'], 
-                    '/') + 1) . "-{$id}";
-
-            return pathinfo($file, PATHINFO_FILENAME) === $fileName;
-        });
-
-        return array_values($files);
+        if ($category['type'] === 'image' && $category['compress']) {
+            $fileExt = 'jpg';
     }
 
-    static public function GetFilePath($categoryName, $id)
+        return "{$dirMediaPath}{$sizeName_Postfix}/{$fileName_Parsed}.{$fileExt}";
+    }
+
+    static public function GetFileMediaPath_Single($categoryName, $id, $ext,
+            $sizeName = '$default')
     {
-        $filePaths = self::GetFilePaths($categoryName, $id);
+        $category = self::GetCategory($categoryName);
+        $dirMediaPath = self::GetDirMediaPath($categoryName, $id);
+        $aliasArr = explode('/', $category['alias']);
+        $fileName = $aliasArr[count($aliasArr) -1];
+        $sizeName_Postfix = '';
+        if ($sizeName !== '$default') {
+            $sizeName_Postfix = "_{$sizeName}";
+        }
+
+        if ($category['type'] === 'image' && $category['compress']) {
+            $ext = 'jpg';
+        }
+
+        return "{$dirMediaPath}/{$fileName}-{$id}{$sizeName_Postfix}.{$ext}";
+    }
+
+    static public function GetFileMediaPaths($categoryName, $id, 
+            $sizeName = '$default')
+    {
+        $category = self::GetCategory($categoryName);
+        $dirMediaPath = self::GetDirMediaPath($categoryName, $id);
+
+        if ($category['multiple']) {
+            $size_Postfix = '';
+            if ($sizeName !== '$default')
+                $size_Postfix = "_{$sizeName}";
+
+            $dirPath = E\Path::Media('FilesUpload', "{$dirMediaPath}{$size_Postfix}"); 
+
+            if (!file_exists($dirPath))
+                return [];
+            if (!is_dir($dirPath))
+                return [];
+
+            $files = array_filter(array_diff(scandir($dirPath), [ '.', '..' ]), 
+                    function($file) use ($category, $id, $dirPath) {
+                if (is_dir("{$dirPath}/$file")) {
+                        return false;
+                }
+
+                return true;
+            });
+
+            $fileMediaPaths = [];
+            foreach ($files as $file) {
+                $fileMediaPaths[] = "{$dirMediaPath}{$size_Postfix}/$file";
+            }
+
+            return $fileMediaPaths;
+        } else {
+            $exts = $category['exts'];
+            if ($category['type'] === 'image' && $category['compress'])
+                $exts = [ 'jpg' ];
+
+            foreach ($exts as $ext) {
+                $mediaPath = self::GetFileMediaPath_Single($categoryName, $id,
+                        $ext, $sizeName);
+                if (file_exists(E\Path::Media('FilesUpload', $mediaPath))) {
+                    return [
+                        $mediaPath,
+                    ];
+                }
+            }
+
+            return [];
+        }
+    }
+
+    static public function GetFilePath($categoryName, $id, $sizeName = '$default')
+    {
+        $filePaths = self::GetFilePaths($categoryName, $id, $sizeName);
         if (count($filePaths) === 0) {
             return null;
         }
@@ -96,37 +253,58 @@ class HFilesUpload
         return $filePaths[0];
     }
 
-    static public function GetFilePaths($categoryName, $id)
+    static public function GetFilePaths($categoryName, $id, $sizeName = '$default')
     {
-        $dirMediaPath = HFilesUpload::GetDirMediaPath($categoryName, $id);
-        $fileBaseNames = self::GetFileBaseNames($categoryName, $id);
+        $fileMediaPaths = self::GetFileMediaPaths($categoryName, $id, $sizeName);
 
-        $files = [];
-        foreach ($fileBaseNames as &$fileBaseName)
-            $files[] = E\Path::Media('FilesUpload', "{$dirMediaPath}/{$fileBaseName}");
+        $filePaths = [];
+        foreach ($fileMediaPaths as $fileMediaPath)
+            $filePaths[] = E\Path::Media('FilesUpload', $fileMediaPath);
 
-        return array_values($files);
+        return $filePaths;
     }
 
-    static public function GetFileUri($categoryName, $id)
+    static public function GetFileUri_Single($categoryName, $id, $sizeName = '$default')
     {
-        $fileUris = self::GetFileUris($categoryName, $id);
+        $category = self::GetCategory($categoryName);
+        if ($category['multiple'])
+            throw new \Exception('Wrong category type.');
+
+        $fileUris = self::GetFileUris($categoryName, $id, $sizeName);
         if (count($fileUris) === 0)
             return null;
 
         return $fileUris[0];
     }
 
-    static public function GetFileUris($categoryName, $id)
+    static public function GetFileUri_Multiple($categoryName, $id, $fileName)
     {
-        $dirMediaPath = HFilesUpload::GetDirMediaPath($categoryName, $id);
-        $fileBaseNames = self::GetFileBaseNames($categoryName, $id);
+        $category = self::GetCategory($categoryName);
+        if (!$category['multiple'])
+            throw new \Exception('Wrong category type.');
 
-        $files = [];
-        foreach ($fileBaseNames as &$fileBaseName)
-            $files[] = E\Uri::Media('FilesUpload', "{$dirMediaPath}/{$fileBaseName}");
+        $fileName_Parsed = self::ParseFileName($fileName);
+        if ($category['type'] === 'image' && $category['compress'] === true)
+            $fileName_Parsed = pathinfo($fileName_Parsed, PATHINFO_FILENAME) . ".jpg";
 
-        return array_values($files);
+        $fileUris = HFilesUpload::GetFileUris($categoryName, $id);
+        foreach ($fileUris as $fileUri) {
+            if (pathinfo($fileUri, PATHINFO_BASENAME) === $fileName_Parsed)
+                return $fileUri;
+        }
+
+        return null;
+    }
+
+    static public function GetFileUris($categoryName, $id, $sizeName = '$default')
+    {
+        $fileMediaPaths = self::GetFileMediaPaths($categoryName, $id, $sizeName);
+
+        $fileUris = [];
+        foreach ($fileMediaPaths as $fileMediaPath)
+            $fileUris[] = E\Uri::Media('FilesUpload', $fileMediaPath);
+
+        return $fileUris;
     }
 
     static public function ExistsCategory($categoryName)
@@ -151,14 +329,26 @@ class HFilesUpload
         $eLibs->setField('eFilesUpload', $field);
     }
 
-    static public function Scale($file, $fileMediaPath, $size)
+    static public function ParseFileName($fileName)
     {
-        $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
-        EC\HFiles::Dir_Create_Safe(dirname($filePath));
+        $fileName_Parsed = $fileName;
+        $fileName_Parsed = mb_strtolower($fileName_Parsed);
+        $fileName_Parsed = EC\HStrings::EscapeLangCharacters($fileName_Parsed);
+        $fileName_Parsed = str_replace(' ', '-', $fileName_Parsed);
+        $fileName_Parsed = EC\HStrings::RemoveCharacters($fileName_Parsed, 
+                'a-z0-9' . '\\._\\-');
+        $fileName_Parsed = EC\HStrings::RemoveDoubles($fileName_Parsed, ' ');
+
+        return $fileName_Parsed;
+    }
+
+    static public function Scale($filePath_Src, $filePath, $size)
+    {
+        EC\HFiles::Dir_Create_Safe(dirname($filePath), 0777, true);
         // if (!file_exists(dirname($filePath)))
         //     mkdir(dirname($filePath), 0777, true);
 
-        return EC\HImages::Scale_ToMinSize($file['tmp_name'],
+        return EC\HImages::Scale_ToMinSize($filePath_Src,
                 $filePath, $size[0], $size[1]);
     }
 
@@ -166,49 +356,61 @@ class HFilesUpload
     {
         $categories = EC\HConfig::GetRequired('FilesUpload', 'categories');
 
-        if (!array_key_exists($categoryName, $categories))
+        if (!array_key_exists($categoryName, $categories)) {
             throw new \Exception("Upload category '{$categoryName}' does not exist.");
+        }
         $category = $categories[$categoryName];
 
         if ($file['tmp_name'] === '') {
             throw new \Exception("Cannot upload file.");
         }
 
-        $fileName_Parsed = $file['name'];
-        $fileName_Parsed = mb_strtolower($fileName_Parsed);
-        $fileName_Parsed = EC\HStrings::EscapeLangCharacters($fileName_Parsed);
-        $fileName_Parsed = str_replace(' ', '-', $fileName_Parsed);
-        $fileName_Parsed = EC\HStrings::RemoveCharacters($fileName_Parsed, 
-                'qwertyuiopasdfghjklzxcvbnm' . 
-                '._-');
-        $fileName_Parsed = EC\HStrings::RemoveDoubles($fileName_Parsed, ' ');
-
-        $fileName = pathinfo($file['name'], PATHINFO_FILENAME);
         $fileExt = mb_strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $fileDir = $category['alias'];
-        $fileMediaPath = $category['multiple'] ? 
-                "{$fileDir}-{$id}/{$fileName_Parsed}.{$fileExt}" :
-                "{$fileDir}-{$id}.{$fileExt}";
+        if ($category['exts'] !== null) {
+            if (!in_array($fileExt, $category['exts'])) {
+                throw new \Exception("Wrong file extension '{$fileExt}'." .
+                        " Allowed types: " . implode(',', $category['exts']));
+            }
+        }
 
         if ($category['type'] === 'image') {
             foreach ($category['sizes'] as $sizeName => $size) {
-                $tSizeName = $sizeName === '$default' ? '' : "_{$sizeName}";
+                $fileMediaPath = null;
 
                 if ($category['multiple'])
-                    $tFileName = "-{$id}{$tSizeName}/{$fileName_Parsed}";
-                else
-                    $tFileName = "-{$id}{$tSizeName}";
-
-                if ($size === null)
-                    self::Copy($file, "{$fileDir}{$tFileName}.{$fileExt}");
+                    $fileMediaPath = self::GetFileMediaPath_Multiple(
+                            $categoryName,$id, $file['name'], $sizeName);
                 else {
-                    if (!self::Scale($file, $fileMediaPath, $size))
+                    $fileMediaPath = self::GetFileMediaPath_Single($categoryName,
+                            $id, $fileExt, $sizeName);
+                }
+
+                $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
+
+                if ($size === null) {
+                    if (!self::Copy($file['tmp_name'], $filePath)) {
+                        throw new \Exception('Cannot copy image.');
+                    }
+                } else {
+                    if (!self::Scale($file['tmp_name'], $filePath, $size))
                         throw new \Exception('Cannot scale image.');
                 }
             }
         } else if ($category['type'] === 'file') {
-            if (!self::Copy($file, $fileMediaPath))
-                throw new \Exception('Cannot copy image.');
+            $fileMediaPath = null;
+
+            if ($category['multiple'])
+                $fileMediaPath = self::GetFileMediaPath_Multiple(
+                        $categoryName, $id, $file['name']);
+            else {
+                $fileMediaPath = self::GetFileMediaPath_Single($categoryName,
+                        $id, $fileExt);
+            }
+
+            $filePath = E\Path::Media('FilesUpload', $fileMediaPath);
+
+            if (!self::Copy($file['tmp_name'], $filePath))
+                throw new \Exception('Cannot copy file.');
         } else
             throw new \Exception("Unknown category type '{$category['type']}.");
 

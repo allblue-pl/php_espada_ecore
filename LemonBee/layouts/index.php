@@ -28,5 +28,6 @@
         </script>
 
         <?php $eHolders->debug; ?>
+        <?php $eHolders->postBodyInit; ?>
     </body>
 </html>

@@ -33,6 +33,10 @@ class MCookiesPolicy extends E\Module
             'Title' => $this->title,
             'Body' => $this->body,
         ]));
+
+        $site->addL('postBodyInit', new EC\Basic\LScript(" 
+            jsLibs.require('e-cookies-policy').init();
+        "));
     }
 
 }
