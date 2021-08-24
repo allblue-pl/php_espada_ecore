@@ -424,6 +424,11 @@ class HFilesUpload
             }
         }
 
+        if (!$category['multiple']) {
+            if (!self::DeleteFile_Single($categoryName, $id))
+                throw new \Exception('Cannot delete existing file.');
+        }
+
         if ($category['type'] === 'image') {
             foreach ($category['sizes'] as $sizeName => $size) {
                 $fileRelPath = null;

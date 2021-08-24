@@ -61,17 +61,10 @@ class VText extends Forms\VField
                 $chars = str_replace('#', '\\#', $args['chars']);
                 // $value = ' hello ';
                 // echo '#' . $chars . '#' . $value . '#';
-                if (!preg_match("#^[{$chars}]*$#", $value)) {
-                    preg_match_all("#[^{$chars}]#", $value, $matches,
-                            PREG_SET_ORDER);
-                    $not_allowed_chars_arr = [];
-                    foreach ($matches as $match) {
-                        if ($match[0] === ' ')
-                            $match[0] = '\' \'';
+                $invalidChars = [];
+                if (!EC\HStrings::ValidateChars($value, $chars, $invalidChars)) {
 
-                        if (!in_array($match[0], $not_allowed_chars_arr))
-                            $not_allowed_chars_arr[] = $match[0];
-                    }
+                    $not_allowed_chars_arr = $invalidChars;
                     $not_allowed_chars = implode(', ', $not_allowed_chars_arr);
 
                     $not_allowed_chars = str_replace('\\\\', '&#92;', $not_allowed_chars);
@@ -80,6 +73,7 @@ class VText extends Forms\VField
 
                     $this->error($this->texts->get('text_NotAllowedCharacters',
                         [ $not_allowed_chars ]));
+
                 }
             }
         }

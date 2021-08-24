@@ -23,6 +23,19 @@ class HImages
         return null;
     }
 
+    static public function Save($image, $dest_file_path, $quality)
+    {
+        $ext = mb_strtolower(pathinfo($dest_file_path, PATHINFO_EXTENSION));
+        if ($ext === 'jpg' || $ext === 'jpeg')
+            return imagejpeg($image, $dest_file_path, $quality);
+        else if ($ext === 'png') {
+            $quality_Png = 9 - round(($quality / 100.0) * 9);
+            imagesavealpha($image, true);
+            return imagepng($image, $dest_file_path, $quality_Png);
+        } else
+            throw new \Exception('Unknown image extension.');
+    }
+
     static public function Scale_ToMinSize($file_path, $dest_file_path,
             $min_width, $min_height, $quality = 75)
     {
@@ -35,7 +48,7 @@ class HImages
         $image_height = imagesy($image);
 
         if ($image_width < $min_width || $image_height < $min_height) {
-            $result = imagejpeg($image, $dest_file_path, $quality);
+            $result = self::Save($image, $dest_file_path, $quality);
             imagedestroy($image);
             return $result;
         }
@@ -48,7 +61,7 @@ class HImages
                 $factor * $image_height);
         imagedestroy($image);
 
-        $result = imagejpeg($scaled_image, $dest_file_path, $quality);
+        self::Save($scaled_image, $dest_file_path, $quality);
 
         imagedestroy($scaled_image);
 
