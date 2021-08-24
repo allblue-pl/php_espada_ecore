@@ -12,15 +12,31 @@ class HText
 	{
 		$text_array = self::ParseText($text);
 
-		if ($text_array[0] === '' || $text_array[2] === '')
-			return '#' . $text . '#';
+		if ($text_array[0] === '' || $text_array[2] === '') {
+            $translation = $text;
+            if (count($args) > 0) {
+                $translation .= '(';
+                $first = true;
+                foreach ($args as $argName => $argValue) {
+                    if (!$first)
+                        $translation .= ', ';
+                    else
+                        $first = false;
+    
+                    $translation .= "$argName => $argValue";
+                }
+                $translation .= ')';
+            }
+
+            return '#' . $translation . '#';
+        }
 
 		$translations_key = self::GetTranslationsKey($text_array[0],
 				$text_array[1]);
 
 		self::Load($translations_key, $text_array[0], $text_array[1]);
 		return self::$Translations[$translations_key]
-			->get($text_array[2], $args);
+			    ->get($text_array[2], $args);
 	}
 
 	static public function GetTranslations($path)

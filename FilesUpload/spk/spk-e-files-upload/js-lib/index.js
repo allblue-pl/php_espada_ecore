@@ -53,7 +53,7 @@ export class FilesUpload extends spocky.Module
 
                 document.execCommand("copy");
 
-                this.msgs.showMessage_Success(eLibs.eText('FilesUpload:texts_Copied'));
+                this.msgs.showMessage_Success(eLibs.eText('FilesUpload:Texts_Copied'));
             },
             onDelete: (file) => {
                 this._files_Delete(file);
@@ -83,18 +83,15 @@ export class FilesUpload extends spocky.Module
             this._liveUpload.hideLoading();
 
             if (result.isSuccess()) {
-                let fileUris = result.data.files;
+                let fileInfos = result.data.files;
 
-                for (let fileUri of fileUris) {
-                    let fileBaseName = fileUri.substring(fileUri.lastIndexOf('/') + 1);
-
-
+                for (let fileInfo of fileInfos) {
                     this._liveUpload.setFile({
-                        id: this._getFileId(fileBaseName),
-                        title: fileBaseName,
-                        uri: fileUri,
-                        imgUri: this.category.type === 'image' ? 
-                                fileUri : eLibs.eField('eFilesUpload').uris.file,
+                        id: this._getFileId(fileInfo.fileName),
+                        title: fileInfo.fileName,
+                        uri: fileInfo.uri,
+                        imgUri: this.category.type === 'image' && fileInfo.uri !== null ? 
+                                fileInfo.uri : eLibs.eField('eFilesUpload').uris.file,
                     });
                 }
                 // this._liveUpload.setFile({
@@ -182,17 +179,18 @@ export class FilesUpload extends spocky.Module
                     fileName: this._escapeFileName(file.name), 
                     }, { file: file }, (result) => {
                 if (result.isSuccess()) {
-                    let uriArr = result.data.uri.split('/');
-                    let fileId = this._getFileId(uriArr[uriArr.length - 1]);
+                    let fileId = this._getFileId(result.data.fileInfo.fileName);
                     if (fileId !== this._getFileId(file.name))
                         this._liveUpload.deleteFile(this._getFileId(file.name));
 
                     this._liveUpload.setFile({
                         id: this._getFileId(fileId),
                         title: this._escapeFileName(file.name),
-                        uri: result.data.uri,
-                        imgUri: this.category.type === 'image' ? 
-                                result.data.uri : eLibs.eField('eFilesUpload').uris.file,
+                        uri: result.data.fileInfo.uri,
+                        imgUri: this.category.type === 'image' && 
+                                result.data.fileInfo.uri !== null ? 
+                                result.data.fileInfo.uri : 
+                                eLibs.eField('eFilesUpload').uris.file,
                     });
                 } else {
                     this._liveUpload.deleteFile(this._getFileId(file.name));

@@ -134,7 +134,7 @@ class AUser extends EC\Api\ABasic
                         'login' => null,
                         'permissions' => [],
                     ])
-                    ->debug('Permission denied.');
+                    ->debug('Permission denied. Required permission: ' . $permission);
 			}
 		}
 

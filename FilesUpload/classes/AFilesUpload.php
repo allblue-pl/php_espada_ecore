@@ -21,9 +21,9 @@ class AFilesUpload extends EC\Api\ABasic
             'id' => true,
             'fileName' => true,
         ]);
-        $this->action('fix', 'action_Fix', [
+        // $this->action('fix', 'action_Fix', [
 
-        ]);
+        // ]);
         $this->action('list', 'action_List', [
             'categoryName' => true,
             'id' => true,
@@ -54,34 +54,32 @@ class AFilesUpload extends EC\Api\ABasic
         return CResult::Success();
     }
 
-    public function action_Fix()
-    {
-        $dirPath = E\Path::Media('FilesUpload', 'articles');
-        $files = scandir($dirPath);
-        foreach ($files as $file) {
-            if (mb_strpos($file, 'intro-') !== 0)
-                continue;
+    // public function action_Fix()
+    // {
+    //     $dirPath = E\Path::Media('FilesUpload', 'articles');
+    //     $files = scandir($dirPath);
+    //     foreach ($files as $file) {
+    //         if (mb_strpos($file, 'intro-') !== 0)
+    //             continue;
 
-            $filePath = "{$dirPath}/$file";
-            $fileName = pathinfo($filePath, PATHINFO_FILENAME);
+    //         $filePath = "{$dirPath}/$file";
+    //         $fileName = pathinfo($filePath, PATHINFO_FILENAME);
             
-            echo $fileName . "\r\n";
-            
-            mkdir("{$dirPath}/{$fileName}");
-            HFilesUpload::Scale($filePath, "{$dirPath}/{$fileName}/{$fileName}.jpg",
-                [ 960, 640 ]);
-            HFilesUpload::Scale($filePath, "{$dirPath}/{$fileName}/{$fileName}_thumbnail.jpg",
-                [ 320, 280 ]);
-            unlink($filePath);
-        }
-    }
+    //         mkdir("{$dirPath}/{$fileName}");
+    //         HFilesUpload::Scale($filePath, "{$dirPath}/{$fileName}/{$fileName}.jpg",
+    //             [ 960, 640 ]);
+    //         HFilesUpload::Scale($filePath, "{$dirPath}/{$fileName}/{$fileName}_thumbnail.jpg",
+    //             [ 320, 280 ]);
+    //         unlink($filePath);
+    //     }
+    // }
 
     public function action_List(CArgs $args)
     {
         if (!array_key_exists($args->categoryName, $this->categories))
             return CResult::Failure("Upload category '{$args->categoryName}' does not exist.");
 
-        $files = HFilesUpload::GetFileUris($args->categoryName, $args->id);
+        $files = HFilesUpload::GetFileInfos($args->categoryName, $args->id);
 
         return CResult::Success()
             ->add('files', $files);
@@ -106,15 +104,13 @@ class AFilesUpload extends EC\Api\ABasic
         }
 
         $category = HFilesUpload::GetCategory($args->categoryName);
-        $uri = null;
-        if ($category['multiple']) {
-            $uri = HFilesUpload::GetFileUri_Multiple($args->categoryName, 
-                    $args->id, $args->file['name']);
-        } else
-            $uri = HFilesUpload::GetFileUri_Single($args->categoryName, $args->id);
+        $fileInfo = $category['multiple'] ?
+                HFilesUpload::GetFileInfo_Multiple($args->categoryName, 
+                    $args->id, $args->file['name']) :
+                HFilesUpload::GetFileInfo_Single($args->categoryName, $args->id);
 
         return CResult::Success()
-            ->add('uri', $uri);
+            ->add('fileInfo', $fileInfo);
     }
 
 }

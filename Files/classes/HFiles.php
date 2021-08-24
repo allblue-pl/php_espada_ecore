@@ -18,7 +18,7 @@ class HFiles
         }
 
         try {
-            $result = mkdir($dirPath);
+            $result = mkdir($dirPath, $permissions, $recursive);
         } catch (\Exception $e) {
             if (file_exists($dirPath)) {
                 if (is_dir($dirPath)) {

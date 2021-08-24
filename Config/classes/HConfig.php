@@ -112,7 +112,7 @@ class HConfig
 
     static private function RequireConfigFile()
 	{
-        $file_path = PATH_DATA . '/Config/config.php';
+        $file_path = E\Path::Data('Config', 'config.php');
 
 		if (!file_exists($file_path))
 			throw new \Exception('Config file `'.$file_path.'` does not exist.');
@@ -121,7 +121,7 @@ class HConfig
 
 		unset($file_path);
 
-		require(PATH_DATA . '/Config/config.php');
+		require(E\Path::Data('Config', 'config.php'));
 
         self::$Properties = array_replace_recursive(self::$Properties,
                 $eConfig->getProperties());
