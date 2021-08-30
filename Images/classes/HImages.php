@@ -37,7 +37,7 @@ class HImages
     }
 
     static public function Scale_ToMinSize($file_path, $dest_file_path,
-            $min_width, $min_height, $quality = 75)
+            $min_width, $min_height, $quality = 75, $compress = true)
     {
         $memory_limit = ini_get('memory_limit');
         ini_set('memory_limit', '128M');
@@ -48,7 +48,12 @@ class HImages
         $image_height = imagesy($image);
 
         if ($image_width < $min_width || $image_height < $min_height) {
-            $result = self::Save($image, $dest_file_path, $quality);
+            $result = false;
+            if (!$compress)
+                $result = copy($file_path, $dest_file_path);
+            else
+                $result = self::Save($image, $dest_file_path, $quality);
+
             imagedestroy($image);
             return $result;
         }
@@ -61,7 +66,7 @@ class HImages
                 $factor * $image_height);
         imagedestroy($image);
 
-        self::Save($scaled_image, $dest_file_path, $quality);
+        $result = self::Save($scaled_image, $dest_file_path, $quality);
 
         imagedestroy($scaled_image);
 

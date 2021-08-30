@@ -7,7 +7,7 @@ use E, EC;
 class HUsers
 {
 
-	const HashRounds = 7;
+	const HashRounds = 12;
 
     const Exists_Login  = 1;
     const Exists_Email  = 2;
@@ -248,7 +248,7 @@ class HUsers
             $row['EmailHash'] = self::GetEmailHash($email);
 
 		if ($password !== null)
-            $row['PasswordHash'] = EC\HHash::GetPassword($password);
+            $row['PasswordHash'] = self::GetPasswordHash($password);
 		else if ($row['Id'] !== null) {
 			$row_DB = (new TUsers($db))->row_ById($row['Id']);
 			$row['PasswordHash'] = $row_DB['PasswordHash'];

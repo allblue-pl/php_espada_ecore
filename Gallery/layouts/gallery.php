@@ -9,10 +9,10 @@ use E, EC; ?>
     <div class="slides"></div>
     <!-- Controls for the borderless lightbox -->
     <h3 class="title"></h3>
-    <a class="prev">‹</a>
-    <a class="next">›</a>
-    <a class="close">×</a>
-    <a class="play-pause"></a>
+    <a href="<?php echo E\Uri::Base(); ?>" class="prev">‹</a>
+    <a href="<?php echo E\Uri::Base(); ?>" class="next">›</a>
+    <a href="<?php echo E\Uri::Base(); ?>" class="close">×</a>
+    <a href="<?php echo E\Uri::Base(); ?>" class="play-pause"></a>
     <ol class="indicator"></ol>
     <!-- The modal dialog, which will be used to wrap the lightbox content -->
     <div class="modal fade">

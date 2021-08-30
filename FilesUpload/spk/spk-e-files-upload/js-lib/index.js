@@ -47,13 +47,10 @@ export class FilesUpload extends spocky.Module
 
         this._liveUpload = new spkFileUpload.LiveUpload(title, this.category.type, {
             onCopy: (file) => {
-                let textArea = document.createElement('textarea');
-                textArea.value = file.uri;
-                textArea.select();
-
-                document.execCommand("copy");
-
-                this.msgs.showMessage_Success(eLibs.eText('FilesUpload:Texts_Copied'));
+                navigator.clipboard.writeText(file.uri).then(() => {
+                    this.msgs.showMessage_Success(
+                            eLibs.eText('FilesUpload:Texts_Copied'));
+                });
             },
             onDelete: (file) => {
                 this._files_Delete(file);

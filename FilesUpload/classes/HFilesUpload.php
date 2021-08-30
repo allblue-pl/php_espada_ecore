@@ -117,6 +117,7 @@ class HFilesUpload
             'permissions' => [],
             'type' => 'file',
             'exts' => null,
+            'quality' => 75,
             'compress' => false,
             'multiple' => false,
             'alias' => 'file',
@@ -125,6 +126,7 @@ class HFilesUpload
         ], $categories[$categoryName]);
 
         if ($category['type'] === 'file') {
+            $category['quality'] = null;
             $category['compress'] = false;
             $category['sizes'] = [ '$default' => null, ];
         }
@@ -170,10 +172,6 @@ class HFilesUpload
             $sizeName_Postfix = "_{$sizeName}";
         }
 
-        if ($category['type'] === 'image' && $category['compress']) {
-            $fileExt = 'jpg';
-    }
-
         return "{$dirRelPath}{$sizeName_Postfix}/{$fileName_Parsed}.{$fileExt}";
     }
 
@@ -187,10 +185,6 @@ class HFilesUpload
         $sizeName_Postfix = '';
         if ($sizeName !== '$default') {
             $sizeName_Postfix = "_{$sizeName}";
-        }
-
-        if ($category['type'] === 'image' && $category['compress']) {
-            $ext = 'jpg';
         }
 
         return "{$dirRelPath}/{$fileName}-{$id}{$sizeName_Postfix}.{$ext}";
@@ -233,8 +227,6 @@ class HFilesUpload
             return $fileRelPaths;
         } else {
             $exts = $category['exts'];
-            if ($category['type'] === 'image' && $category['compress'])
-                $exts = [ 'jpg' ];
 
             foreach ($exts as $ext) {
                 $mediaPath = self::GetFileRelPath_Single($categoryName, $id,
@@ -296,8 +288,6 @@ class HFilesUpload
             throw new \Exception('Wrong category type.');
 
         $fileName_Parsed = self::ParseFileName($fileName);
-        if ($category['type'] === 'image' && $category['compress'] === true)
-            $fileName_Parsed = pathinfo($fileName_Parsed, PATHINFO_FILENAME) . ".jpg";
 
         $fileInfos = HFilesUpload::GetFileInfos($categoryName, $id);
         foreach ($fileInfos as $fileInfo) {
@@ -398,14 +388,15 @@ class HFilesUpload
         return $fileName_Parsed;
     }
 
-    static public function Scale($filePath_Src, $filePath, $size)
+    static public function Scale($filePath_Src, $filePath, $size, 
+            $quality = 75, $compress = true)
     {
         EC\HFiles::Dir_Create_Safe(dirname($filePath), 0777, true);
         // if (!file_exists(dirname($filePath)))
         //     mkdir(dirname($filePath), 0777, true);
 
         return EC\HImages::Scale_ToMinSize($filePath_Src,
-                $filePath, $size[0], $size[1]);
+                $filePath, $size[0], $size[1], $quality, $compress);
     }
 
     static public function Upload(string $categoryName, string $id, $file)
@@ -450,7 +441,8 @@ class HFilesUpload
                         throw new \Exception('Cannot copy image.');
                     }
                 } else {
-                    if (!self::Scale($file['tmp_name'], $filePath, $size))
+                    if (!self::Scale($file['tmp_name'], $filePath, $size,
+                            $category['quality'], $category['compress']))
                         throw new \Exception('Cannot scale image.');
                 }
             }
