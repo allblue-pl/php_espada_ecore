@@ -383,7 +383,7 @@ class HFilesUpload
         $fileName_Parsed = str_replace(' ', '-', $fileName_Parsed);
         $fileName_Parsed = EC\HStrings::RemoveCharacters($fileName_Parsed, 
                 'a-z0-9' . '\\._\\-');
-        $fileName_Parsed = EC\HStrings::RemoveDoubles($fileName_Parsed, ' ');
+        $fileName_Parsed = EC\HStrings::RemoveDoubles($fileName_Parsed, '-');
 
         return $fileName_Parsed;
     }
