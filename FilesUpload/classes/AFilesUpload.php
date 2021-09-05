@@ -87,13 +87,6 @@ class AFilesUpload extends EC\Api\ABasic
 
     public function action_Upload(CArgs $args)
     {
-        if ($args->_debug && $args->_test) {
-            $args->file = [
-                'name' => 'hello-test.jpg',
-                'tmp_name' => PATH_ESITE . '/tests/test.jpg',
-            ];
-        }
-
         try {
             HFilesUpload::Upload($args->categoryName, $args->id, $args->file);
         } catch (\Exception $e) {
