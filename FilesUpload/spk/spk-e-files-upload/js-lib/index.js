@@ -23,10 +23,10 @@ export class FilesUpload extends spocky.Module
     }
 
 
-    constructor(msgs, categoryName, title, onInsertFn = null)
+    constructor(msgs, categoryName, title, onInsertFn = null, fileExts = '*')
     { super();
         js0.args(arguments, require('spk-messages').Messages, 'string', 'string',
-                [ 'function', js0.Default ]);
+                [ 'function', js0.Null, js0.Default ], [ 'string', js0.Default ]);
 
         this._id = null;
         this._onInsertFn = onInsertFn;
@@ -63,7 +63,7 @@ export class FilesUpload extends spocky.Module
                 this._files_Upload(files);
             },
                 }, this.category.type === 'image' ? 
-                '.jpg, .jpeg, .png, .gif' : '*', eLibs.eFields.get('eFilesUpload').texts);
+                '.jpg, .jpeg, .png, .gif' : fileExts, eLibs.eFields.get('eFilesUpload').texts);
         this._liveUpload.showLoading();
 
         this.$view = this._liveUpload;
