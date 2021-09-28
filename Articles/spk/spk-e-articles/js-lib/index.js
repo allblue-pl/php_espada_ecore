@@ -104,7 +104,7 @@ export class Form extends spocky.Module
 
     insertFile(file)
     {
-        this.editor.insertHtml_AtCursor(`<li><a href="${file.uri}">${file.id}</a></li>`);
+        this.editor.insertHtml_AtCursor(`<ul><li><a href="${file.uri}">${file.id}</a></li></ul>`);
     }null
 
     insertImage(file)

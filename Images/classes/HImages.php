@@ -42,26 +42,30 @@ class HImages
         $memory_limit = ini_get('memory_limit');
         ini_set('memory_limit', '128M');
 
+        $ext = pathinfo($dest_file_path, PATHINFO_EXTENSION);
         $image = self::Create($file_path);
-        $exif = exif_read_data($file_path);
-        if (!empty($exif['Orientation'])) {
-            $image_Source = $image;
-            switch ($exif['Orientation']) {
-                case 3:
-                    $image = imagerotate($image_Source, 180, 0);
-                    break;
-                case 6:
-                    $image = imagerotate($image_Source, -90, 0);
-                    break;
-                case 8:
-                    $image = imagerotate($image_Source, 90, 0);
-                    break;
-                default:
-                    $image = $image_Source;
+
+        if ($ext === 'jpg' || $ext === 'jpeg') {
+            $exif = exif_read_data($file_path);
+            if (!empty($exif['Orientation'])) {
+                $image_Source = $image;
+                switch ($exif['Orientation']) {
+                    case 3:
+                        $image = imagerotate($image_Source, 180, 0);
+                        break;
+                    case 6:
+                        $image = imagerotate($image_Source, -90, 0);
+                        break;
+                    case 8:
+                        $image = imagerotate($image_Source, 90, 0);
+                        break;
+                    default:
+                        $image = $image_Source;
+                }
+                
+                if ($image !== $image_Source)
+                    imagedestroy($image_Source);
             }
-            
-            if ($image !== $image_Source)
-                imagedestroy($image_Source);
         }
 
         $image_width = imagesx($image);
