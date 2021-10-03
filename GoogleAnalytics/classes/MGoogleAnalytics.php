@@ -26,7 +26,8 @@ class MGoogleAnalytics extends E\Module
     protected function _preDisplay(E\Site $site)
     {
         if ($this->trackingCode === null)
-            throw new \Exception('Google Analytics tracking code not set.');
+            return;
+            // throw new \Exception('Google Analytics tracking code not set.');
 
         $this->header->addHtml("
             <script>
