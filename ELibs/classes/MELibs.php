@@ -6,16 +6,18 @@ use E, EC;
 class MELibs extends E\Module
 {
 
-    private $header = null;
+    private $head = null;
+    private $scriptCSPHash = null;
 
     private $fields = [];
     private $fieldFns = [];
     private $texts = [];
     private $script = '';
 
-    function __construct(EC\Basic\MHead $header)
+    function __construct(EC\Basic\MHead $head)
     {
-        $this->header = $header;
+        $this->head = $head;
+        $this->scriptCSPHash = $head->generateScriptCSPHash();
     }
 
     function addScript(string $script)
@@ -52,13 +54,10 @@ class MELibs extends E\Module
         $this->fieldFns[$fieldName] = $fieldFn;
     }
 
-    function _preInitialize(E\Site $site)
+    function _preDisplay(E\Site $site)
     {
-        $site->addL('postBodyInit', E\Layout::_('Basic:raw', function() {
-            return [
-                'raw' => $this->getScript(),
-            ];
-        }));
+        $site->addL('postBodyInit', new EC\Basic\LScript(function() {
+            return $this->getScript(); }, $this->scriptCSPHash));
     }
 
     function getScript()
@@ -93,8 +92,7 @@ class MELibs extends E\Module
         $date_Formats_DateTime = EC\HText::_('ELibs:date_Formats_DateTime');
         $date_Formats_Time = EC\HText::_('ELibs:date_Formats_Time');
 
-        $script = <<<HTML
-<script>
+        $script = <<<SCRIPT
     (function() {
         let abDate = jsLibs.require('ab-date');
         let eLibs = jsLibs.require('e-libs');
@@ -109,8 +107,7 @@ class MELibs extends E\Module
 
         {$this->script}
     })();
-</script>
-HTML;
+SCRIPT;
 
         return $script;
     }

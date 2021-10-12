@@ -37,7 +37,7 @@ class HGallery
         $site->addL('postBody', E\Layout::_('Gallery:gallery'));
         $site->addL('postBodyInit', new EC\Basic\LScript("
             new EGallery.Class();
-        "));
+        ", $site->m->head->generateScriptCSPHash()));
     }
 
 }

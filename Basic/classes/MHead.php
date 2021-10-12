@@ -8,6 +8,9 @@ class MHead extends E\Module
 
     private $fields = null;
 
+    private $csp = null;
+    private $scriptCSPHashes = [];
+
     /* Meta Data */
     private $title = 'Espada Website';
     private $description = '';
@@ -26,6 +29,11 @@ class MHead extends E\Module
     public function __construct()
     {
         parent::__construct();
+    }
+
+    public function setContentSecurityPolicy(string $contentSecurityPolicy)
+    {
+        $this->csp = $contentSecurityPolicy;
     }
 
     public function addHtml($html)
@@ -58,6 +66,16 @@ class MHead extends E\Module
                 "\n";
     }
 
+    public function generateScriptCSPHash()
+    {
+        $this->requireBeforePreDisplay();
+
+        $hash = EC\HHash::Generate(16);
+        $this->scriptCSPHashes[] = "'nonce-{$hash}'";
+
+        return $hash;
+    }
+
     public function setAuthor($author)
     {
         $this->author = $author;
@@ -82,6 +100,14 @@ class MHead extends E\Module
     {
         $site->addL('postHead', E\Layout::_('Basic:raw', function() {
             $header = '';
+
+            if ($this->csp !== null) {
+                $header .= $this->getNode('meta', [
+                    "http-equiv" => "Content-Security-Policy",
+                    "content" => $this->csp . " script-src 'self' 'unsafe-eval' " . 
+                            implode(' ', $this->scriptCSPHashes) . ';',
+                ]);
+            }
 
             /* Meta Data */
             /* Title */
