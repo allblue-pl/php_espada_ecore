@@ -12,7 +12,7 @@ class HArticles
 
         // $table->addColumns_Extra([
         //     'Alias'             => [ null, new EC\Database\FString(false, 128) ],
-        //     'IntroImageUri'     => [ null, new EC\Database\FString(false, 256) ],
+        //     'IntroImage_Uri'     => [ null, new EC\Database\FString(false, 256) ],
         //     'IsPublished'       => [ "a_a.Published AND a_a.Publish <= $time", 
         //             new EC\Database\FBool(false) ],
         // ]);
@@ -21,7 +21,7 @@ class HArticles
             'out' => function($row, $name, $value) {
                 $colNames = [
                     'Alias' => str_replace('Id', 'Alias', $name),
-                    'IntroImageUri' => str_replace('Id', 'IntroImageUri', $name),
+                    'IntroImage_Uri' => str_replace('Id', 'IntroImage_Uri', $name),
                     'Title' => str_replace('Id', 'Title', $name),
                 ];
 
@@ -30,8 +30,24 @@ class HArticles
                 return [
                     $name => $value,
                     $colNames['Alias'] => $alias,
-                    $colNames['IntroImageUri'] => EC\HFilesUpload::GetFileUri_Single(
+                    $colNames['IntroImage_Uri'] => EC\HFilesUpload::GetFileUri_Single(
                             'eArticles_Intro', (int)$value),
+                ];
+            },
+        ]);
+
+        $table->addColumnParser('IntroImage_Description', [
+            'out' => function($row, $name, $value) {
+                $colNames = [
+                    'Title' => str_replace('IntroImage_Description', 'Title', $name),
+                ];
+
+                $alias = EC\HArticles::Alias_Format($row[$colNames['Title']]);
+
+                return [
+                    $name => $row[$name] === '' ?
+                            $row[$colNames['Title']] : 
+                            $row[$name],
                 ];
             },
         ]);

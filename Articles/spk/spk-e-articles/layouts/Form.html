@@ -17,10 +17,16 @@
                 type="Checkbox"
                 label="$eText('Articles:labels_Published')" /> 
     </div>
-    <div class="col-lg-12">
+    <div class="col-lg-6">
         <spk-form-field _hide="hide.form.Intro" form="Form" name="Intro"
                 type="TextArea" label="$eText('Articles:labels_ArticleIntro')"
                 placeholder="$eText('Articles:labels_Intro')..." rows="3" />
+    </div>
+    <div class="col-lg-6">
+        <spk-form-field form="Form" name="IntroImage_Description" type="Input" 
+                input-type="text"
+                label="$eText('Articles:labels_IntroImage_Description')"
+                placeholder="$eText('Articles:labels_IntroImage_Description')..." />
     </div>
     <div class="col-lg-6">
         <$ _holder="introUpload" />

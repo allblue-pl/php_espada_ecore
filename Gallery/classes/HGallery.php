@@ -32,12 +32,12 @@ class HGallery
         return $gallery;
     }
 
-    static public function Init(E\Site $site)
+    static public function Init(E\Site $site, $cspHash = null)
     {
         $site->addL('postBody', E\Layout::_('Gallery:gallery'));
         $site->addL('postBodyInit', new EC\Basic\LScript("
             new EGallery.Class();
-        ", $site->m->head->generateScriptCSPHash()));
+        ", $cspHash));
     }
 
 }

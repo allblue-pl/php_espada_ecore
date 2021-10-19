@@ -20,6 +20,7 @@ class _TArticles extends Database\TTable
             'AuthorName' => new Database\FString(true, 128),
             'Title' => new Database\FString(true, 256),
             'Intro' => new Database\FString(true, 1024),
+            'IntroImage_Description' => new Database\FString(true, 128),
             'Content_Raw' => new Database\FText(true, 'medium'),
             'Content_Html' => new Database\FText(true, 'medium'),
         ]);

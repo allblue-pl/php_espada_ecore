@@ -55,7 +55,7 @@ class TArticles extends _TArticles
         /* Columns */
         $this->addColumns_Extra([
             'Alias'             => [ null, new EC\Database\FString(false, 128) ],
-            'IntroImageUri'     => [ null, new Database\FString(false, 256) ],
+            'IntroImage_Uri'     => [ null, new Database\FString(false, 256) ],
             'IsPublished'       => [ "a_a.Published AND a_a.Publish <= $time", 
                     new Database\FBool(false) ],
         ]);
@@ -68,6 +68,10 @@ class TArticles extends _TArticles
             'chars' => EC\HStrings::GetCharsRegexp_Basic('\r\n') . '"',
         ]);
         $this->setColumnVFields('Intro', [
+            'required' => false,
+            'chars' => null,
+        ]);
+        $this->setColumnVFields('IntroImage_Description', [
             'required' => false,
             'chars' => null,
         ]);

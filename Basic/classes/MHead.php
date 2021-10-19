@@ -68,7 +68,7 @@ class MHead extends E\Module
 
     public function generateScriptCSPHash()
     {
-        $this->requireBeforePreDisplay();
+        $this->requireBeforePostInitialize();
 
         $hash = EC\HHash::Generate(16);
         $this->scriptCSPHashes[] = "'nonce-{$hash}'";
@@ -96,18 +96,19 @@ class MHead extends E\Module
         $this->title = $title;
     }
 
+    protected function _postInitialize(E\Site $site)
+    {
+        if ($this->csp !== null) {
+            header("Content-Security-Policy: {$this->csp}" . 
+                    " script-src 'self' 'unsafe-eval' " . 
+                    implode(' ', $this->scriptCSPHashes) . ';');
+        }
+    }
+
     protected function _preDisplay(E\Site $site)
     {
         $site->addL('postHead', E\Layout::_('Basic:raw', function() {
             $header = '';
-
-            if ($this->csp !== null) {
-                $header .= $this->getNode('meta', [
-                    "http-equiv" => "Content-Security-Policy",
-                    "content" => $this->csp . " script-src 'self' 'unsafe-eval' " . 
-                            implode(' ', $this->scriptCSPHashes) . ';',
-                ]);
-            }
 
             /* Meta Data */
             /* Title */
