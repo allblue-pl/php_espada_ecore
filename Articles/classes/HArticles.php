@@ -36,21 +36,21 @@ class HArticles
             },
         ]);
 
-        $table->addColumnParser('IntroImage_Description', [
-            'out' => function($row, $name, $value) {
-                $colNames = [
-                    'Title' => str_replace('IntroImage_Description', 'Title', $name),
-                ];
+        // $table->addColumnParser('IntroImage_Description', [
+        //     'out' => function($row, $name, $value) {
+        //         $colNames = [
+        //             'Title' => str_replace('IntroImage_Description', 'Title', $name),
+        //         ];
 
-                $alias = EC\HArticles::Alias_Format($row[$colNames['Title']]);
+        //         $alias = EC\HArticles::Alias_Format($row[$colNames['Title']]);
 
-                return [
-                    $name => $row[$name] === '' ?
-                            $row[$colNames['Title']] : 
-                            $row[$name],
-                ];
-            },
-        ]);
+        //         return [
+        //             $name => $row[$name] === '' ?
+        //                     $row[$colNames['Title']] : 
+        //                     $row[$name],
+        //         ];
+        //     },
+        // ]);
     }
 
     static public function Alias_Format($str)

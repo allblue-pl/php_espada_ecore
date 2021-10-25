@@ -9,6 +9,7 @@ class MHead extends E\Module
     private $fields = null;
 
     private $csp = null;
+    private $csp_ScriptSrc = null;
     private $scriptCSPHashes = [];
 
     /* Meta Data */
@@ -34,6 +35,11 @@ class MHead extends E\Module
     public function setContentSecurityPolicy(string $contentSecurityPolicy)
     {
         $this->csp = $contentSecurityPolicy;
+    }
+
+    public function setContentSecurityPolicy_ScriptSrc(string $scriptSrc)
+    {
+        $this->csp_ScriptSrc = $scriptSrc;
     }
 
     public function addHtml($html)
@@ -101,6 +107,7 @@ class MHead extends E\Module
         if ($this->csp !== null) {
             header("Content-Security-Policy: {$this->csp}" . 
                     " script-src 'self' 'unsafe-eval' " . 
+                    ($this->csp_ScriptSrc === null ? '' : $this->csp_ScriptSrc . ' ') .
                     implode(' ', $this->scriptCSPHashes) . ';');
         }
     }
