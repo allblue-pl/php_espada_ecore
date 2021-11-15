@@ -8,13 +8,17 @@ class HEncoding
 
     static public function Convert($str, $to_encoding, $from_encoding)
     {
-        if (mb_strtolower($from_encoding) === 'cp1250') {
+        $from_encoding = mb_strtolower($from_encoding);
+        $to_encoding = mb_strtolower($to_encoding);
+
+        if ($from_encoding === 'cp1250') {
             $str = self::CP1250_To_UTF8($str);
             $from_encoding = 'utf-8';
 
-            if (mb_strtolower($to_encoding) === $from_encoding)
+            if ($to_encoding === $from_encoding)
                 return $str;
-        }
+        } else if ($from_encoding === 'windows-1250')
+            return iconv($from_encoding, $to_encoding, $str);
 
         return mb_convert_encoding($str, $to_encoding, $from_encoding);
     }
