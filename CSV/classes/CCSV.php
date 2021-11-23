@@ -6,8 +6,9 @@ use E, EC;
 class CCSV
 {
 
-    private $separators = null;
+    private $separators = [ ';', ',' ];
     private $charset = '';
+    private $hasQuotedRows = true;
 
     private $separator = '';
 
@@ -19,10 +20,21 @@ class CCSV
     private $line0 = null;
     private $line1 = null;
 
-    public function __construct($separators = [';', ','], $charset = '')
+    public function __construct(array $options = [])
     {
-        $this->separators = $separators;
-        $this->charset = $charset;
+        $separators = [ ';', ',' ];
+        $charset = '';
+        $hasQuotedRows = true;
+
+        if (array_key_exists('separators', $options)) {
+            $this->separators = $options['separators'];
+        }
+        if (array_key_exists('charset', $options)) {
+            $this->charset = $options['charset'];
+        }
+        if (array_key_exists('hasQuotedRows', $options)) {
+            $this->hasQuotedRows = $options['hasQuotedRows'];
+        }
     }
 
     public function close()
@@ -138,7 +150,7 @@ class CCSV
             if ($column === null) {
                 $column = '';
 
-                if ($char === $quoteSign) {
+                if ($char === $quoteSign && $this->hasQuotedRows) {
                     $quoted = true;
                     continue;
                 }
@@ -225,7 +237,6 @@ class CCSV
             $line = fgets($this->file);
             if ($line === false)
                 return null;
-
             $line = str_replace("\r\n", "\n", $line);
             $line = str_replace("\n", "", $line);
         } else if ($this->textArr !== null) {
@@ -243,40 +254,38 @@ class CCSV
         return $line;
     }
 
-    private function readRow($line)
-    {
-        $row = new CRow();
+    // private function readRow($line)
+    // {
+    //     $row = new CRow();
 
-        $line = $this->readRow_ParseQuatations($line);
+    //     $line = $this->readRow_ParseQuatations($line);
 
-        $columns = explode($this->separator, $line);
+    //     $columns = explode($this->separator, $line);
 
-        foreach ($columns as $column) {
-            $column = str_replace('{{separator}}', $this->separator, $column);
-            $row->addColumn($column);
-        }
+    //     foreach ($columns as $column) {
+    //         $column = str_replace('{{separator}}', $this->separator, $column);
+    //         $row->addColumn($column);
+    //     }
 
-        return $row;
-    }
+    //     return $row;
+    // }
 
-    private function readRow_ParseQuatations($line)
-    {
-        $quote = false;
+    // private function readRow_ParseQuatations($line)
+    // {
+    //     $quote = false;
 
+    //     $regexp = "#(^|{$this->separator})\"(.*?)\"({$this->separator}|$)#s";
 
+    //     preg_match_all($regexp, $line, $matches, PREG_SET_ORDER);
 
-        $regexp = "#(^|{$this->separator})\"(.*?)\"({$this->separator}|$)#s";
+    //     foreach ($matches as $match) {
+    //         $match_2 = str_replace($this->separator, '{{separator}}', $match[2]);
 
-        preg_match_all($regexp, $line, $matches, PREG_SET_ORDER);
+    //         $line = str_replace($match[0], $match[1] . $match_2 . $match[3],
+    //                 $line);
+    //     }
 
-        foreach ($matches as $match) {
-            $match_2 = str_replace($this->separator, '{{separator}}', $match[2]);
-
-            $line = str_replace($match[0], $match[1] . $match_2 . $match[3],
-                    $line);
-        }
-
-        return $line;
-    }
+    //     return $line;
+    // }
 
 }
