@@ -112,7 +112,7 @@ class HConfig
 
     static private function RequireConfigFile()
 	{
-        $file_path = PATH_PRESETS . '/config/config.php';
+        $file_path = PATH_PRESETS . '/Config/config.php';
 
 		if (!file_exists($file_path))
 			throw new \Exception('Config file `'.$file_path.'` does not exist.');
