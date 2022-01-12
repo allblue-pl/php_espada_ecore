@@ -65,10 +65,10 @@ class AUser extends EC\Api\ABasic
 
         if (!HUsers::CheckLoginAndPassword($db, $this->user->getType(),
                 $userLogin, $args->Password))
-            return CResult::Failure(EC\HText::_('Users:errors_WrongPassword'));
+            return CResult::Failure(EC\HText::_('Users:Errors_WrongPassword'));
 
         if (!HUsers::CheckPasswordStrength($args->NewPassword))
-            return CResult::Failure(EC\HText::_('Users:errors_WrongPasswordFormat'));
+            return CResult::Failure(EC\HText::_('Users:Errors_WrongPasswordFormat'));
 
         if (!HUsers::ChangePassword($db, $userId,
                 $args->NewPassword))
@@ -104,7 +104,7 @@ class AUser extends EC\Api\ABasic
         $user = $this->user;
 
         if ($user->isLoggedIn()) {
-			$result = CResult::Failure('Users:errors_LogOutFirst');
+			$result = CResult::Failure('Users:Errors_LogOutFirst');
 			$result
                 ->add('user', [
                     'login' => $this->user->getLogin(),
@@ -118,7 +118,7 @@ class AUser extends EC\Api\ABasic
                 $login, $password);
 
 		if ($userInfo === null) {
-			return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'))
+			return CResult::Failure(EC\HText::_('Users:Errors_WrongLoginOrPassword'))
                 ->add('user', [
                     'login' => null,
                     'permissions' => [],
@@ -129,7 +129,7 @@ class AUser extends EC\Api\ABasic
 
 		foreach ($this->requiredPermissions as $permission) {
 			if (!in_array($permission, $userPermissions)) {
-				return CResult::Failure(EC\HText::_('Users:errors_WrongLoginOrPassword'))
+				return CResult::Failure(EC\HText::_('Users:Errors_WrongLoginOrPassword'))
                     ->add('user', [
                         'login' => null,
                         'permissions' => [],

@@ -56,10 +56,10 @@ export default class ChangePassword extends spocky.Module
     submit()
     {
         if (this.l.$elems.newPassword.value === '') {
-            this.setMessage_Error(eLibs.eText('Users:errors_EmptyNewPassword'));
+            this.setMessage_Error(eLibs.eText('Users:Errors_EmptyNewPassword'));
             return;
         } else if (this.l.$elems.newPassword.value !== this.l.$elems.newPassword_Repeat.value) {
-            this.setMessage_Error(eLibs.eText('Users:errors_PasswordsDoNotMatch'));
+            this.setMessage_Error(eLibs.eText('Users:Errors_PasswordsDoNotMatch'));
             return;
         }
 

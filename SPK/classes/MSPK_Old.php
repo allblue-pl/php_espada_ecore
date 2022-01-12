@@ -118,8 +118,8 @@ class MSPK extends E\Module
             $html .= "SPK.\$eFields.set('{$fields_name}', {$fields_json});";
 
         /* EText */
-        foreach ($this->texts as $file_path => $texts_json)
-            $html .= "SPK.\$eText.add('{$file_path}', {$texts_json});";
+        foreach ($this->texts as $file_path => $Text_json)
+            $html .= "SPK.\$eText.add('{$file_path}', {$Text_json});";
 
         $html .= '});';
 

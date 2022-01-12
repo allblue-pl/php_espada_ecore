@@ -271,7 +271,7 @@ class HUsers
             $excludedIds[] = $userId;
 
         if (self::Exists($db, $userType, $login, $excludedIds))
-            $validator->fieldError($fieldName, EC\HText::_('Users:errors_UserAlreadyExists'));
+            $validator->fieldError($fieldName, EC\HText::_('Users:Errors_UserAlreadyExists'));
     }
 
 }

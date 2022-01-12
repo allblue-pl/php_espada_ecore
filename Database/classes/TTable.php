@@ -754,7 +754,7 @@ class TTable
         $this->selectColumns = $select_column_names;
     }
 
-    // public function setValidator(VField $validator_field)
+    // public function setValidator(VField $Validator_field)
     // {
     //     if ($validator === null) {
     //         if (array_key_exists(0, $this->validators))
@@ -763,13 +763,13 @@ class TTable
     //         return;
     //     }
     //
-    //     $this->validators[0] = $validator_field;
+    //     $this->validators[0] = $Validator_field;
     // }
     //
-    // public function setValidatorInfo($columnName, $validator_info)
+    // public function setValidatorInfo($columnName, $Validator_info)
     // {
     //     $this->validators[0] = $this->getColumn($columnName)['field']
-    //             ->getVField($validator_info);
+    //             ->getVField($Validator_info);
     // }
 
     public function setColumnVFields($columnName, $default_v_field_info,

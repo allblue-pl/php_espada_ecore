@@ -18,23 +18,23 @@ class CValidator
 
     }
 
-    public function add($name, $value, $validator_fields = [])
+    public function add($name, $value, $Validator_fields = [])
     {
         if ($this->field_Exists($name))
             throw new \Exception("Field `{$name}` already exists.");
 
         $this->field_Add($name, $value);
 
-        foreach ($validator_fields as $v_field)
+        foreach ($Validator_fields as $v_field)
             $this->addValidatorField($name, $v_field);
     }
 
-    public function addValidatorField($name, VField $validator_field)
+    public function addValidatorField($name, VField $Validator_field)
     {
         $field = $this->field_Get($name);
 
         $str_value = $field['value'] === null ? '' : strval($field['value']);
-        $validator_field->validate($this, $name, $field['value']);
+        $Validator_field->validate($this, $name, $field['value']);
 
         $fields['value'] = $str_value;
     }

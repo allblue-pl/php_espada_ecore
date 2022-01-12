@@ -158,7 +158,7 @@ export class FilesUpload extends spocky.Module
 
         if (fileNames_Invalid.length > 0) {
             this.msgs.showMessage_Failure(eLibs.eTexts.get(
-                    'FilesUpload:errors_WrongImageFormat', 
+                    'FilesUpload:Errors_WrongImageFormat', 
                     [ fileNames_Invalid.join(', ') ]));
         }
         
