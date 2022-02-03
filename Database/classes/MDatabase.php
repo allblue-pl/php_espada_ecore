@@ -43,7 +43,7 @@ class MDatabase extends E\Module
 	public function escapeBool($value)
 	{
 		if ($value === null)
-			return 'null';
+			return 'NULL';
 
 		if ((bool)$value)
 			return '1';
@@ -96,7 +96,7 @@ class MDatabase extends E\Module
         if ($value === null)
 			return 'NULL';
 
-        return (string)((float)$value);
+        return (string)((float)round($value));
     }
 
 	public function escapeString($value)
@@ -336,7 +336,7 @@ class MDatabase extends E\Module
 	public function connect()
 	{
 		if ($this->mysqli !== null)
-			throw new \Exception('`disconnect` from database before calling `conenct`.');
+			throw new \Exception('`disconnect` from database before calling `connect`.');
 
 		$config = new EC\CConfig('Database');
 
@@ -346,7 +346,7 @@ class MDatabase extends E\Module
 		$name = 	$config->getRequired("{$this->prefix}_Name");
 
 		$port = $config->get("{$this->prefix}_Port", 3306);
-		$charset_encoding = $config->get("{$this->prefix}_CharsetEncoding", 'utf-8');
+		$charset_encoding = $config->get("{$this->prefix}_CharsetEncoding", 'utf8');
 		$this->useTransactions = $config->get("{$this->prefix}_UseTransactions", true);
 
 		$this->mysqli = new \mysqli($host, $user, $password, $name, $port);

@@ -12,7 +12,7 @@ class _TUsers extends Database\TTable
         parent::__construct($db, 'Users_Users', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FId(true),
+            'Id' => new Database\FLong(true),
             'Type' => new Database\FString(true, 16),
             'LoginHash' => new Database\FString(true, 256),
             'EmailHash' => new Database\FString(true, 256),
@@ -20,6 +20,7 @@ class _TUsers extends Database\TTable
             'Groups' => new Database\FString(true, 128),
             'Active' => new Database\FBool(true),
         ]);
+        $this->setPKs([ 'Id' ]);
     }
 
 }

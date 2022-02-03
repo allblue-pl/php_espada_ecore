@@ -23,6 +23,14 @@ class FId extends FField
         return $db->escapeLong($value);
     }
 
+    protected function _parse($value)
+    {
+        if ($value === null)
+            return null;
+            
+        return (float)round($value);
+    }
+
     protected function _unescape(EC\MDatabase $db, $value)
     {
         return $db->unescapeLong($value);

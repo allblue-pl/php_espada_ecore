@@ -37,6 +37,11 @@ class FBlob extends FField
         return $db->escapeString($value);
     }
 
+    protected function _parse($value)
+    {
+        return (string)$value;
+    }
+
     protected function _unescape(EC\MDatabase $db, $value)
     {
         return $db->unescapeString($value);

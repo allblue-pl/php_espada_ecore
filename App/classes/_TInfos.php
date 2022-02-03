@@ -17,6 +17,7 @@ class _TInfos extends Database\TTable
             'AuthenticationHash' => new Database\FString(true, 256),
             'Data' => new Database\FText(true, 'medium'),
         ]);
+        $this->setPKs([ 'Id' ]);
     }
 
 }

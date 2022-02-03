@@ -18,6 +18,8 @@ class TTable
     public $columns = [];
     private $columns_Table = [];
 
+    private $primaryKeys = [ 'Id' ];
+
     private $selectColumnNames = null;
 
     private $rowParsers = [];
@@ -316,6 +318,11 @@ class TTable
         return $this->join;
     }
 
+    public function getPrimaryKeys()
+    {
+        return $this->primaryKeys;
+    }
+
     public function getTableName()
     {
         return $this->name;
@@ -408,22 +415,22 @@ class TTable
         $db_column_names_str = implode(',', $db_column_names);
 
         /* Values */
-        $db_values_array = [];
+        $valuesArr_DB = [];
         foreach ($rows as $row) {
-            $db_row = [];
-            foreach ($row as $col_name => $col_val) {
-                $db_row[] = $this->getColumn($col_name)
-                        ->escape($this->db, $col_val);
+            $row_DB = [];
+            foreach ($row as $columnName => $columnValue) {
+                $row_DB[] = $this->getColumn($columnName)
+                        ->escape($this->db, $columnValue);
             }
 
-            $db_values_array[] = '(' . implode(',', $db_row) . ')';
+            $valuesArr_DB[] = '(' . implode(',', $row_DB) . ')';
         }
-        $db_values = implode(',', $db_values_array);
+        $db_values = implode(',', $valuesArr_DB);
 
         /* Update Columns */
         $db_update_columns_array = [];
         foreach ($db_column_names as $db_col_name)
-            $db_update_columns_array[] = "{$db_col_name} = VALUES($col_name)";
+            $db_update_columns_array[] = "{$db_col_name} = VALUES($columnName)";
         $db_update_columns = implode(',', $db_update_columns_array);
 
         $query = "INSERT INTO {$this->name} ({$db_columns})" .
@@ -468,6 +475,7 @@ class TTable
 
             if (array_key_exists('parsers', $column)) {
                 $continue = false;
+
                 foreach ($column['parsers'] as $column_parser) {
                     if ($column_parser['out'] !== null) {
                         $parsed_cols = $column_parser['out']($row, $columnName,
@@ -513,14 +521,14 @@ class TTable
 
         return $parsed_row;
 
-        // foreach ($this->columns as $col_name =>
+        // foreach ($this->columns as $columnName =>
         //         list($columnName, $column)) {
         //
         //
-        //     if (isset($row[$col_name])) {
-        //         $col_value = $column->unescape($this->db, $row[$col_name]);
+        //     if (isset($row[$columnName])) {
+        //         $columnValueue = $column->unescape($this->db, $row[$columnName]);
         //     }
-        //         $row[$col_name] = $column->unescape($this->db, $row[$col_name]);
+        //         $row[$columnName] = $column->unescape($this->db, $row[$columnName]);
         // }
 
         // return $this->_parseRow($row);
@@ -571,6 +579,20 @@ class TTable
         return $this->row_Where([
             [ 'Id', '=', $id ]
         ], $group_extension, $for_update);
+    }
+
+    public function row_ByPK(array $keys, $group_extension = '', $for_update = false)
+    {
+        if (count($keys) !== count($this->primaryKeys)) {
+            throw new \Exception('Keys do not match primary keys: ' . 
+                    join(',', $this->primaryKeys));
+        }
+
+        $where = [];
+        for ($i = 0; $i < count($keys); $i++)
+            $where[] = [ $this->primaryKeys[$i], '=', $keys[i] ];
+
+        return $this->row_Where($where, $group_extension, $for_update);
     }
 
     public function row_Columns($columnNames, $query_extension = '',
@@ -632,6 +654,29 @@ class TTable
 
         return $this->select_Columns($selectColumnNames, $query_extension,
                 $group_extension);
+    }
+
+    public function select_ByPKs(array $pks, $groupExtension = '', 
+            $forUpdate = false)
+    {
+        $where = [ 'OR', [] ];
+        foreach ($pks as $keys) {
+            if (!is_array($keys))
+                throw new \Exception("'keyPairs' must be an array of arrays.");
+
+            if (count($keys) !== count($this->primaryKeys)) {
+                throw new \Exception('Keys do not match primary keys: ' . 
+                        join(',', $this->primaryKeys));
+            }
+
+            $keyPair_Where = [ 'AND', [] ];
+            for ($i = 0; $i < count($keys); $i++)
+                $keyPair_Where[1][] = [ $this->primaryKeys[$i], '=', $keys[$i] ];
+                
+            $where[1][] = $keyPair_Where;
+        }
+
+        return $this->select_Where($where, $groupExtension, $forUpdate);
     }
 
     public function select_Columns($columnNames, $query_extension = '',
@@ -749,6 +794,11 @@ class TTable
         $this->join = $join;
     }
 
+    public function setPKs(array $primaryKeys)
+    {
+        $this->primaryKeys = $primaryKeys;
+    }
+
     public function setSelectColumns($select_column_names)
     {
         $this->selectColumns = $select_column_names;
@@ -793,87 +843,216 @@ class TTable
         return $row;
     }
 
-    public function update($rows, $ignore_not_existing = false)
+    public function update($rows, $ignoreNotExistingColumns = false)
     {
         $this->checkColumns();
 
         if (count($rows) === 0)
             return true;
 
-        $first_key = array_keys($rows)[0];
-
-        if (!is_array($rows[$first_key]))
+        $firstKey = array_keys($rows)[0];
+        if (!is_array($rows[$firstKey]))
             throw new \Exception('Expecting `rows` to be array of arrays.');
 
+        $pks = $this->getPrimaryKeys();
+        foreach ($pks as $pk) {
+            if (!array_key_exists($pk, $rows[$firstKey]))
+                throw new \Exception("Primary Key '{$pk}' does not exist in row.");
+        }
+
         $columns = [];
-        foreach ($rows[$first_key] as $col_name => $col_val) {
-            if (!$ignore_not_existing) {
-                $columns[$col_name] = $this->getColumn($col_name, true);
+        foreach ($rows[$firstKey] as $columnName => $columnValue) {
+            if (!$ignoreNotExistingColumns) {
+                $columns[$columnName] = $this->getColumn($columnName, true);
             } else {
-                if ($this->columnExists($col_name, true))
-                    $columns[$col_name] = $this->getColumn($col_name, true);
+                if ($this->columnExists($columnName, true))
+                    $columns[$columnName] = $this->getColumn($columnName, true);
             }
         }
 
-        $db_values_array = [];
-        foreach ($rows as $row) {
-            $db_row = [];
+        $rows_WithNullPKs = [];
+        $rows_WithPKs = [];
 
-            foreach ($row as $columnName => $column_value) {
-                if (!$this->columnExists($columnName, true))
-                    unset($row[$columnName]);
-            }
+        for ($i = 0; $i < count($rows); $i++) {
+            $row = $rows[$i];
+            if (!is_array($row))
+                throw new \Exception('Expecting `rows` to be array of arrays.');
 
             if (count($columns) !== count($row)) {
                 throw new \Exception('Wrong columns number ' .
                         '(inconsistency with first row).');
             }
 
-            foreach ($row as $col_name => $col_val) {
-                if (!array_key_exists($col_name, $columns))
+            foreach ($columns as $columnName => $column) {
+                if (!array_key_exists($columnName, $row)) {
                     throw new \Exception('Inconsistent/unknown column ' .
-                            "`{$col_name}` in rows.");
+                            "`{$columnName}` in rows.");
+                }
 
-                $db_row[] = $this->escapeColumnValue($row, $columns[$col_name], 
-                        $col_val);
+                // $row_DB[$columnName] = $this->escapeColumnValue($row, $column, 
+                //         $columnValue);
 
-                // if ($col_val instanceof CRawValue) {
-                //     foreach ($columns[$col_name]['parsers'] as $column_parser) {
+                // if ($columnValue instanceof CRawValue) {
+                //     foreach ($columns[$columnName]['parsers'] as $column_parser) {
                 //         if ($column_parser['in'] !== null) {
-                //             $col_val = $column_parser['in']($row, $col_name, $col_val);
+                //             $columnValue = $column_parser['in']($row, $columnName, $columnValue);
                 //         }
                 //     }
 
-                //     $db_row[] = $columns[$col_name]['field']->escape($this->db, $col_val);
+                //     $row_DB[] = $columns[$columnName]['field']->escape($this->db, $columnValue);
                 // } else 
-                //     $db_row[] = $col_val->getValue();
+                //     $row_DB[] = $columnValue->getValue();
             }
 
-            $db_values_array[] = '(' . implode(',', $db_row) . ')';
+            $isNew = true;
+            foreach ($pks as $pk) {
+                if ($row[$pk] !== null) {
+                    $isNew = false;
+                    break;
+                }
+            }
+
+            if ($isNew)
+                $rows_WithNullPKs[] = $row;
+            else
+                $rows_WithPKs[] = $row;
+
+            // $rows_DB[] = $row_DB;
+            // $valuesArr_DB[] = '(' . implode(',', $row_DB) . ')';
         }
 
-        /* Column Names */
-        $db_column_names = [];
-        foreach ($columns as $col_name => $col)
-            $db_column_names[] = $this->db->quote($col_name);
-        $db_column_names_str = implode(',', $db_column_names);
+        $rows_PKs_ToCheck = [];
+        foreach ($rows_WithPKs as $row) {
+            $row_PKs = [];
+            foreach ($pks as $pk)
+                $row_PKs[] = $row[$pk];
+            $rows_PKs_ToCheck[] = $row_PKs;
+        }
 
-        /* Values */
-        $db_values = implode(',', $db_values_array);
+        $rows_Insert = [];
+        $rows_Update = [];
 
-        /* Update Columns */
-        $db_update_columns_array = [];
-        foreach ($db_column_names as $db_col_name)
-            $db_update_columns_array[] = "{$db_col_name} = VALUES($db_col_name)";
-        $db_update_columns = implode(',', $db_update_columns_array);
+        $rows_Existing = $this->select_ByPKs($rows_PKs_ToCheck);
+        foreach ($rows_WithPKs as $row_WithPKs) {
+            $match = false;
+            foreach ($rows_Existing as $row_Existing) {
+                $match = true;
+                foreach ($pks as $pk) {
+                    if ($columns[$pk]['field']->parse($row_WithPKs[$pk]) !== 
+                            $row_Existing[$pk]) {
+                        $match = false;
+                        break;
+                    }
+                }
 
-        $db_table_name = $this->db->quote($this->name);
+                if ($match)
+                    break;
+            }
 
-        $query = "INSERT INTO {$db_table_name} ({$db_column_names_str})" .
-                " VALUES {$db_values}" .
-                " ON DUPLICATE KEY UPDATE {$db_update_columns}";
+            if ($match)
+                $rows_Update[] = $row_WithPKs;
+            else
+                $rows_Insert[] = $row_WithPKs;
+        }
 
-        return $this->db->query_Execute($query);
+        foreach ($rows_WithNullPKs as $row_WithNullPKs)
+            $rows_Insert[] = $row_WithNullPKs;
+
+        // echo "Insert";
+        // print_r($rows_Insert);
+        // echo "Update";
+        // print_r($rows_Update);
+
+        $tableName_DB = $this->db->quote($this->name);
+
+        $localTransaction = false;
+        if (!$this->db->transaction_IsAutocommit()) {
+            $this->db->transaction_Start();
+            $localTransaction = true;
+        }
+
+        /* Update */
+        if (count($rows_Update) > 0) {
+            $update_ColumnQueries_Arr = [];
+            foreach ($columns as $columnName => $column) {
+                if (in_array($columnName, $pks))
+                    continue;
+
+                $columnName_DB = $this->db->quote($columnName);
+                $update_ColumnQuery = "{$columnName_DB}=(CASE";
+                foreach ($rows_Update as $row) {
+                    $update_ColumnQuery .= " WHEN ";
+                    $pks_Match_Arr = [];
+                    foreach ($pks as $pk) {
+                        $pks_Match_Arr[] = $this->db->quote($pk) . '=' . 
+                                $this->escapeColumnValue($row, $columns[$pk],
+                                $row[$pk]);
+                    }
+                    $update_ColumnQuery .= '(' . implode(' AND ', $pks_Match_Arr) . ')';
+                    $update_ColumnQuery .= ' THEN ' .  $this->escapeColumnValue($row, $column, 
+                            $row[$columnName]);
+                }
+                $update_ColumnQuery .= ' END)';
+                $update_ColumnQueries_Arr[] = $update_ColumnQuery;
+            }
+
+            $update_Where_Arr = [];
+            foreach ($rows_Update as $row) {
+                $pks_Match_Arr = [];
+                foreach ($pks as $pk) {
+                    $pks_Match_Arr[] = $this->db->quote($pk) . '=' . 
+                                $this->escapeColumnValue($row, $columns[$pk],
+                                $row[$pk]);
+                }
+                $update_Where_Arr[] = '(' . implode(' AND ', $pks_Match_Arr) . ')';
+            }
+
+            $update_Query = "UPDATE {$tableName_DB} SET " . implode(',', 
+                    $update_ColumnQueries_Arr) . " WHERE " . implode(' OR ', 
+                    $update_Where_Arr);
+
+            // echo $update_Query;
+
+            if (!$this->db->query_Execute($update_Query))
+                throw new \Exception("Cannot update rows.");
+        }
+
+        /* Insert */
+        if (count($rows_Insert) > 0) {
+            foreach ($rows_Insert as $row) {
+                $row_DB = [];
+                foreach ($columns as $columnName => $column) {
+                    $row_DB[$columnName] = $this->escapeColumnValue($row, $column, 
+                            $row[$columnName]);
+                }
+
+                $valuesArr_DB[] = '(' . implode(',', $row_DB) . ')';
+            }
+
+            /* Column Names */
+            $db_column_names = [];
+            foreach ($columns as $columnName => $col)
+                $db_column_names[] = $this->db->quote($columnName);
+            $db_column_names_str = implode(',', $db_column_names);
+
+            /* Values */
+            $db_values = implode(',', $valuesArr_DB);
+
+            $insert_Query = "INSERT INTO {$tableName_DB} ({$db_column_names_str})" .
+                    " VALUES {$db_values}";
+
+            // echo $insert_Query;
+
+            if (!$this->db->query_Execute($insert_Query))
+                throw new \Exception("Cannot insert rows.");
+        }
+
+        if ($localTransaction) {
+            if (!$this->db->transaction_Finish(true))
+                throw new \Exception('Cannot autocommit.');
+        }
+
+        return true;
     }
 
     public function update_ByColumns($rows, $whenColumns)

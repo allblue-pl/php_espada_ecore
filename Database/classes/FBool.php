@@ -23,6 +23,14 @@ class FBool extends FField
         return $db->escapeBool($value);
     }
 
+    protected function _parse($value)
+    {
+        if ($value === null)
+            return null;
+
+        return (bool)$value;
+    }
+
     protected function _unescape(EC\MDatabase $db, $value)
     {
         return $db->unescapeBool($value);

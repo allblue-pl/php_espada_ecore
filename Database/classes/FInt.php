@@ -23,6 +23,14 @@ class FInt extends FField
         return $db->escapeInt($value);
     }
 
+    protected function _parse($value)
+    {
+        if ($value === null)
+            return null;
+            
+        return (int)$value;
+    }
+
     protected function _unescape(EC\MDatabase $db, $value)
     {
         return $db->unescapeInt($value);

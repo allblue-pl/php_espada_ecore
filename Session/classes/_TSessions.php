@@ -16,6 +16,7 @@ class _TSessions extends Database\TTable
             'Access' => new Database\FInt(false),
             'Data' => new Database\FText(false, 'regular'),
         ]);
+        $this->setPKs([ 'Id' ]);
     }
 
 }

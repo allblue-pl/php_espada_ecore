@@ -12,7 +12,7 @@ class TLogs extends Database\TTable
         parent::__construct($db, 'Log_Logs', 'l');
 
         $this->setColumns([
-            'Id'                => new Database\FInt(true, 11),
+            'Id'                => new Database\FInt(false, 11),
             'User_Id'           => new Database\FInt(false, 11),
 
             'DateTime'          => new Database\FTime(false),
@@ -22,7 +22,7 @@ class TLogs extends Database\TTable
 
         $this->setColumnParser('Data', [
             'out' => function($row, $name, $value) {
-                $value = json_decode($value);
+                $value = json_decode($value, true);
                 if ($value === null)
                     throw new \Exception('Cannot decode json.');
 
@@ -31,7 +31,7 @@ class TLogs extends Database\TTable
                 ];
             },
             'in' => function($row, $name, $value) {
-                return json_encode([ 'data' => (object)$value ]);
+                return json_encode([ 'data' => $value ]);
             }
         ]);
     }

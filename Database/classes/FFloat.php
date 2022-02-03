@@ -23,6 +23,14 @@ class FFloat extends FField
         return $db->escapeFloat($value);
     }
 
+    protected function _parse($value)
+    {
+        if ($value === null)
+            return null;
+            
+        return (float)$value;
+    }
+
     protected function _unescape(EC\MDatabase $db, $value)
     {
         return $db->unescapeFloat($value);

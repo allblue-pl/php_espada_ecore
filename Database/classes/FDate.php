@@ -23,6 +23,14 @@ class FDate extends FField
         return $db->escapeTime_Date($value);
     }
 
+    protected function _parse($value)
+    {
+        if ($value === null)
+            return null;
+            
+        return (float)round($value);
+    }
+
     protected function _unescape(EC\MDatabase $db, $value)
     {
         return $db->unescapeTime_Date($value);
