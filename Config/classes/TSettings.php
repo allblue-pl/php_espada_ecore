@@ -4,17 +4,12 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class TSettings extends Database\TTable
+class TSettings extends _TSettings
 {
 
     public function __construct(EC\MDatabase $db)
     {
         parent::__construct($db, 'Config_Settings', 's');
-
-        $this->setColumns([
-            'Name'  => new Database\FString(true, 32),
-            'Value' => new Database\FText(true, 'medium'),
-        ]);
 
         /* Column Parsers */
         $this->setColumnParser('Value', [

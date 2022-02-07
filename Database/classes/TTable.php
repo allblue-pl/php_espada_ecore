@@ -318,7 +318,7 @@ class TTable
         return $this->join;
     }
 
-    public function getPrimaryKeys()
+    public function getPKs()
     {
         return $this->primaryKeys;
     }
@@ -850,18 +850,19 @@ class TTable
         if (count($rows) === 0)
             return true;
 
-        $firstKey = array_keys($rows)[0];
-        if (!is_array($rows[$firstKey]))
+        $rows = array_values($rows);
+
+        if (!is_array($rows[0]))
             throw new \Exception('Expecting `rows` to be array of arrays.');
 
-        $pks = $this->getPrimaryKeys();
+        $pks = $this->getPKs();
         foreach ($pks as $pk) {
-            if (!array_key_exists($pk, $rows[$firstKey]))
+            if (!array_key_exists($pk, $rows[0]))
                 throw new \Exception("Primary Key '{$pk}' does not exist in row.");
         }
 
         $columns = [];
-        foreach ($rows[$firstKey] as $columnName => $columnValue) {
+        foreach ($rows[0] as $columnName => $columnValue) {
             if (!$ignoreNotExistingColumns) {
                 $columns[$columnName] = $this->getColumn($columnName, true);
             } else {
