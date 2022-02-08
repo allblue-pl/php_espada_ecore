@@ -409,10 +409,10 @@ class TTable
         /* Column Names */
         $columnNames = array_keys($this->columns);
 
-        $db_column_names = [];
+        $columnNames_DB = [];
         foreach ($columnNames as $columnName)
-            $db_column_names[] = $this->db->quote($columnName);
-        $db_column_names_str = implode(',', $db_column_names);
+            $columnNames_DB[] = $this->db->quote($columnName);
+        $columnNames_DB_str = implode(',', $columnNames_DB);
 
         /* Values */
         $valuesArr_DB = [];
@@ -429,7 +429,7 @@ class TTable
 
         /* Update Columns */
         $db_update_columns_array = [];
-        foreach ($db_column_names as $db_col_name)
+        foreach ($columnNames_DB as $db_col_name)
             $db_update_columns_array[] = "{$db_col_name} = VALUES($columnName)";
         $db_update_columns = implode(',', $db_update_columns_array);
 
@@ -880,8 +880,8 @@ class TTable
                 throw new \Exception('Expecting `rows` to be array of arrays.');
 
             if (count($columns) !== count($row)) {
-                throw new \Exception('Wrong columns number ' .
-                        '(inconsistency with first row).');
+                throw new \Exception("Wrong columns number in row '${i}'" .
+                        "(inconsistency with first row).");
             }
 
             foreach ($columns as $columnName => $column) {
@@ -967,13 +967,13 @@ class TTable
         $tableName_DB = $this->db->quote($this->name);
 
         $localTransaction = false;
-        if (!$this->db->transaction_IsAutocommit()) {
+        if ($this->db->transaction_IsAutocommit()) {
             $this->db->transaction_Start();
             $localTransaction = true;
         }
 
         /* Update */
-        if (count($rows_Update) > 0) {
+        if (count($rows_Update) > 0 && (count($rows[0]) > count($pks))) {
             $update_ColumnQueries_Arr = [];
             foreach ($columns as $columnName => $column) {
                 if (in_array($columnName, $pks))
@@ -1020,6 +1020,7 @@ class TTable
 
         /* Insert */
         if (count($rows_Insert) > 0) {
+            $valuesArr_DB = [];
             foreach ($rows_Insert as $row) {
                 $row_DB = [];
                 foreach ($columns as $columnName => $column) {
@@ -1031,15 +1032,15 @@ class TTable
             }
 
             /* Column Names */
-            $db_column_names = [];
+            $columnNames_DB = [];
             foreach ($columns as $columnName => $col)
-                $db_column_names[] = $this->db->quote($columnName);
-            $db_column_names_str = implode(',', $db_column_names);
+                $columnNames_DB[] = $this->db->quote($columnName);
+            $columnNames_DB_str = implode(',', $columnNames_DB);
 
             /* Values */
             $db_values = implode(',', $valuesArr_DB);
 
-            $insert_Query = "INSERT INTO {$tableName_DB} ({$db_column_names_str})" .
+            $insert_Query = "INSERT INTO {$tableName_DB} ({$columnNames_DB_str})" .
                     " VALUES {$db_values}";
 
             // echo $insert_Query;
