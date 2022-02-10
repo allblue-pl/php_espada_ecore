@@ -9,7 +9,7 @@ class TSettings extends _TSettings
 
     public function __construct(EC\MDatabase $db)
     {
-        parent::__construct($db, 'Config_Settings', 's');
+        parent::__construct($db, 's');
 
         /* Column Parsers */
         $this->setColumnParser('Value', [

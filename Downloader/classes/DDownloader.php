@@ -15,7 +15,7 @@ class DDownloader
         $this->site = $site;
     }
 
-    public function outputdownload($download_name)
+    public function outputDownload($download_name)
     {
         if (!array_key_exists($download_name, $this->downloads))
             throw new \Exception("Download `{$download_name}` does not exist.");

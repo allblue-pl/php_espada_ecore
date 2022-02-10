@@ -40,7 +40,7 @@ class MCache extends E\Module
             'Expires' => time() + $expires
                 ]]))
             return null;
-        $file_id = $this->db->getInsertedId();
+        $file_id = $this->filesTable->getLastInsertedId();
 
         return new CFile($this, $file_id, $user_id, $file_hash);
     }

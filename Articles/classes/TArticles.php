@@ -32,7 +32,7 @@ class TArticles extends _TArticles
             'Content_Html' => '',
         ]]);
 
-        return $table->row_ById($db->getInsertedId());
+        return $table->row_ById($table->getLastInsertedId());
     }
 
     static public function GetWhereConditions_Published()

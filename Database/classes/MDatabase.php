@@ -123,7 +123,7 @@ class MDatabase extends E\Module
 		return $this->mysqli->errno;
 	}
 
-	public function getInsertedId()
+	public function getLastInsertedId()
 	{
 		return $this->mysqli->insert_id;
 	}
@@ -270,16 +270,21 @@ class MDatabase extends E\Module
 
 		$this->transaction_InProgress = true;
 
-		if ($result = $this->mysqli->query($query)) {
-			$assoc = [];
+        try {
+            if ($result = $this->mysqli->query($query)) {
+                $assoc = [];
 
-			while ($row = $result->fetch_assoc())
-				$assoc[] = $row;
+                while ($row = $result->fetch_assoc())
+                    $assoc[] = $row;
 
-			$result->close();
+                $result->close();
 
-			return $assoc;
-		}
+                return $assoc;
+            }
+        } catch (\Exception $e) {
+            throw new \Exception('Database error: ' . $query . ' # ' .
+				    $e);             
+        }
 
 		throw new \Exception('Database error: ' . $query . ' # ' .
 				$this->mysqli->error);

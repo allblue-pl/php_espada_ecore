@@ -4,23 +4,12 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class TTasks extends Database\TTable
+class TTasks extends _TTasks
 {
 
     public function __construct(EC\MDatabase $db)
     {
-        parent::__construct($db, 'Tasks_Tasks', 'r');
-
-        $this->setColumns([
-            'Hash'      => new Database\FString(true, 128),
-            'User_Id'   => new Database\FInt(true, 11),
-
-            'DateTime'  => new Database\FTime(true),
-
-            'Finished'  => new Database\FBool(true),
-            'Info'      => new Database\FText(true, 'medium'),
-            'Data'      => new Database\FText(true, 'medium')
-        ]);
+        parent::__construct($db, 'r');
 
         $this->setColumnParser('Info', [
             'out' => function($row, $name, $value) {

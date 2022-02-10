@@ -41,7 +41,7 @@ class HApp
             return null;
 
         return [
-            'id' => $db->getInsertedId(),
+            'id' => $table->getLastInsertedId(),
             'authenticationHash' => $authentication_hash
         ];
     }

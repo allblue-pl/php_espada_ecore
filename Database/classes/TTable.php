@@ -24,6 +24,8 @@ class TTable
 
     private $rowParsers = [];
 
+    private $lastInsertedId = null;
+
     public function __construct(EC\MDatabase $db, $table_name,
             $table_alias = null)
     {
@@ -313,6 +315,11 @@ class TTable
         return $this->db;
     }
 
+    public function getLastInsertedId()
+    {
+        return $this->lastInsertedId;
+    }
+
     public function getJoin()
     {
         return $this->join;
@@ -412,7 +419,7 @@ class TTable
         $columnNames_DB = [];
         foreach ($columnNames as $columnName)
             $columnNames_DB[] = $this->db->quote($columnName);
-        $columnNames_DB_str = implode(',', $columnNames_DB);
+        $columnNames_DB_Str = implode(',', $columnNames_DB);
 
         /* Values */
         $valuesArr_DB = [];
@@ -433,9 +440,11 @@ class TTable
             $db_update_columns_array[] = "{$db_col_name} = VALUES($columnName)";
         $db_update_columns = implode(',', $db_update_columns_array);
 
-        $query = "INSERT INTO {$this->name} ({$db_columns})" .
+        $query = "INSERT INTO {$this->name} ({$columnNames_DB_Str})" .
                 " VALUES {$db_values}" .
                 " ON DUPLICATE KEY UPDATE {$db_update_columns}";
+
+        $this->lastInsertedId = $this->db->getLastInsertedId();
 
         return $this->db->query_Execute($query);
     }
@@ -1047,6 +1056,8 @@ class TTable
 
             if (!$this->db->query_Execute($insert_Query))
                 throw new \Exception("Cannot insert rows.");
+
+            $this->lastInsertedId = $this->db->getLastInsertedId();
         }
 
         if ($localTransaction) {
