@@ -12,9 +12,9 @@ class _TResetPasswordHashes extends Database\TTable
         parent::__construct($db, 'Users_ResetPasswordHashes', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FInt(true),
-            'User_Id' => new Database\FInt(true),
-            'DateTime' => new Database\FTime(true),
+            'Id' => new Database\FLong(true),
+            'User_Id' => new Database\FLong(true),
+            'DateTime' => new Database\FDateTime(true),
             'Hash' => new Database\FString(true, 128),
         ]);
     }

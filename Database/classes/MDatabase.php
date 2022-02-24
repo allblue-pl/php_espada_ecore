@@ -96,7 +96,7 @@ class MDatabase extends E\Module
         if ($value === null)
 			return 'NULL';
 
-        return (string)((float)round($value));
+        return (string)(round((float)$value));
     }
 
 	public function escapeString($value)

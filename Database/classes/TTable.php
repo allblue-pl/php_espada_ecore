@@ -590,6 +590,24 @@ class TTable
         ], $group_extension, $for_update);
     }
 
+    public function row_ByPKs(array $keys, $groupExtension = '', 
+            $forUpdate = false)
+    {
+        $where = [];
+        if (count($keys) !== count($this->primaryKeys)) {
+            throw new \Exception('Keys do not match primary keys: ' . 
+                    join(',', $this->primaryKeys));
+        }
+
+        $keys_Where = [ 'AND', [] ];
+        for ($i = 0; $i < count($keys); $i++)
+            $keys_Where[1][] = [ $this->primaryKeys[$i], '=', $keys[$i] ];
+            
+        $where[] = $keys_Where;
+
+        return $this->row_Where($where, $groupExtension, $forUpdate);
+    }
+
     public function row_ByPK(array $keys, $group_extension = '', $for_update = false)
     {
         if (count($keys) !== count($this->primaryKeys)) {
@@ -678,11 +696,11 @@ class TTable
                         join(',', $this->primaryKeys));
             }
 
-            $keyPair_Where = [ 'AND', [] ];
+            $keys_Where = [ 'AND', [] ];
             for ($i = 0; $i < count($keys); $i++)
-                $keyPair_Where[1][] = [ $this->primaryKeys[$i], '=', $keys[$i] ];
+                $keys_Where[1][] = [ $this->primaryKeys[$i], '=', $keys[$i] ];
                 
-            $where[1][] = $keyPair_Where;
+            $where[1][] = $keys_Where;
         }
 
         return $this->select_Where($where, $groupExtension, $forUpdate);
@@ -1056,6 +1074,9 @@ class TTable
 
             if (!$this->db->query_Execute($insert_Query))
                 throw new \Exception("Cannot insert rows.");
+
+            if ($this->db->getAffectedRows() !== count($rows_Insert))
+                throw new \Exception("Cannot insert all rows.");
 
             $this->lastInsertedId = $this->db->getLastInsertedId();
         }

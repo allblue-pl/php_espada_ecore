@@ -34,6 +34,11 @@ class HUsers
 			[[ 'Id', '=', $userId ]]);
 	}
 
+    static public function CheckEmailHash($email, $emailHash)
+	{
+		return EC\HHash::CheckPassword($email, $emailHash);
+	}
+
     static public function CheckLoginAndPassword(EC\MDatabase $db, string $type, 
             string $login, string $password)
 	{
@@ -221,11 +226,16 @@ class HUsers
         ]);
     }
 
-    static public function ResetPassword_CreateHash(EC\MDatabase $db, $userId, &$hash)
+    static public function ResetPassword_CreateHash(EC\MDatabase $db, 
+            float $userId, string &$hash)
     {
         $hash = EC\HHash::Generate(128);
 
-        return (new TRecoverPasswordHashes($db))->update([[
+        (new TResetPasswordHashes($db))->delete_Where([
+            [ 'DateTime', '<', time() - EC\HDate::Span_Day ],
+        ]);
+
+        return (new TResetPasswordHashes($db))->update([[
             'Id' => null,
             'User_Id' => $userId,
             'DateTime' => time(),

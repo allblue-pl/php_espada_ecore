@@ -31,23 +31,28 @@ class AUser extends EC\Api\ABasic
 
         /* Actions */
         $this->action('check', 'action_Check');
-
         $this->action('log-in', 'action_LogIn', [
-            'Login' => true,
-            'Password' => true
+            'login' => true,
+            'password' => true
         ]);
-
         $this->action('log-out', 'action_LogOut');
-
         $this->action('change-password', 'action_ChangePassword', [
-            'Password' => true,
-            'NewPassword' => true
+            'password' => true,
+            'newPassword' => true
+        ]);
+        $this->action('remind-password', 'action_RemindPassword', [
+            'login' => true,
+            'email' => true,
+        ]);
+        $this->action('reset-password', 'action_ResetPassword', [
+            'resetPasswordHash' => true,
+            'newPassword' => true,
         ]);
 
         if (EDEBUG) {
             $this->action('hash', 'action_Hash', [
-                'Password' => true,
-                'HashRounds' => false,
+                'password' => true,
+                'hashRounds' => false,
             ]);
         }
     }
@@ -97,7 +102,7 @@ class AUser extends EC\Api\ABasic
 
     protected function action_LogIn(CArgs $args)
     {
-        $login = $args->Login;
+        $login = $args->login;
         $password = $args->Password;
 
         $db = $this->db;
@@ -158,6 +163,83 @@ class AUser extends EC\Api\ABasic
 		}
 
 		return CResult::Failure('Not logged in.');
+    }
+
+    protected function action_RemindPassword(CArgs $args)
+    {
+        $args->email = trim(mb_strtolower($args->email));
+
+        if ($args->login === '')
+            return CResult::Failure('Users:Errors_LoginCannotBeEmpty');
+        if ($args->email === '')
+            return CResult::Failure('Users:Errors_EmailCannotBeEmpty');
+
+        $row = (new TUsers($this->db))->row_Where([
+            [ 'LoginHash', '=', HUsers::GetLoginHash($args->login) ],
+        ]);
+
+        if ($row === null) {
+            return CResult::Failure('Users:Errors_LoginDoesNotExist', [
+                'Login' => $args->login,
+            ]);
+        }
+
+        if (!HUsers::CheckEmailHash($args->email, $row['EmailHash'])) {
+            return CResult::Failure('Users:Errors_EmailDoesNotMatchLogin', [
+                'Login' => $args->login,
+                'Email' => $args->email,
+            ]);
+        }
+
+        $hash = '';
+        if (!EC\HUsers::ResetPassword_CreateHash($this->db, $row['Id'], $hash))
+            return CResult::Failure('Users:Errors_CannontCreateResetPasswordHash');
+
+        $link = EC\HConfig::GetRequired('Users', 'uris')['resetPassword'] . 
+                $hash;
+
+        $mail = EC\HMailer::NewMail($args->email, $args->login);
+
+        $mail->setSubject(EC\HText::_('Users:Mails_ResetPassword_Subject'));
+        $mail->setText(EC\HText::_('Users:Mails_ResetPassword_Text'));
+        $mail->setHtml(EC\HText::_('Users:Mails_ResetPassword_Html'));
+
+        if (!$mail->send()) {
+            $error = $mail->getError();
+            return CResult::Failure('Users:Errors_CannotSendEmail')
+                ->debug($error);
+        }
+
+        return CResult::Success(EC\HText::_('Sys:successes_PasswordResetLinkSent'))
+            ->debug($link)
+            ->debug($hash);
+    }
+
+    protected function action_ResetPassword(CArgs $args)
+    {
+        $rResetPasswordHash = (new TResetPasswordHashes($this->db))
+                ->row_Where([
+            [ 'Hash', '=', $args->resetPasswordHash ],
+        ], 'ORDER BY DateTime DESC');
+
+        if ($rResetPasswordHash === null)
+            return CResult::Failure(EC\HText::_('Users:Errors_RecoveryHashDoesNotExist'));
+
+        if ($rResetPasswordHash['DateTime'] < time() - EC\HDate::Span_Day)
+            return CResult::Failure(EC\HText::_('User:Errors_RecoveryHashExpired'));
+
+        if (!HUsers::CheckPasswordStrength($args->newPassword))
+            return CResult::Failure(EC\HText::_('Users:Errors_WrongPasswordFormat'));
+
+        if (!EC\HUsers::ChangePassword($this->db, $rResetPasswordHash['User_Id'], 
+                $args->newPassword))
+            return CResult::Failure('Users:Errors_CannotResetPassword');
+
+        (new EC\Users\TResetPasswordHashes($this->db))->delete_Where([
+            [ 'User_Id', '=', $rResetPasswordHash['User_Id'] ],
+        ]);
+
+        return CResult::Success('Users:Successes_PasswordChanged');
     }
 
 }
