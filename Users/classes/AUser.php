@@ -69,14 +69,14 @@ class AUser extends EC\Api\ABasic
         $userLogin = $user->getLogin();
 
         if (!HUsers::CheckLoginAndPassword($db, $this->user->getType(),
-                $userLogin, $args->Password))
+                $userLogin, $args->password))
             return CResult::Failure(EC\HText::_('Users:Errors_WrongPassword'));
 
-        if (!HUsers::CheckPasswordStrength($args->NewPassword))
+        if (!HUsers::CheckPasswordStrength($args->newPassword))
             return CResult::Failure(EC\HText::_('Users:Errors_WrongPasswordFormat'));
 
         if (!HUsers::ChangePassword($db, $userId,
-                $args->NewPassword))
+                $args->newPassword))
             return CResult::Error();
 
         return CResult::Success(EC\HText::_('Users:successes_PasswordChanged'));
