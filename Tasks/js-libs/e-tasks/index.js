@@ -34,34 +34,34 @@ class eTasks_Class
                     return false;
 
                 setTimeout(function() {
-                    refresh({});
+                    refresh(api_args);
                 });
             });
         };
         refresh(api_args);
     }
 
-    refresh(api_uri, task_hash, destroy_on_finish, fn)
-    {
-        let check_task = function() {
-            webABApi.json(api_uri, {
-                task: {
-                    hash: task_hash,
-                    destroyOnFinish: destroy_on_finish
-                }
-            }, function(result) {
-                if (result.isSuccess()) {
-                    if (fn(result.data.task.finished, result.data.task.info, null))
-                        setTimeout(check_task, this.timeout);
-                } else {
-                    console.warn('Error on task refresh.');
-                    setTimeout(check_task, this.timeout);
-                }
-            });
-        };
+    // refresh(api_uri, task_hash, destroy_on_finish, fn)
+    // {
+    //     let check_task = function() {
+    //         webABApi.json(api_uri, {
+    //             task: {
+    //                 hash: task_hash,
+    //                 destroyOnFinish: destroy_on_finish
+    //             }
+    //         }, function(result) {
+    //             if (result.isSuccess()) {
+    //                 if (fn(result.data.task.finished, result.data.task.info, null))
+    //                     setTimeout(check_task, this.timeout);
+    //             } else {
+    //                 console.warn('Error on task refresh.');
+    //                 setTimeout(check_task, this.timeout);
+    //             }
+    //         });
+    //     };
 
-        setTimeout(check_task, this.timeout);
-    }
+    //     setTimeout(check_task, this.timeout);
+    // }
 
 }
 export default eTasks = new eTasks_Class();
