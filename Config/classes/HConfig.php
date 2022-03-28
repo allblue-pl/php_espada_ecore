@@ -121,7 +121,7 @@ class HConfig
 
 		unset($file_path);
 
-		require(PATH_PRESETS . '/config/config.php');
+		require(PATH_PRESETS . '/Config/config.php');
 
         self::$Properties = array_replace_recursive(self::$Properties,
                 $eConfig->getProperties());
