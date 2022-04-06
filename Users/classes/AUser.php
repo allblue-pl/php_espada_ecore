@@ -200,9 +200,19 @@ class AUser extends EC\Api\ABasic
 
         $mail = EC\HMailer::NewMail($args->email, $args->login);
 
-        $mail->setSubject(EC\HText::_('Users:Mails_ResetPassword_Subject'));
-        $mail->setText(EC\HText::_('Users:Mails_ResetPassword_Text'));
-        $mail->setHtml(EC\HText::_('Users:Mails_ResetPassword_Html'));
+        $mail->setSubject(EC\HText::_('Users:mails.ResetPassword_Subject', [
+            'title' => EC\HConfig::GetRequired('Config', 'title'),
+        ]));
+        $mail->setText(EC\HText::_('Users:mails.ResetPassword_Text', [
+            'title' => EC\HConfig::GetRequired('Config', 'title'),
+            'login' => $args->login,
+            'link' => $link,
+        ]));
+        $mail->setHtml(EC\HText::_('Users:mails.ResetPassword_Html', [
+            'title' => EC\HConfig::GetRequired('Config', 'title'),
+            'login' => $args->login,
+            'link' => $link,
+        ]));
 
         if (!$mail->send()) {
             $error = $mail->getError();
@@ -210,7 +220,7 @@ class AUser extends EC\Api\ABasic
                 ->debug($error);
         }
 
-        return CResult::Success(EC\HText::_('Sys:successes_PasswordResetLinkSent'))
+        return CResult::Success(EC\HText::_('Users:Successes_PasswordResetLinkSent'))
             ->debug($link)
             ->debug($hash);
     }

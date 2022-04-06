@@ -684,7 +684,7 @@ class TTable
     }
 
     public function select_ByPKs(array $pks, $groupExtension = '', 
-            $forUpdate = false)
+            $tableOnly = false)
     {
         $where = [ 'OR', [] ];
         foreach ($pks as $keys) {
@@ -703,7 +703,7 @@ class TTable
             $where[1][] = $keys_Where;
         }
 
-        return $this->select_Where($where, $groupExtension, $forUpdate);
+        return $this->select_Where($where, $groupExtension, $tableOnly);
     }
 
     public function select_Columns($columnNames, $query_extension = '',
@@ -758,11 +758,12 @@ class TTable
         return $this->db->query_Select($query);
     }
 
-    public function select_Where($conditions = [], $group_extension = '')
+    public function select_Where($conditions = [], $group_extension = '',
+            $tableOnly = false)
     {
         $where = '';
 
-        $conditions = $this->getQuery_Conditions($conditions, false);
+        $conditions = $this->getQuery_Conditions($conditions, $tableOnly);
         if ($conditions !== '')
             $where .= 'WHERE ' . $conditions;
 

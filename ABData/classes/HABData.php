@@ -253,7 +253,7 @@ class HABData
     static public function Update_Where(CDevice $device, EC\Database\TTable $table, 
             $values, $whereConditions)
     {
-        // self::ParseUpdateRow($device, $values);
+        self::ParseUpdateRow($device, $values);
 
         return $table->update_Where($values, $whereConditions, true);
     }
