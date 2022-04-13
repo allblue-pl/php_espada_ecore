@@ -104,14 +104,20 @@ class HDate
         return round(microtime(true) * 1000);
     }
 
-    static public function GetTime_Rel()
+    static public function GetTime_Rel($time = null)
     {
-        return time() + self::GetUTCOffset() * self::Span_Hour;
+        if ($time === null)
+            $time = time();
+
+        return $time + self::GetUTCOffset() * self::Span_Hour;
     }
 
-    static public function GetTime_RelNeg()
+    static public function GetTime_RelNeg($time = null)
     {
-        return time() - self::GetUTCOffset() * self::Span_Hour;
+        if ($time === null)
+            $time = time();
+
+        return $time - self::GetUTCOffset() * self::Span_Hour;
     }
 
     static public function GetUTCOffset()

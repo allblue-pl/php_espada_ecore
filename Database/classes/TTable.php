@@ -217,29 +217,28 @@ class TTable
         if (count($conditions) === 0)
             return true;
 
-        return $this->delete('WHERE ' . $this->getQuery_Conditions($conditions, 
-                false));
+        return $this->delete('WHERE ' . $this->getQuery_Conditions($conditions));
     }
 
-    public function escapeColumn($columnName, $value)
-    {
-        return $this->getColumn($columnName)['field']->escape($this->db, $value);
-    }
+    // public function escapeColumn($columnName, $value)
+    // {
+    //     return $this->getColumn($columnName)['field']->escape($this->db, $value);
+    // }
 
     public function getAlias()
     {
         return $this->alias;
     }
 
-    public function getColumn($columnName, $only_table = false)
+    public function getColumn($columnName, $tableOnly = false)
     {
-        return $this->getColumnRef($columnName, $only_table);
+        return $this->getColumnRef($columnName, $tableOnly);
     }
 
-    public function &getColumnRef($columnName, $only_table = false)
+    public function &getColumnRef($columnName, $tableOnly = false)
     {
         // if ($columnName === 'Cow_Nr') {
-        //     echo $columnName . '#' . $only_table . "\r\n";
+        //     echo $columnName . '#' . $tableOnly . "\r\n";
         //     print_r($this->columns_Table);
         //     echo array_key_exists($columnName, $this->columns_Table) . "\r\n";
         // }
@@ -250,7 +249,7 @@ class TTable
                     " in {$class_name}.");
         }
 
-        if ($only_table && !array_key_exists($columnName, $this->columns_Table)) {
+        if ($tableOnly && !array_key_exists($columnName, $this->columns_Table)) {
             $class_name = get_called_class();
             throw new \Exception("Column `{$columnName}` is not table column" .
                     " in {$class_name}.");
@@ -259,11 +258,11 @@ class TTable
         return $this->columns[$columnName];
     }
 
-    public function getColumnNames($only_table = false, $prefix = null)
+    public function getColumnNames($tableOnly = false, $prefix = null)
     {
         $columnNames = null;
 
-        if ($only_table)
+        if ($tableOnly)
             $columnNames = array_keys($this->columns_Table);
         else {
             $columnNames = [];
@@ -340,22 +339,10 @@ class TTable
         return $this->db->quote($this->name);
     }
 
-    public function getQuery_Conditions($column_values, $table_only = false)
+    public function getQuery_Conditions($column_values, $tableOnly = false)
     {
         return $this->getQuery_Conditions_Helper($column_values, 'AND', 
-                $table_only);
-
-        // if (is_array($column_values)) {
-        //     if (count($column_values) === 2) {
-        //         if ($column_values[0] === 'AND' || $column_values[0] === 'OR') {
-        //             return $this->getQuery_Conditions_Helper($column_values[1], 
-        //                     $column_values[0], $table_only);
-        //         }
-        //     }
-        // }
-
-        // return $this->getQuery_Conditions_Helper($column_values, 'AND',
-        //         $table_only);
+                $tableOnly);
     }
 
     public function getQuery_From()
@@ -409,12 +396,15 @@ class TTable
         return array_key_exists($columnName, $this->columns);
     }
 
-    public function insert($rows)
+    public function insert(array $rows, bool $updateColumns = true)
     {
         $this->checkColumns();
 
+        if (count($rows) === 0)
+            return true;
+
         /* Column Names */
-        $columnNames = array_keys($this->columns);
+        $columnNames = $this->getColumnNames(true);
 
         $columnNames_DB = [];
         foreach ($columnNames as $columnName)
@@ -426,8 +416,8 @@ class TTable
         foreach ($rows as $row) {
             $row_DB = [];
             foreach ($row as $columnName => $columnValue) {
-                $row_DB[] = $this->getColumn($columnName)
-                        ->escape($this->db, $columnValue);
+                $row_DB[] = $this->escapeColumnValue($row, 
+                        $this->getColumn($columnName), $columnValue);
             }
 
             $valuesArr_DB[] = '(' . implode(',', $row_DB) . ')';
@@ -435,14 +425,17 @@ class TTable
         $db_values = implode(',', $valuesArr_DB);
 
         /* Update Columns */
-        $db_update_columns_array = [];
-        foreach ($columnNames_DB as $db_col_name)
-            $db_update_columns_array[] = "{$db_col_name} = VALUES($columnName)";
-        $db_update_columns = implode(',', $db_update_columns_array);
-
         $query = "INSERT INTO {$this->name} ({$columnNames_DB_Str})" .
-                " VALUES {$db_values}" .
-                " ON DUPLICATE KEY UPDATE {$db_update_columns}";
+                " VALUES {$db_values}";
+
+        if ($updateColumns) {
+            $db_update_columns_array = [];
+            foreach ($columnNames_DB as $db_col_name)
+                $db_update_columns_array[] = "{$db_col_name} = VALUES($columnName)";
+            $db_update_columns = implode(',', $db_update_columns_array);
+
+            $query .= " ON DUPLICATE KEY UPDATE {$db_update_columns}";
+        }
 
         $this->lastInsertedId = $this->db->getLastInsertedId();
 
@@ -683,10 +676,19 @@ class TTable
                 $group_extension);
     }
 
-    public function select_ByPKs(array $pks, $groupExtension = '', 
-            $tableOnly = false)
+    public function select_ByPKs(array $pks, string $groupExtension = '')
     {
-        $where = [ 'OR', [] ];
+        if (count($pks) === 0)
+            return [];
+
+        $rows = [];
+
+        $primaryKeys_Escaped = [];
+        foreach ($this->primaryKeys as $pk)
+            $primaryKeys_Escaped[] = $this->alias . '.' . $pk;
+
+        $queryExtension = 'WHERE (' . implode(',', $primaryKeys_Escaped) . ') IN ';
+        $pks_StrArr = [];
         foreach ($pks as $keys) {
             if (!is_array($keys))
                 throw new \Exception("'keyPairs' must be an array of arrays.");
@@ -696,14 +698,56 @@ class TTable
                         join(',', $this->primaryKeys));
             }
 
-            $keys_Where = [ 'AND', [] ];
-            for ($i = 0; $i < count($keys); $i++)
-                $keys_Where[1][] = [ $this->primaryKeys[$i], '=', $keys[$i] ];
-                
-            $where[1][] = $keys_Where;
+            $keys_Escaped = [];
+            for ($i = 0; $i < count($keys); $i++) {
+                $keys_Escaped[] = $this->escapeColumnValue($keys, 
+                        $this->getColumn($this->primaryKeys[$i]), $keys[$i]);
+            }
+            $pks_StrArr[] = '(' . implode(',', $keys_Escaped) . ')';
         }
 
-        return $this->select_Where($where, $groupExtension, $tableOnly);
+        $queryExtension .= '(' . implode(',', $pks_StrArr) . ')';
+
+        $rows = $this->select($queryExtension, $groupExtension);
+
+        /* Universal Alternative */
+        // for ($i = 0; $i < count($pks); $i += 100) {
+        //     $where = [ 'OR', [] ];
+        //     for ($j = $i; $j < min($i + 100, count($pks)); $j++) {
+        //         $keys = $pks[$j];
+        //         if (!is_array($keys))
+        //             throw new \Exception("'keyPairs' must be an array of arrays.");
+
+        //         if (count($keys) !== count($this->primaryKeys)) {
+        //             throw new \Exception('Keys do not match primary keys: ' . 
+        //                     join(',', $this->primaryKeys));
+        //         }
+
+        //         $keys_Where = [ 'AND', [] ];
+        //         for ($k = 0; $k < count($keys); $k++)
+        //             $keys_Where[1][] = [ $this->primaryKeys[$k], '=', $keys[$k] ];
+                    
+        //         $where[1][] = $keys_Where;
+        //     }
+
+            // if ($this->getTableName() === '_ABData_DeletedRows' && $i >= 0) {
+            //     echo "Before";
+            //     print_r(count($where[1]));
+            //     die;
+            // }
+
+        //     $rows_New = $this->select($queryExtension, $groupExtension);
+        //     $rows = array_merge($rows, $rows_New);
+
+        //     if ($this->getTableName() === '_ABData_DeletedRows' && $i >= 0) {
+        //         echo $this->db->getLastQuery();
+        //         echo "Break";
+        //         die;
+        //     }
+        // }
+        /* / Universal Alternative */    
+
+        return $rows;
     }
 
     public function select_Columns($columnNames, $query_extension = '',
@@ -1228,7 +1272,7 @@ class TTable
     }
 
     private function getQuery_Conditions_Helper($column_values, $logic_operator,
-            $table_only = false)
+            $tableOnly = false)
     {
         if (!is_array($column_values))
             throw new \Exception('`column_values` must be an array.');
@@ -1239,7 +1283,7 @@ class TTable
         if (count($column_values) === 2) {
             if ($column_values[0] === 'AND' || $column_values[0] === 'OR') {
                 return $this->getQuery_Conditions_Helper($column_values[1], 
-                        $column_values[0], $table_only);
+                        $column_values[0], $tableOnly);
             }
         }
 
@@ -1255,13 +1299,13 @@ class TTable
                 continue;
             else if ($key === 'OR' || $key === 'AND') {
                 $args[] = '(' . $this->getQuery_Conditions_Helper($column_condition,
-                        $key, $table_only) . ')';
+                        $key, $tableOnly) . ')';
                 continue;
             }  else if (count($column_condition) === 1) {
                 $t_logic_operator = array_keys($column_condition)[0];
                 if ($t_logic_operator !== 'OR' && $t_logic_operator !== 'AND') {
                     return $args[] = '(' . $this->getQuery_Conditions_Helper(
-                            [ 'AND', $column_condition ], $table_only) . ')';
+                            [ 'AND', $column_condition ], 'AND') . ')';
                 }
 
                 if (count($column_condition[$t_logic_operator]) === 0)
@@ -1269,7 +1313,7 @@ class TTable
 
                 $args[] = '(' . $this->getQuery_Conditions_Helper(
                         $column_condition[$t_logic_operator], $t_logic_operator,
-                        $table_only) . ')';
+                        $tableOnly) . ')';
                 continue;
             } else if (!is_int($key))
                 throw new \Exception("Unknown logic operator `{$key}`.");
@@ -1278,7 +1322,7 @@ class TTable
                 if ($column_condition[0] === 'OR' || $column_condition[0] === 'AND') {
                     $args[] = '(' . $this->getQuery_Conditions_Helper(
                             $column_condition[1], $column_condition[0], 
-                            $table_only) . ')';
+                            $tableOnly) . ')';
                     continue;
                 }
             }
@@ -1292,7 +1336,7 @@ class TTable
 
             $column = $this->getColumn($columnName);
 
-            $db_column_name = $table_only ? $this->db->quote($columnName) :
+            $db_column_name = $tableOnly ? $this->db->quote($columnName) :
                     $this->getColumn($columnName)['expr'];
 
             if ($sign === null) {

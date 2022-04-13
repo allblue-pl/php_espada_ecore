@@ -22,7 +22,7 @@ class HABData
             $deleteRows[] = $deleteRow;
         }
 
-        return (new EC\ABData\TDeletedRows($db))->update($deleteRows);
+        return (new EC\ABData\TDeletedRows($db))->insert($deleteRows, true);
     }
 
     static public function Delete_ByColumn(CDevice $device, EC\Database\TTable $table, 
@@ -34,7 +34,7 @@ class HABData
     }
 
     static public function Delete_Where(CDevice $device, EC\Database\TTable $table,
-            $whereConditions, $tableOnly = true)
+            $whereConditions)
     {
         $db = $table->getDB();
 
@@ -44,9 +44,9 @@ class HABData
             $localTransaction = true;
         }
 
-        $rows = $table->select_Where($whereConditions, '', $tableOnly);
+        $rows = $table->select_Where($whereConditions, '');
         if (count($rows) > 0) {
-            if (!$table->delete_Where($whereConditions, $tableOnly)) {
+            if (!$table->delete_Where($whereConditions)) {
                 if ($localTransaction)
                     $db->transaction_Finish(false);
                 return false;

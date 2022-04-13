@@ -16,12 +16,13 @@ class RRequest
     }
 
     public function executeAction(CDevice $device, 
-            string $actionName, array $actionArgs)
+            string $actionName, array $actionArgs, ?int $schemeVersion)
     {
         if (!array_key_exists($actionName, $this->actions))
             throw new \Exception("Action '{$actionName}' does not exists.");
 
-        return $this->actions[$actionName]['fn']($device, $actionArgs);
+        return $this->actions[$actionName]['fn']($device, $actionArgs, 
+                $schemeVersion);
     }
 
     public function getDS()

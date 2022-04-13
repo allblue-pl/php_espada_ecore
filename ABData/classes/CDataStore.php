@@ -66,7 +66,7 @@ class CDataStore
 
             $actionResult = $tableRequest->executeAction($device, 'select', [
                 'where' => $where,
-            ]);
+            ], null);
 
             if ($actionResult['error'] !== null) {
                 $error = "Cannot execute table '{$tableName}' request action '': " . 
@@ -184,14 +184,14 @@ class CDataStore
 
         $rDeviceRequests = [];
         foreach ($dbRequests as $dbRequest) {
-            list($dbRequestId, $dbRequestName, $actionName, $actionArgs) = 
-                    $dbRequest;
+            list($dbRequestId, $dbRequestName, $actionName, $actionArgs, 
+                    $schemeVersion, ) = $dbRequest;
 
             if (in_array($dbRequestId, $deviceRequestIds_Processed))
                 continue;
 
             $result = $this->getRequest($dbRequestName)
-                    ->executeAction($device, $actionName, $actionArgs);
+                    ->executeAction($device, $actionName, $actionArgs, $schemeVersion);
 
             if (!$result['success']) {
                 $success = false;
@@ -239,10 +239,12 @@ class CDataStore
         $success = true;
 
         foreach ($requests as $request) {
-            list($requestId, $requestName, $actionName, $actionArgs) = $request;
+            list($requestId, $requestName, $actionName, $actionArgs, 
+                    $schemeVersion) = $request;
 
             $result = $this->getRequest($requestName)
-                    ->executeAction($device, $actionName, $actionArgs);
+                    ->executeAction($device, $actionName, $actionArgs, 
+                    $schemeVersion);
             
             $response[$requestId] = $result;
 
