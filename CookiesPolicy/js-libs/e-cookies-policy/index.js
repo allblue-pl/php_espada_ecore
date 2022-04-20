@@ -23,7 +23,8 @@ class eCookiesPolicy_Class
 
     init()
     {
-        if (abCookies.get('eCookiesPolicy_Displayed')) {
+        if (abCookies.get('eCookiesPolicy_Displayed') || 
+                abCookies.get('eCookiesPolicy_Accepted')) {
             for (let listenerFn of this._listeners_OnClose)
                 listenerFn();
 
@@ -31,22 +32,30 @@ class eCookiesPolicy_Class
         }
     
         let modal = new bootstrap.Modal(document.getElementById('ECookiesPolicy_Modal'));
-        
-        let close = () => {
+    
+        document.getElementById('eCookiesPolicy_Close').addEventListener('click', (evt) => {
+            evt.preventDefault();
+
             abCookies.set('eCookiesPolicy_Displayed', true);
             modal.hide();
 
             for (let listenerFn of this._listeners_OnClose)
                 listenerFn();
-        }
-    
-        document.getElementById('eCookiesPolicy_Close').addEventListener('click', (evt) => {
-            evt.preventDefault();
+
             close();
         });
     
         document.getElementById('eCookiesPolicy_Agree').addEventListener('click', (evt) => {
             evt.preventDefault();
+
+            abCookies.set('eCookiesPolicy_Accepted', true, {
+                expires: 30 * 24 * 60 * 60,
+            });
+            modal.hide();
+
+            for (let listenerFn of this._listeners_OnClose)
+                listenerFn();
+
             close();
         });
         
