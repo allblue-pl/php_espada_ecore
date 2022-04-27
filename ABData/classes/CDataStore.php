@@ -184,6 +184,11 @@ class CDataStore
 
         $rDeviceRequests = [];
         foreach ($dbRequests as $dbRequest) {
+            /* Legacy Fix */
+            if (count($dbRequest) === 4)
+                $dbRequest[] = null;
+            /* / Legacy Fix */
+
             list($dbRequestId, $dbRequestName, $actionName, $actionArgs, 
                     $schemeVersion, ) = $dbRequest;
 

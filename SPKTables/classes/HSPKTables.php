@@ -230,11 +230,17 @@ SCRIPT;
                 if ($db_column_name === null) 
                     continue;
 
-                $filter = EC\HStrings::EscapeLangCharacters($filter);
-                $db_filter = $t_table->getDB()->escapeString("%{$filter}%");
+                // $filter_Str = EC\HStrings::EscapeLangCharacters($filter);
+                $filter_Str = mb_strtolower($filter);
+                $filter_Str = EC\HStrings::EscapeRegexpChars($filter_Str);
+                $filter_Str = EC\HStrings::EscapeRegexpLangCharacters($filter_Str);
+                $db_filter = $t_table->getDB()->escapeString($filter_Str);
 
-                $conditions[] = "CAST({$db_column_name} AS CHAR)" .
-                        " LIKE {$db_filter}";
+                // echo $db_filter;
+                // die;
+
+                $conditions[] = "LOWER(CAST({$db_column_name} AS CHAR))" .
+                        " REGEXP {$db_filter}";
             }
 
             $query = '(' . implode(' OR ', $conditions) . ')';

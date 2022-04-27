@@ -60,6 +60,29 @@ class HStrings
         return str_replace($replace_from, $replace_to, $string);
     }
 
+    static public function EscapeRegexpLangCharacters($string, $langs =[])
+    {
+        $replace_regexp_from = [ 'a', 'c', 'e', 'l', 'n', 'o', 's', 'z',
+                           'A', 'C', 'E', 'L', 'N', 'O', 'S', 'Z' ];
+        $replace_regexp_to = [ '(a|ą)', '(c|ć)', '(e|ę)', '(l|ł)', '(n|ń)', '(o|ó)', '(s|ś)', '(z|ź|ż)',
+                            '(A|Ą)', '(C|Ć)', '(E|Ę)', '(L|Ł)', '(N|Ń)', '(O|Ó)', '(S|Ś)', '(Z|Ź|Ź)' ];
+
+        // $replace_regexp_from = [];
+        // $replace_regexp_to = [];
+        // for ($i = 0; $i < count($replace_from); $i++) {
+        //     $replace_regexp_from[] = $replace_from[$i];
+        //     $replace_regexp_to[] = '(' . $replace_from[$i] . '|' .
+        //             $replace_to[$i] . ')';
+        // }
+        // for ($i = 0; $i < count($replace_to); $i++) {
+        //     $replace_regexp_from[] = $replace_to[$i];
+        //     $replace_regexp_to[] = '(' . $replace_to[$i] . '|' .
+        //             $replace_from[$i] . ')';
+        // }
+
+        return str_replace($replace_regexp_from, $replace_regexp_to, $string);
+    }
+
     static public function EscapeRegexpChars($string)
     {
         $replace_from = [ '\\', '^', '$', '.', '[' .']', '|', '(' .
