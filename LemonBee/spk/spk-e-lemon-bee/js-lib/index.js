@@ -10,7 +10,9 @@ const
     spkMessages = require('spk-messages'),
     spkTables = require('spk-tables'),
     spocky = require('spocky'),
-    webABApi = require('web-ab-api')
+    webABApi = require('web-ab-api'),
+
+    $layouts = require('./$layouts')
 ;
 
 spocky.ext(new spkForms.Ext());
@@ -20,6 +22,11 @@ export class Site extends spocky.Module {
     constructor() {
         super();
 
+        this.l = new $layouts.Main();
+
+        this.msgs = new spkMessages.Messages();
+        this.l.$holders.msgs.$view = this.msgs;
+
         let lbSetup = eLibs.eFields.get('lbSetup');
         let base = '/';
         if ('uris' in lbSetup) {
@@ -27,8 +34,9 @@ export class Site extends spocky.Module {
                 base = lbSetup.uris.base;
         }
 
-        let pager = new abPager.Pager(base);
-        let lb = new spkLemonBee.System(pager);
+        this.pager = new abPager.Pager(base);
+
+        let lb = new spkLemonBee.System(this.pager, this.msgs);
 
         lb.setup({
             actions: {
@@ -52,15 +60,15 @@ export class Site extends spocky.Module {
                 logIn_Async: async (login, password) => {
                     let result = await webABApi.json_Async(
                             lbSetup.uris['userApi'] + 'log-in', 
-                            { Login: login, Password: password });
+                            { login: login, password: password });
 
                     return {
-                        user: {
+                        user: result.isSuccess() ? {
                             loggedIn: result.data.user.login !== null,
                             login: result.data.user.login === null ? 
                                     '' : result.data.user.login,
                             permissions: result.data.user.permissions,
-                        },
+                        } : null,
                         error: result.isSuccess() ? null : result.data.message,
                     };
                 },
@@ -97,15 +105,19 @@ export class Site extends spocky.Module {
                 package: '',
             },
 
-            spkMessages: lbSetup.spkMessages,
+            settings: {
+                hasRemindPassword: false,
+            }
         });
 
         lb.setUser(lbSetup.user);
 
         lb.init();
-        pager.init();
+        this.pager.init();
 
-        this.$view = lb.module;
+        this.l.$holders.content.$view = lb.module;
+
+        this.$view = this.l;
     }
 
     createPanels()

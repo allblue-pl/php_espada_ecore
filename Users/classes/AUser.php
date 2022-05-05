@@ -103,7 +103,7 @@ class AUser extends EC\Api\ABasic
     protected function action_LogIn(CArgs $args)
     {
         $login = $args->login;
-        $password = $args->Password;
+        $password = $args->password;
 
         $db = $this->db;
         $user = $this->user;

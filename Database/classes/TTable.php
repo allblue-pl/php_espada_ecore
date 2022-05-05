@@ -220,10 +220,15 @@ class TTable
         return $this->delete('WHERE ' . $this->getQuery_Conditions($conditions));
     }
 
-    // public function escapeColumn($columnName, $value)
-    // {
-    //     return $this->getColumn($columnName)['field']->escape($this->db, $value);
-    // }
+    public function escapeColumnValue(string $columnName, $value)
+    {
+        $column = $this->getColumn($columnName);
+
+        if ($value instanceof CRawValue)
+            return $value->getValue();
+
+        return $column['field']->escape($this->db, $value);
+    }
 
     public function getAlias()
     {
@@ -416,7 +421,7 @@ class TTable
         foreach ($rows as $row) {
             $row_DB = [];
             foreach ($row as $columnName => $columnValue) {
-                $row_DB[] = $this->escapeColumnValue($row, 
+                $row_DB[] = $this->escapeColumn($row, 
                         $this->getColumn($columnName), $columnValue);
             }
 
@@ -700,7 +705,7 @@ class TTable
 
             $keys_Escaped = [];
             for ($i = 0; $i < count($keys); $i++) {
-                $keys_Escaped[] = $this->escapeColumnValue($keys, 
+                $keys_Escaped[] = $this->escapeColumn($keys, 
                         $this->getColumn($this->primaryKeys[$i]), $keys[$i]);
             }
             $pks_StrArr[] = '(' . implode(',', $keys_Escaped) . ')';
@@ -951,16 +956,15 @@ class TTable
             if (!is_array($row))
                 throw new \Exception('Expecting `rows` to be array of arrays.');
 
-            if (count($columns) !== count($row)) {
-                throw new \Exception("Wrong columns number in row '${i}'" .
-                        "(inconsistency with first row).");
-            }
+            $row_Filtered = [];
 
             foreach ($columns as $columnName => $column) {
                 if (!array_key_exists($columnName, $row)) {
                     throw new \Exception('Inconsistent/unknown column ' .
                             "`{$columnName}` in rows.");
                 }
+
+                $row_Filtered[$columnName] = $row[$columnName];
 
                 // $row_DB[$columnName] = $this->escapeColumnValue($row, $column, 
                 //         $columnValue);
@@ -975,6 +979,13 @@ class TTable
                 //     $row_DB[] = $columns[$columnName]['field']->escape($this->db, $columnValue);
                 // } else 
                 //     $row_DB[] = $columnValue->getValue();
+            }
+
+            $row = $row_Filtered;
+
+            if (count($columns) !== count($row)) {
+                throw new \Exception("Wrong columns number in row '${i}'" .
+                        "(inconsistency with first row).");
             }
 
             $isNew = true;
@@ -1058,11 +1069,11 @@ class TTable
                     $pks_Match_Arr = [];
                     foreach ($pks as $pk) {
                         $pks_Match_Arr[] = $this->db->quote($pk) . '=' . 
-                                $this->escapeColumnValue($row, $columns[$pk],
+                                $this->escapeColumn($row, $columns[$pk],
                                 $row[$pk]);
                     }
                     $update_ColumnQuery .= '(' . implode(' AND ', $pks_Match_Arr) . ')';
-                    $update_ColumnQuery .= ' THEN ' .  $this->escapeColumnValue($row, $column, 
+                    $update_ColumnQuery .= ' THEN ' .  $this->escapeColumn($row, $column, 
                             $row[$columnName]);
                 }
                 $update_ColumnQuery .= ' END)';
@@ -1074,7 +1085,7 @@ class TTable
                 $pks_Match_Arr = [];
                 foreach ($pks as $pk) {
                     $pks_Match_Arr[] = $this->db->quote($pk) . '=' . 
-                                $this->escapeColumnValue($row, $columns[$pk],
+                                $this->escapeColumn($row, $columns[$pk],
                                 $row[$pk]);
                 }
                 $update_Where_Arr[] = '(' . implode(' AND ', $pks_Match_Arr) . ')';
@@ -1096,7 +1107,7 @@ class TTable
             foreach ($rows_Insert as $row) {
                 $row_DB = [];
                 foreach ($columns as $columnName => $column) {
-                    $row_DB[$columnName] = $this->escapeColumnValue($row, $column, 
+                    $row_DB[$columnName] = $this->escapeColumn($row, $column, 
                             $row[$columnName]);
                 }
 
@@ -1189,7 +1200,7 @@ class TTable
         foreach ($values as $columnName => $value) {
             $column = $this->getColumn($columnName, true);
             $db_sets[] = $column['name'] . '=' .
-                    $this->escapeColumnValue($values, $column, $value);
+                    $this->escapeColumn($values, $column, $value);
         }
 
         $where = $this->getQuery_Conditions($where_conditions, false);
@@ -1258,7 +1269,7 @@ class TTable
         return '(' . implode(',', $db_values) . ')';
     }
 
-    private function escapeColumnValue(array $row, array $column, $value)
+    private function escapeColumn(array $row, array $column, $value)
     {
         if ($value instanceof CRawValue)
             return $value->getValue();

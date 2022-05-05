@@ -24,6 +24,7 @@ class _TArticles extends Database\TTable
             'Content_Raw' => new Database\FText(true, 'medium'),
             'Content_Html' => new Database\FText(true, 'medium'),
         ]);
+        $this->setPKs([ 'Id' ]);
     }
 
 }

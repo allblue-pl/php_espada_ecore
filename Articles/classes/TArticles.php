@@ -21,6 +21,7 @@ class TArticles extends _TArticles
             return $row;
 
         $table->update([[
+            'Id' => null,
             'User_Id' => $userId,
             'User_New' => true,
             'Publish' => time(),
@@ -28,6 +29,7 @@ class TArticles extends _TArticles
             'AuthorName' => '',
             'Title' => '',
             'Intro' => '',
+            'IntroImage_Description' => '',
             'Content_Raw' => '',
             'Content_Html' => '',
         ]]);

@@ -11,6 +11,7 @@ class MHead extends E\Module
     private $csp = null;
     private $csp_ScriptSrc = null;
     private $scriptCSPHashes = [];
+    private $styleCSPHashes = [];
 
     /* Meta Data */
     private $title = 'Espada Website';
@@ -82,6 +83,16 @@ class MHead extends E\Module
         return $hash;
     }
 
+    public function generateStyleCSPHash()
+    {
+        $this->requireBeforePostInitialize();
+
+        $hash = EC\HHash::Generate(16);
+        $this->styleCSPHashes[] = "'nonce-{$hash}'";
+
+        return $hash;
+    }
+
     public function setAuthor($author)
     {
         $this->author = $author;
@@ -108,7 +119,8 @@ class MHead extends E\Module
             header("Content-Security-Policy: {$this->csp}" . 
                     " script-src 'self' 'unsafe-eval' " . 
                     ($this->csp_ScriptSrc === null ? '' : $this->csp_ScriptSrc . ' ') .
-                    implode(' ', $this->scriptCSPHashes) . ';');
+                    implode(' ', $this->scriptCSPHashes) . ';' .
+                    " style-src 'self' " . implode(' ', $this->styleCSPHashes) . ';');
         }
     }
 

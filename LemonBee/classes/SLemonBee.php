@@ -42,6 +42,7 @@ class SLemonBee extends EC\SBasic
         // print_r(EC\HText::GetTranslations('LemonBee:spk')->getArray());
 
         $this->m->eLibs->addTranslations('LemonBee');
+        $this->m->eLibs->addTranslations_As('SPKTables', 'LemonBee:spkTables');
 
         $packageBase = '/dev/node_modules/spk-lemon-bee/';
 

@@ -42,6 +42,17 @@ class MELibs extends E\Module
         $this->addTexts($texts);
     }
 
+    function addTranslations_As($prefixName, $path)
+    {
+        $texts = [];
+        $translationsArr = EC\HText::GetTranslations($path)->getArray();
+
+        foreach ($translationsArr as $text => $textTranslation) 
+            $texts["{$prefixName}:{$text}"] = $textTranslation;
+
+        $this->addTexts($texts);
+    }
+
     function setField($fieldName, $fieldValue)
     {
         // $this->requireBeforePreDisplay();
