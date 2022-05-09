@@ -91,10 +91,10 @@ class AUser extends EC\Api\ABasic
     protected function action_Hash(CArgs $args)
     {
         $hash = null;
-        if (isset($args->HashRounds))
-            $hash = EC\HHash::GetPassword($args->Password, $args->HashRounds);
+        if (isset($args->hashRounds))
+            $hash = EC\HHash::GetPassword($args->password, $args->hashRounds);
         else
-            $hash = EC\HHash::GetPassword($args->Password);
+            $hash = EC\HHash::GetPassword($args->password);
 
         return CResult::Success()
             ->add('hash', $hash);

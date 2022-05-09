@@ -234,7 +234,11 @@ class MDatabase extends E\Module
 		if ($date_time === null)
             return null;
 
-		return (int)strtotime($date_time . ' UTC');
+        try {
+		    return (float)strtotime($date_time . ' UTC');
+        } catch (\Exception $e) {
+            return (float)strtotime('1970-01-01 00:00:00 UTC');
+        }
 	}
 
 	public function unescapeInt($value)

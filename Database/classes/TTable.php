@@ -291,10 +291,13 @@ class TTable
     }
 
     public function getColumnTableRefs($fieldPrefix = '',
-            $excludedColumns = [ 'Id' ], $includedColumns = null)
+            $excludedColumns = [ 'Id' ], $includedColumns = null, 
+            $tableOnly = false)
     {
+        $columns = $tableOnly ? $this->columns_Table : $this->columns;
+
         $columnRefs = [];
-        foreach ($this->columns as $columnName => $columnField) {
+        foreach ($columns as $columnName => $columnField) {
             $column = $this->getColumn($columnName);
             if ($column['optional'])
                 continue;
@@ -312,6 +315,13 @@ class TTable
         }
 
         return $columnRefs;
+    }
+
+    public function getColumnTableRefs_TableOnly($fieldPrefix = '',
+            $excludedColumns = [ 'Id' ], $includedColumns = null)
+    {
+        return $this->getColumnTableRefs($fieldPrefix, $excludedColumns, 
+                $includedColumns, true);
     }
 
     public function getDB()

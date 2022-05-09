@@ -49,6 +49,7 @@ class HUsers
             if ($testUser['type'] !== $type || $testUser['login'] !== $login)
                 continue;
 
+
             $authenticated = false;
             if (array_key_exists('passwordHash', $testUser))
                 $authenticated = EC\HHash::CheckPassword($password, $testUser['passwordHash']);
