@@ -15,7 +15,7 @@ class _TFiles extends Database\TTable
             'Id' => new Database\FInt(true),
             'User_Id' => new Database\FInt(false),
             'Hash' => new Database\FString(true, 128),
-            'Expires' => new Database\FDateTime(true),
+            'Expires' => new Database\FTime(true),
         ]);
         $this->setPKs([ 'Id' ]);
     }
