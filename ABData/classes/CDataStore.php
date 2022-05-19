@@ -198,7 +198,24 @@ class CDataStore
             $result = $this->getRequest($dbRequestName)
                     ->executeAction($device, $actionName, $actionArgs, $schemeVersion);
 
-            if (!$result['success']) {
+            if (!is_array($result)) {
+                $success = false;
+                $requestError = "'{$dbRequestName}:{$actionName}' -> Result is not an array.";
+            
+                break;
+            }
+
+            if (!array_key_exists('success', $result)) {
+                $success = false;
+                $requestError = "'{$dbRequestName}:{$actionName}' -> No 'success' in result.";
+            
+                break;
+            }
+
+            if (!$result['success']) {    
+                if (!array_key_exists('error', $result))
+                    $result['error'] = "No 'error' in result.";
+                
                 $success = false;
                 $requestError = "'{$dbRequestName}:{$actionName}' -> {$result['error']}";
                 break;
