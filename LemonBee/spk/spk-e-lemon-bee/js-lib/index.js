@@ -34,8 +34,13 @@ export class Site extends spocky.Module {
                 base = lbSetup.uris.base;
         }
 
+<<<<<<< Updated upstream
         this.pager = new abPager.Pager(base);
         let lb = new spkLemonBee.System(this.pager, this.msgs);
+=======
+        let pager = new abPager.Pager(base);
+        let lb = new spkLemonBee.System(pager, this.msgs);
+>>>>>>> Stashed changes
 
         lb.setup({
             actions: {
@@ -103,10 +108,13 @@ export class Site extends spocky.Module {
             uris: {
                 package: '',
             },
+<<<<<<< Updated upstream
 
             settings: {
                 hasRemindPassword: false,
             }
+=======
+>>>>>>> Stashed changes
         });
 
         lb.setUser(lbSetup.user);
@@ -116,6 +124,11 @@ export class Site extends spocky.Module {
 
         this.l.$holders.content.$view = lb.module;
 
+<<<<<<< Updated upstream
+=======
+        this.l.$holders.content.$view = lb.module;
+
+>>>>>>> Stashed changes
         this.$view = this.l;
     }
 

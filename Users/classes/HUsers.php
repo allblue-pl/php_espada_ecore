@@ -7,10 +7,10 @@ use E, EC;
 class HUsers
 {
 
-	static public $HashRounds = 12;
-
     const Exists_Login  = 1;
     const Exists_Email  = 2;
+
+	const HashRounds_Default = 12;
 
 	const Password_MinCharacters = 6;
 
@@ -206,17 +206,23 @@ class HUsers
 	static public function GetLoginHash($login)
 	{
 		return EC\HHash::Get(EC\HHash::Salt(), mb_strtolower($login),
-				self::$HashRounds);
+				self::GetHashRounds());
 	}
 
 	static public function GetEmailHash($email)
     {
-        return EC\HHash::GetPassword(mb_strtolower($email), self::$HashRounds);
+        return EC\HHash::GetPassword(mb_strtolower($email), self::GetHashRounds());
+    }
+
+    static public function GetHashRounds()
+    {
+        return EC\HConfig::Get('Users', 'hashRounds', 
+                self::HashRounds_Default);
     }
 
     static public function GetPasswordHash($password)
     {
-        return EC\HHash::GetPassword($password, self::$HashRounds);
+        return EC\HHash::GetPassword($password, self::GetHashRounds());
     }
 
     static public function InitSPK(EC\MELibs $eLibs, $userApiUri)
