@@ -121,6 +121,9 @@ class MSession extends E\Module
 
     public function _sessionHandlers_Destroy($id)
     {
+        if (!$this->db->isConnected())
+            return true;
+
         if (!(new TSessions($this->db))->delete_Where([
             [ 'Id', '=', $id ],
                 ]))
@@ -131,6 +134,9 @@ class MSession extends E\Module
 
     public function _sessionHandlers_GC($max)
     {
+        if (!$this->db->isConnected())
+            return true;
+
         if (!(new TSessions($this->db))->delete_Where([
             [ 'Access', '<', $max ],
                 ]))
@@ -146,6 +152,9 @@ class MSession extends E\Module
 
     public function _sessionHandlers_Read($id)
     {
+        if (!$this->db->isConnected())
+            return true;
+
         $row = (new TSessions($this->db))->row_Where([
             [ 'Id', '=', $id ],
         ]);
@@ -158,6 +167,9 @@ class MSession extends E\Module
 
     public function _sessionHandlers_Write($id, $data)
     {
+        if (!$this->db->isConnected())
+            return true;
+
         if (!(new TSessions($this->db))->update([[
             'Id' => $id,
             'Data' => $data,

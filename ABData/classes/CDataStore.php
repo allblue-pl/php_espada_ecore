@@ -177,7 +177,7 @@ class CDataStore
             $rDeviceRequests_Processed = (new TDeviceRequests($this->db))->select_Where([
                 [ 'DeviceId', '=', $device->getId() ],
                 [ 'RequestId', 'IN', $dbRequestIds ],
-            ]);
+            ], 'FOR UPDATE');
             $deviceRequestIds_Processed = array_column($rDeviceRequests_Processed, 
                     'RequestId');
         }

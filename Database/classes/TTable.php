@@ -948,6 +948,12 @@ class TTable
                 throw new \Exception("Primary Key '{$pk}' does not exist in row.");
         }
 
+        $localTransaction = false;
+        if ($this->db->transaction_IsAutocommit()) {
+            $this->db->transaction_Start();
+            $localTransaction = true;
+        }
+
         $columns = [];
         foreach ($rows[0] as $columnName => $columnValue) {
             if (!$ignoreNotExistingColumns) {
@@ -1026,7 +1032,7 @@ class TTable
         $rows_Insert = [];
         $rows_Update = [];
 
-        $rows_Existing = $this->select_ByPKs($rows_PKs_ToCheck);
+        $rows_Existing = $this->select_ByPKs($rows_PKs_ToCheck, 'FOR UPDATE');
         foreach ($rows_WithPKs as $row_WithPKs) {
             $match = false;
             foreach ($rows_Existing as $row_Existing) {
@@ -1058,12 +1064,6 @@ class TTable
         // print_r($rows_Update);
 
         $tableName_DB = $this->db->quote($this->name);
-
-        $localTransaction = false;
-        if ($this->db->transaction_IsAutocommit()) {
-            $this->db->transaction_Start();
-            $localTransaction = true;
-        }
 
         /* Update */
         if (count($rows_Update) > 0 && (count($rows[0]) > count($pks))) {

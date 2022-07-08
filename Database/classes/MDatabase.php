@@ -323,9 +323,10 @@ class MDatabase extends E\Module
 		foreach ($name_array as $name_part) {
 			if ($name_part === '*')
 				$q_name_array[] = $name_part;
-			else
-				$q_name_array[] = '`' .
+			else {
+                $q_name_array[] = '`' .
 						$this->mysqli->real_escape_string($name_part) . '`';
+            }
 		}
 
 		return implode('.', $q_name_array);
