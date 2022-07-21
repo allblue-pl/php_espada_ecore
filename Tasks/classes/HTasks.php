@@ -20,6 +20,7 @@ class HTasks
             $where_conditions[] = [ 'User_Id', '=', $user_id ];
 
         $row = (new TTasks($db))->row_Where($where_conditions);
+
         if ($row === null)
             return null;
 

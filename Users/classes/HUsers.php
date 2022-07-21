@@ -203,14 +203,18 @@ class HUsers
 		return true;
 	}
 
-	static public function GetLoginHash($login)
+	static public function GetLoginHash($login, $hashRounds = null)
 	{
+        $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
+
 		return EC\HHash::Get(EC\HHash::Salt(), mb_strtolower($login),
 				self::GetHashRounds());
 	}
 
-	static public function GetEmailHash($email)
+	static public function GetEmailHash($email, $hashRounds = null)
     {
+        $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
+
         return EC\HHash::GetPassword(mb_strtolower($email), self::GetHashRounds());
     }
 
@@ -220,8 +224,10 @@ class HUsers
                 self::HashRounds_Default);
     }
 
-    static public function GetPasswordHash($password)
+    static public function GetPasswordHash($password, $hashRounds = null)
     {
+        $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
+
         return EC\HHash::GetPassword($password, self::GetHashRounds());
     }
 

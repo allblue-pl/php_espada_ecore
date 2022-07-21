@@ -175,8 +175,13 @@ SCRIPT;
         $parsed_rows = [];
         foreach ($rows as $row) {
             $parsed_row = [];
-            foreach ($spk_table['columns'] as $col_name => $header) {
-                if ($col_name[0] === '$') {
+            foreach ($spk_table['columns'] as $col_name => $colInfo) {
+                // if ($col_name[0] === '$') {
+                //     $parsed_row[] = '';
+                //     continue;
+                // }
+
+                if ($colInfo['refColumnName'] === null) {
                     $parsed_row[] = '';
                     continue;
                 }

@@ -122,7 +122,8 @@ class HImages
         $height_factor = $min_height / $image_height;
         $factor = max($width_factor, $height_factor);
 
-        $t_image = imagescale($image, $factor * $image_width, $factor * $image_height);
+        $t_image = imagescale($image, (int)($factor * $image_width), 
+                (int)($factor * $image_height));
 
         return $t_image;
     }
