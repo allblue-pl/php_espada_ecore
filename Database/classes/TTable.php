@@ -497,6 +497,9 @@ class TTable
                     if ($column_parser['out'] !== null) {
                         $parsed_cols = $column_parser['out']($row, $columnName,
                                 $unescaped_row[$columnName], $parsed_row);
+                        if (!is_array($parsed_cols)) {
+                            throw new \Exception('Column parser must return row as an array.');
+                        }
                         foreach ($parsed_cols as $parsed_col_name => $parsed_col_value) {
                             if ($parsed_col_name !== $columnName) {
                                 if ($columnNames !== null) {

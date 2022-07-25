@@ -175,7 +175,7 @@ class HUsers
     //         return 0;
 	//
 	// 	if ($id === null)
-    //     	return $database->getInsertedId();
+    //     	return $database->getLastInsertedId();
 	// 	else
 	// 		return $id;
     // }

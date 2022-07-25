@@ -61,16 +61,16 @@ export class Site extends spocky.Module {
                             lbSetup.uris['userApi'] + 'log-in', 
                             { login: login, password: password });
 
-                    window.location = '/';
-                    // return {
-                    //     user: result.isSuccess() ? {
-                    //         loggedIn: result.data.user.login !== null,
-                    //         login: result.data.user.login === null ? 
-                    //                 '' : result.data.user.login,
-                    //         permissions: result.data.user.permissions,
-                    //     } : null,
-                    //     error: result.isSuccess() ? null : result.data.message,
-                    // };
+                    return {
+                        user: result.isSuccess() ? {
+                            loggedIn: result.data.user.login !== null,
+                            login: result.data.user.login === null ? 
+                                    '' : result.data.user.login,
+                            permissions: result.data.user.permissions,
+                        } : null,
+                        error: result.isSuccess() ? null : result.data.message,
+                        reload: true,
+                    };
                 },
                 logOut_Async: async () => {
                     let result = await webABApi.json_Async(

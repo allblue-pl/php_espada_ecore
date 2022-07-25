@@ -113,7 +113,7 @@ class CCSV
                 if ($quoted) {
                     $line_Next = $this->getNextLine();
                     if ($line_Next === null) {
-                        $row->addColumn($column);
+                        $row->addColumn($column === null ? '' : $column);
                         break;
                     } else if ($line_Next === '') {
                         continue;
@@ -121,7 +121,7 @@ class CCSV
                         $line .= "\r\n" . $line_Next;
                     }
                 } else {
-                    $row->addColumn($column);
+                    $row->addColumn($column === null ? '' : $column);
                     break;
                 }
             }
@@ -163,14 +163,14 @@ class CCSV
                     if ($char_Next === $this->separator)
                         $index++;
 
-                    $row->addColumn($column);
+                    $row->addColumn($column === null ? '' : $column);
                     $column = null;
                     $quoted = false;
                     continue;
                 }
             } else {
                 if ($char === $this->separator) {
-                    $row->addColumn($column);
+                    $row->addColumn($column === null ? '' : $column);
                     $column = null;
                     continue;
                 }
