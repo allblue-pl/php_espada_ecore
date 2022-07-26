@@ -97,10 +97,10 @@ export class Site extends spocky.Module {
             },
             images: lbSetup.images,
             panels: this.createPanels(),
-
             textFn: (text) => {
                 return eLibs.eText('LemonBee:' + text);
             },
+            title: lbSetup.title,
             uris: {
                 package: '',
             },
