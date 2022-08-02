@@ -22,22 +22,44 @@ class CResult extends CResult_Base
     }
 
 
-    private $outputs = [];
-
     private function __construct($result, $message)
     {
-        parent::__construct($result, $message);
+        $this->outputs['result'] = $result;
+        $this->outputs['message'] = $message;
     }
 
     public function add($name, $value)
     {
-        if ($name === 'result' || $name == 'message' || $name === 'debug' ||
-                array_key_exists($name, $this->outputs))
-            throw new \Exception("Output '{$name}' already exists.");
-
         $this->outputs[$name] = $value;
 
         return $this;
+    }
+
+    public function debug($message)
+    {
+        if (EDEBUG) {
+            if (!array_key_exists('EDEBUG', $this->outputs))
+                $this->outputs['EDEBUG'] = [];
+
+            $this->outputs['EDEBUG'][] = $message;
+        }
+
+        return $this;
+    }
+
+    public function isSuccess()
+    {
+        return $this->outputs['result'] === self::SUCCESS;
+    }
+
+    public function isFailure()
+    {
+        return $this->outputs['result'] === self::FAILURE;
+    }
+
+    public function isError()
+    {
+        return $this->outputs['result'] === self::ERROR;
     }
 
     public function exists($name)
@@ -59,15 +81,10 @@ class CResult extends CResult_Base
 
         $this->escapeNonUTF($this->outputs);
 
-        $json = $this->outputs;
-        $json['result'] = $this->getResult();
-        $json['message'] = $this->getMessage();
-        $json['debug'] = $this->getDebug();
-
         if (EDEBUG)
-            $json_string = json_encode($json, JSON_PRETTY_PRINT);
+            $json_string = json_encode($this->outputs, JSON_PRETTY_PRINT);
         else
-            $json_string = json_encode($json);
+            $json_string = json_encode($this->outputs);
 
         if ($json_string == null) {
             throw new \Exception('Cannot parse Api\CResult `outputs`: ' .
@@ -75,6 +92,11 @@ class CResult extends CResult_Base
         }
 
         return $json_string;
+    }
+
+    public function getMessage()
+    {
+        return $this->outputs['message'];
     }
 
     public function isset($name)

@@ -30,11 +30,42 @@ class SApi extends E\Site
 
         $result = $this->getResult();
 
-        $result_json = $result->getJSON();
+        if ($result instanceof CResult) {
+            $result_json = $result->getJSON();
 
-        $this->setRootL(E\Layout::_('Basic:raw', [
-            'raw' => $result->getJSON(),
-        ])); 
+            $this->setRootL(E\Layout::_('Basic:raw', [
+                'raw' => $result->getJSON(),
+            ]));
+        } else if ($result instanceof CResult_Bytes) {
+            echo "ABApi" . "\r\n";
+
+            echo (int)$result->getResult() . "\r\n";
+
+            $message = $result->getMessage();
+            echo mb_strlen($message) . "\r\n";
+            echo $message . "\r\n";
+
+            if (ob_get_contents())
+			    ob_clean();
+		    flush();
+
+            foreach ($result->getBytes() as $byteInfo) {
+                echo $byteInfo['name'] . "\r\n";
+                if (!is_string($byteInfo['bytes'])) {
+                    throw new \Exception("Bytes must be string. Found: {$byteInfo['name']} ->" . 
+                            print_r($byteInfo['bytes'], true));
+                }
+
+                echo mb_strlen($byteInfo['bytes']) . "\r\n";
+                echo $byteInfo['bytes'] . "\r\n";
+
+                flush();
+            }
+
+            $this->setRootL(E\Layout::_('Basic:raw', [
+                'raw' => '',
+            ]));
+        }
     }
 
     private function parseArgs($args)

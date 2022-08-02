@@ -30,6 +30,13 @@ class ABasic extends AApi
         $this->action($action_name, $fn, $arg_infos);
     }
 
+    public function actionR_Bytes($action_name, $fn, $arg_infos = [],
+            $required_permissions = [])
+    {
+        $this->actionRequiredPermissions[$action_name] = $required_permissions;
+        $this->action_Bytes($action_name, $fn, $arg_infos);
+    }
+
     public function getResult($action_name, $args)
     {
         $user = $this->getSite()->m->user;
