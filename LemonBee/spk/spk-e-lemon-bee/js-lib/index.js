@@ -42,7 +42,7 @@ export class Site extends spocky.Module {
                 changePassword_Async: async(oldPassword, newPassword) => {
                     let result = await webABApi.json_Async(
                             lbSetup.uris['userApi'] + 'change-password', 
-                            { Password: oldPassword, NewPassword: newPassword });
+                            { password: oldPassword, newPassword: newPassword });
 
                     if (result.isSuccess()) {
                         return {

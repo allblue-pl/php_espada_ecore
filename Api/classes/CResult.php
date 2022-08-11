@@ -24,7 +24,8 @@ class CResult extends CResult_Base
 
     private $outputs = [];
 
-    private function __construct($result, $message)
+    
+    public function __construct($result, $message)
     {
         parent::__construct($result, $message);
     }
