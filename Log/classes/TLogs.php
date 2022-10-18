@@ -15,7 +15,7 @@ class TLogs extends Database\TTable
             'Id'                => new Database\FInt(false, 11),
             'User_Id'           => new Database\FInt(false, 11),
 
-            'DateTime'          => new Database\FTime(false),
+            'DateTime'          => new Database\FDateTime(false),
             'Message'           => new Database\FString(true, 256),
             'Data'              => new Database\FText(true, 'medium')
         ]);

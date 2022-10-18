@@ -310,7 +310,7 @@ class MDatabase extends E\Module
 		throw new \Exception('Database error: ' . $query . ' # ' .
 				$this->mysqli->error);
 
-		return false;
+		// return false;
 	}
 
 	public function quote($name)

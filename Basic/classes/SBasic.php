@@ -13,6 +13,7 @@ class SBasic extends E\Site
         $this->addM('head', new \EC\Basic\MHead());
     }
 
+    
     protected function _initialize()
     {
         parent::_initialize();

@@ -1328,8 +1328,9 @@ class TTable
             }  else if (count($column_condition) === 1) {
                 $t_logic_operator = array_keys($column_condition)[0];
                 if ($t_logic_operator !== 'OR' && $t_logic_operator !== 'AND') {
-                    return $args[] = '(' . $this->getQuery_Conditions_Helper(
-                            [ 'AND', $column_condition ], 'AND') . ')';
+                    $args[] = '(' . $this->getQuery_Conditions_Helper(
+                            [ 'AND', $column_condition ], 'AND', $tableOnly) . ')';
+                    continue;
                 }
 
                 if (count($column_condition[$t_logic_operator]) === 0)
@@ -1341,6 +1342,15 @@ class TTable
                 continue;
             } else if (!is_int($key))
                 throw new \Exception("Unknown logic operator `{$key}`.");
+
+            if (count($column_condition) === 1) {
+                if (is_array($column_condition[0])) {
+                    $args[] = '(' . $this->getQuery_Conditions_Helper(
+                        'AND', $column_condition[0], 
+                        $tableOnly) . ')';
+                    continue;
+                }
+            }
 
             if (count($column_condition) === 2) {
                 if ($column_condition[0] === 'OR' || $column_condition[0] === 'AND') {

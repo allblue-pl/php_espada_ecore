@@ -121,13 +121,13 @@ class CDataStore
             $this->db->transaction_Start();
         }
 
-        // if (count($deviceRows_DeletePairs) > 0) {
-        //     if (!(new TDeviceRows($this->db))->delete_Where([
-        //         [ 'DeviceId', '=', $device->getId() ],
-        //         $deviceRows_DeletePairs,
-        //             ]))
-        //         throw new \Exception('Cannot delete device rows.');
-        // }
+        if (count($deviceRows_DeletePairs) > 0) {
+            if (!(new TDeviceRows($this->db))->delete_Where([
+                [ 'DeviceId', '=', $device->getId() ],
+                $deviceRows_DeletePairs,
+                    ]))
+                throw new \Exception('Cannot delete device rows.');
+        }
 
         if (!(new TDeviceRows($this->db))->update($deviceRows_New))
             throw new \Exception('Cannot update device rows.');
