@@ -14,7 +14,7 @@ class AUsers extends EC\Api\ABasic
 
     public function __construct(EC\SApi $site, $args)
     {
-        parent::__construct($site);
+        parent::__construct($site, $args['userType']);
 
         if (!isset($args['requiredPermissions']))
             throw new \Exception('No `requiredPermissions` specified in' .
@@ -26,28 +26,28 @@ class AUsers extends EC\Api\ABasic
         $this->db = $site->m->db;
         $this->user = $site->m->user;
 
-        // /* Actions */
-        // $this->action('activate', 'action_Activate', [
-        //     'id' => true,
-        //     'active' => true,
-        // ]);
+        /* Actions */
+        $this->action('activate', 'action_Activate', [
+            'id' => true,
+            'active' => true,
+        ]);
     }
 
-    // protected function action_Activate(EC\Api\CArgs $args)
-    // {
-    //     foreach ($this->requiredPermissions as $permission) {
-    //         if (!$this->user->hasPermission($permission))
-    //             return CResult::Failure('Permission denied.');
-    //     }
+    public function action_Activate(EC\Api\CArgs $args)
+    {
+        foreach ($this->requiredPermissions as $permission) {
+            if (!$this->user->hasPermission($permission))
+                return CResult::Failure('Permission denied.');
+        }
 
-    //     $t_clients = new TUsers($this->db);
-    //     if (!$t_clients->update([[
-    //         'Id' => $args->id,
-    //         'Active' => $args->active,
-    //             ]]))
-    //         return CResult::Failure('Cannot update users.');
+        $t_clients = new TUsers($this->db);
+        if (!$t_clients->update([[
+            'Id' => $args->id,
+            'Active' => $args->active,
+                ]]))
+            return CResult::Failure('Cannot update users.');
 
-    //     return CResult::Success();
-    // }
+        return CResult::Success();
+    }
 
 }
