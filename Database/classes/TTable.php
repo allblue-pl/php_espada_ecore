@@ -1212,7 +1212,7 @@ class TTable
         $db_sets = [];
         foreach ($values as $columnName => $value) {
             $column = $this->getColumn($columnName, true);
-            $db_sets[] = $column['name'] . '=' .
+            $db_sets[] = $this->alias . '.' . $column['name'] . '=' .
                     $this->escapeColumn($values, $column, $value);
         }
 

@@ -8,22 +8,24 @@ class HUpload
 
     static public function Validate($file, $info = [], &$error = null)
     {
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            if ($file['error'] === UPLOAD_ERR_INI_SIZE ||
-                    $file['error'] === UPLOAD_ERR_FORM_SIZE) {
-                $error = EC\HText::_('Upload:Errors_FileTooBig');
+        if ($file !== null) {
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                if ($file['error'] === UPLOAD_ERR_INI_SIZE ||
+                        $file['error'] === UPLOAD_ERR_FORM_SIZE) {
+                    $error = EC\HText::_('Upload:Errors_FileTooBig');
+                    return false;
+                }
+
+                $error = EC\HText::_('Upload:Errors_CannotUploadFile', [ $file['error'] ]);
                 return false;
             }
 
-            $error = EC\HText::_('Upload:Errors_CannotUploadFile', [ $file['error'] ]);
-            return false;
-        }
-
-        if (array_key_exists('exts', $info)) {
-            $path_info = pathinfo($file['name']);
-            if (!in_array(mb_strtolower($path_info['extension']), $info['exts'])) {
-                $error = EC\HText::_('Upload:Errors_WrongExtension');
-                return false;
+            if (array_key_exists('exts', $info)) {
+                $path_info = pathinfo($file['name']);
+                if (!in_array(mb_strtolower($path_info['extension']), $info['exts'])) {
+                    $error = EC\HText::_('Upload:Errors_WrongExtension');
+                    return false;
+                }
             }
         }
 
