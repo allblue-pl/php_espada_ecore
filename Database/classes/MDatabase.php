@@ -235,6 +235,10 @@ class MDatabase extends E\Module
             return null;
 
         try {
+            /* Fail safe ? */
+            if ($date_time === '0000-00-00 00:00:00')
+                $date_time = '1970-01-01 00:00:00';
+
 		    return (float)strtotime($date_time . ' UTC');
         } catch (\Exception $e) {
             return (float)strtotime('1970-01-01 00:00:00 UTC');
