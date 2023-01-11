@@ -42,7 +42,7 @@ class HUsers
     static public function CheckLoginAndPassword(EC\MDatabase $db, string $type, 
             string $login, string $password)
 	{
-        $login = mb_strtolower($login);
+        $login = trim(mb_strtolower($login));
 
         $testUsers = self::GetTestUsers();
 		foreach ($testUsers as $testUser) {
