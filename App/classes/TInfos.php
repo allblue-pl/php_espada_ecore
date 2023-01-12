@@ -22,6 +22,23 @@ class TInfos extends _TInfos
         /* Parsers */
         $this->setColumnParser('Data', [
             'out' => function($row, $name, $value) {
+                $json = json_decode($value, true);
+                if ($json === null) {
+                    return [
+                        $name => [
+                            'stdObj' => true,
+                        ],
+                    ];
+                }
+
+                if (!array_key_exists('data', $json)) {
+                    return [
+                        $name => [
+                            'stdObj' => true,
+                        ],
+                    ];
+                }
+
                 return [
                     $name => json_decode($value, true)['data']
                 ];

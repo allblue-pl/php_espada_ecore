@@ -24,7 +24,10 @@ export class Site extends spocky.Module {
 
         this.l = new $layouts.Main();
 
-        this.msgs = new spkMessages.Messages();
+        this.msgs = new spkMessages.Messages({
+            modulePath: abWeb_DistPath + 'node_modules/spk-messages/',
+        });
+
         this.l.$holders.msgs.$view = this.msgs;
 
         let lbSetup = eLibs.eFields.get('lbSetup');
