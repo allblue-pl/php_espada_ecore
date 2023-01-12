@@ -23,24 +23,29 @@ class RTableRequest extends RRequest
         $this->db = $this->dataStore->getDB();
         $this->table = $table;
 
-        $this->setA('delete', function(CDevice $device, array $args) {
-            return $this->action_Delete($device, $args);
+        $this->setA('delete', function(CDevice $device, array $args, 
+                ?int $schemeVersion) {
+            return $this->action_Delete($device, $args, $schemeVersion);
         });
-        $this->setA('row', function(CDevice $device, array $args) {
-            return $this->action_Row($device, $args);
+        $this->setA('row', function(CDevice $device, array $args, 
+                ?int $schemeVersion) {
+            return $this->action_Row($device, $args, $schemeVersion);
         });
-        $this->setA('select', function(CDevice $device, array $args) {
-            return $this->action_Select($device, $args);
+        $this->setA('select', function(CDevice $device, array $args, 
+                ?int $schemeVersion) {
+            return $this->action_Select($device, $args, $schemeVersion);
         });
-        $this->setA('set', function(CDevice $device, array $args) {
-            return $this->action_Set($device, $args);
+        $this->setA('set', function(CDevice $device, array $args, 
+                ?int $schemeVersion) {
+            return $this->action_Set($device, $args, $schemeVersion);
         });
-        $this->setA('update', function(CDevice $device, array $args) {
-            return $this->action_Update($device, $args);
+        $this->setA('update', function(CDevice $device, array $args, 
+                ?int $schemeVersion) {
+            return $this->action_Update($device, $args, $schemeVersion);
         });
     }
 
-    public function action_Delete(CDevice $device, array $args)
+    public function action_Delete(CDevice $device, array $args, ?int $schemeVersion)
     {
         $rows = $this->table->select_Where($args['where']);
 
@@ -76,7 +81,7 @@ class RTableRequest extends RRequest
         ];
     }
 
-    public function action_Row(CDevice $device, array $args)
+    public function action_Row(CDevice $device, array $args, ?int $schemeVersion)
     {
         return [
             'success' => true,
@@ -85,7 +90,7 @@ class RTableRequest extends RRequest
         ];
     }
 
-    public function action_Select(CDevice $device, array $args)
+    public function action_Select(CDevice $device, array $args, ?int $schemeVersion)
     {
         $queryExtension = '';
 
@@ -148,7 +153,7 @@ class RTableRequest extends RRequest
         ];
     }
 
-    public function action_Update(CDevice $device, array $args)
+    public function action_Update(CDevice $device, array $args, ?int $schemeVersion)
     {
         if (count($args['rows']) === 0) {
             return [

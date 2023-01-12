@@ -36,7 +36,7 @@ class CDataStore
         return $this->requests[$requestName];
     }
 
-    public function getUpdateData(CDevice $device, &$error)
+    public function getUpdateData(CDevice $device, ?int $schemeVersion, &$error)
     {
         $updateData = [
             'update' => [],
@@ -66,7 +66,7 @@ class CDataStore
 
             $actionResult = $tableRequest->executeAction($device, 'select', [
                 'where' => $where,
-            ], null);
+            ], $schemeVersion);
 
             if ($actionResult['error'] !== null) {
                 $error = "Cannot execute table '{$tableName}' request action '': " . 
