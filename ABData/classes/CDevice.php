@@ -346,6 +346,7 @@ class CDevice
 
     public function update()
     {
+        /* Can probably be restricted to only used ids assuming that Id has to be used during one transaction. */
         $lastDeclaredItemId = $this->itemIds_Last;
         foreach ($this->itemIds_Declared as $itemId_Declared) {
             if ($itemId_Declared > $lastDeclaredItemId)
