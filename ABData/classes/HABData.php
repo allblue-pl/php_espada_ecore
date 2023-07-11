@@ -109,8 +109,11 @@ class HABData
     static public function Update(CDevice $device, EC\Database\TTable $table, 
             $rows)
     {        
+        // $updatedIds = [];
+
         $rows_New = [];
         $rows_Existing = [];
+        $rows_Existing_ByDevice = [];
         $i = -1;
         foreach ($rows as &$row) {
             $i++;
@@ -126,7 +129,7 @@ class HABData
             if ($device->isNewId($row['_Id']))
                 $rows_New[] = $row;
             else
-                $rows_Existing[] = $row;
+                $rows_Existing_ByDevice[] = $row;
         }
 
         $rows_Existsing_DB = $table->select_Where([
@@ -134,11 +137,16 @@ class HABData
         ], 'FOR UPDATE');
         $rows_Existsing_DB_Ids = array_column($rows_Existsing_DB, '_Id');
 
-        foreach ($rows_Existing as $row_Existing) {
-            if (!in_array($row_Existing['_Id'], $rows_Existsing_DB_Ids)) {
-                throw new \Exception("'_Id' '{$row_Existing['_Id']}'" .
-                        " does not exist in database.");
+        /* Skipping deleted rows. */
+        foreach ($rows_Existing_ByDevice as $row_Existing_ByDevice) {
+            if (!in_array($row_Existing_ByDevice['_Id'], 
+                    $rows_Existsing_DB_Ids)) {
+                // throw new \Exception("'_Id' '{$row_Existing['_Id']}'" .
+                //         " does not exist in database.");
+                continue;
             }
+
+            $rows_Existing[] = $row_Existing_ByDevice;
         }
 
         foreach ($rows_New as $row_New) {

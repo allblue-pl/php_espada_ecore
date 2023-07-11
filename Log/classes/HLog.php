@@ -13,7 +13,7 @@ class HLog extends Database\TTable
             'Id' => null,
             'User_Id' => $user_id,
 
-            'DateTime' => time(),
+            'DateTime' => EC\HDate::GetTimeMillis(),
             'Message' => $message,
             'Data' => $data,
         ]]);

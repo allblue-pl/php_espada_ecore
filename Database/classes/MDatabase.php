@@ -308,8 +308,13 @@ class MDatabase extends E\Module
 
 		$this->transaction_InProgress = true;
 
-		if ($result = $this->mysqli->query($query))
-			return $result == 1;
+        try {
+            if ($result = $this->mysqli->query($query))
+                return $result == 1;
+        } catch (\Exception $e) {
+            throw new \Exception('Database error: ' . $query . ' # ' .
+                    $e->getMessage());    
+        }
 
 		throw new \Exception('Database error: ' . $query . ' # ' .
 				$this->mysqli->error);
