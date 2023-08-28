@@ -26,7 +26,7 @@ class TInfos extends _TInfos
                 if ($json === null) {
                     return [
                         $name => [
-                            'stdObj' => true,
+                            '_stdObj' => true,
                         ],
                     ];
                 }
@@ -34,7 +34,7 @@ class TInfos extends _TInfos
                 if (!array_key_exists('data', $json)) {
                     return [
                         $name => [
-                            'stdObj' => true,
+                            '_stdObj' => true,
                         ],
                     ];
                 }

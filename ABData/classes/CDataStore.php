@@ -8,6 +8,12 @@ use E, EC,
 class CDataStore
 {
 
+    const Response_Types_Success = 0;
+    const Response_Types_ResultFailure = 1;
+    const Response_Types_ResultError = 2;
+    const Response_Types_ActionError = 3;
+    const Response_Types_Error = 4;
+
     private $db = null;
     private $requests = null;
 
@@ -36,7 +42,8 @@ class CDataStore
         return $this->requests[$requestName];
     }
 
-    public function getUpdateData(CDevice $device, ?int $schemeVersion, &$error)
+    public function getUpdateData(CDevice $device, ?int $schemeVersion, 
+            $rDeviceDeletedRows, &$error)
     {
         $updateData = [
             'update' => [],
@@ -68,9 +75,9 @@ class CDataStore
                 'where' => $where,
             ], $schemeVersion);
 
-            if ($actionResult['error'] !== null) {
+            if ($actionResult['_type'] !== 0) {
                 $error = "Cannot execute table '{$tableName}' request action '': " . 
-                        $actionResult['error'];
+                        $actionResult['_message'];
                 return null;
             }
 
@@ -91,6 +98,23 @@ class CDataStore
                 $updateData['update'][$tableName] = $rows;
         }
 
+        /* Update DeviceRows */
+        $deviceRows_DeletePairs = [ 'OR' => [] ];
+        foreach ($rDeviceDeletedRows as $rDeviceDeletedRow) {
+            $deviceRows_DeletePairs['OR'][] = [ 'AND' => [
+                [ 'TableId', '=', $rDeviceDeletedRow[0] ],
+                [ 'RowId', '=', $rDeviceDeletedRow[1] ],
+            ]];
+        }
+
+        if (count($deviceRows_DeletePairs['OR']) > 0) {
+            if (!(new TDeviceRows($this->db))->delete_Where([
+                [ 'DeviceId', '=', $device->getId() ],
+                $deviceRows_DeletePairs,
+                    ]))
+                throw new \Exception('Cannot delete device rows.');
+        }
+
         /* Deleted Rows */
         $rDeletedRows = [];
         if ($lastUpdate !== null) {
@@ -106,27 +130,10 @@ class CDataStore
             }
         }
 
-        /* Update DeviceRows */
-        $deviceRows_DeletePairs = [ 'OR' => [] ];
-        foreach ($rDeletedRows as $tDeletedRow) {
-            $deviceRows_DeletePairs['OR'][] = [ 'AND' => [
-                [ 'TableId', '=', $tDeletedRow['TableId'] ],
-                [ 'RowId', '=', $tDeletedRow['RowId'] ],
-            ]];
-        }
-
         $localTransaction = false;
         if ($this->db->transaction_IsAutocommit()) {
             $localTransaction = true;
             $this->db->transaction_Start();
-        }
-
-        if (count($deviceRows_DeletePairs) > 0) {
-            if (!(new TDeviceRows($this->db))->delete_Where([
-                [ 'DeviceId', '=', $device->getId() ],
-                $deviceRows_DeletePairs,
-                    ]))
-                throw new \Exception('Cannot delete device rows.');
         }
 
         if (!(new TDeviceRows($this->db))->update($deviceRows_New))
@@ -160,6 +167,15 @@ class CDataStore
 
     public function processDBRequests(CDevice $device, array $dbRequests)
     {
+        $response = [
+            'type' => self::Response_Types_Success,
+            'errorMessage' => null,
+            'info' => [ '_stdObj' => '' ],
+            'results' => [ '_stdObj' => '' ],
+            'requestIds' => [],
+            'actionErrors' => [ '_stdObj' => '' ],
+        ];
+
         $localTransaction = false;
         if ($this->db->transaction_IsAutocommit()) {
             $localTransaction = true;
@@ -167,8 +183,6 @@ class CDataStore
         }
 
         $success = true;
-        $requestError = null;
-        $error = null;
 
         $dbRequestIds = array_column($dbRequests, 0);
         
@@ -190,34 +204,75 @@ class CDataStore
             /* / Legacy Fix */
 
             list($dbRequestId, $dbRequestName, $actionName, $actionArgs, 
-                    $schemeVersion, ) = $dbRequest;
+                    $schemeVersion) = $dbRequest;
 
             if (in_array($dbRequestId, $deviceRequestIds_Processed))
                 continue;
 
-            $result = $this->getRequest($dbRequestName)
-                    ->executeAction($device, $actionName, $actionArgs, $schemeVersion);
+            $response['results'][$dbRequestId] = null;
+            $response['requestIds'][] = $dbRequestId;
+            $response['actionErrors'][$dbRequestId] = null;
+
+            $result = null;
+
+            try {
+                $result = $this->getRequest($dbRequestName)
+                        ->executeAction($device, $actionName, $actionArgs, $schemeVersion);
+            } catch (\Exception $e) {
+                if (EDEBUG)
+                throw $e;
+
+                $success = false;
+                
+                $response['type'] = self::Response_Types_ActionError;
+                $response['errorMessage'] = "Action Error: '{$dbRequestName}:{$actionName}'";
+                $response['actionErrors'][$dbRequestId] = $e->getMessage();
+                break;
+            }
 
             if (!is_array($result)) {
                 $success = false;
-                $requestError = "'{$dbRequestName}:{$actionName}' -> Result is not an array.";
-            
+
+                $response['type'] = self::Response_Types_ActionError;
+                $response['errorMessage'] = "Action result is not an array: " .
+                        "'{$dbRequestName}:{$actionName}'";
+                $response['actionErrors'][$dbRequestId] = 
+                        "Action result is not an array.";
+
                 break;
             }
 
-            if (!array_key_exists('success', $result)) {
+            if (!array_key_exists('_type', $result)) {
                 $success = false;
-                $requestError = "'{$dbRequestName}:{$actionName}' -> No 'success' in result.";
-            
+
+                $response['type'] = self::Response_Types_ActionError;
+                $response['errorMessage'] = "No '_type' in action result: " .
+                        "'{$dbRequestName}:{$actionName}'";
+                $response['actionErrors'][$dbRequestId] = 
+                        "No '_type' in action result.";
+
                 break;
             }
 
-            if (!$result['success']) {    
-                if (!array_key_exists('error', $result))
-                    $result['error'] = "No 'error' in result.";
-                
+            $response['results'][$dbRequestId] = $result; 
+
+            if ($result['_type'] >= 2) {    
                 $success = false;
-                $requestError = "'{$dbRequestName}:{$actionName}' -> {$result['error']}";
+
+                $response['type'] = self::Response_Types_ResultError;
+                $response['errorMessage'] = "Result Error -> " .
+                        "'{$dbRequestName}:{$actionName}'";
+
+                break;
+            }
+
+            if ($result['_type'] === 1) {    
+                $success = false;
+
+                $response['type'] = self::Response_Types_ResultFailure;
+                $response['errorMessage'] = "Result Failure -> " .
+                        "'{$dbRequestName}:{$actionName}'";
+
                 break;
             }
 
@@ -228,29 +283,43 @@ class CDataStore
         }
 
         if ($success) {
-            if (!(new TDeviceRequests($this->db))->update($rDeviceRequests))
+            if (!(new TDeviceRequests($this->db))->update($rDeviceRequests)) {
                 $success = false;
+            
+                $response['type'] = self::Response_Types_Error;
+                $response['errorMessage'] = "Cannot update device requests.";
+            }
         }
 
         if ($success) {
-            if (!$device->update($this->db))
+            if (!$device->update($this->db)) {
                 $success = false;
+
+                $response['type'] = self::Response_Types_Error;
+                $response['errorMessage'] = "Cannot update device.";
+            }
         }
 
         if ($localTransaction) {
-            if (!$this->db->transaction_Finish($success))
-                throw new \Exception('Cannot commit');
+            if (!$this->db->transaction_Finish($success)) {
+                $response['type'] = self::Response_Types_Error;
+                $response['errorMessage'] = "Cannot commit changes to db.";
+            }
         }
 
-        return [
-            'success' => $success,
-            'error' => $requestError !== null ? $requestError : $error,
-        ];
+        return $response;
     }
 
     public function processRequests(CDevice $device, array $requests)
     {
-        $response = [];
+        $response = [
+            'actionErrors' => [ 'stdObj' => '' ],
+            'type' => self::Response_Types_Success,
+            'errorMessage' => null,
+            'info' => [ 'stdObj' => '' ],
+            'results' => [ 'stdObj' => '' ],
+            'requestIds' => [],
+        ];
 
         $localTransaction = false;
         if ($this->db->transaction_IsAutocommit()) {
@@ -264,26 +333,89 @@ class CDataStore
             list($requestId, $requestName, $actionName, $actionArgs, 
                     $schemeVersion) = $request;
 
-            $result = $this->getRequest($requestName)
-                    ->executeAction($device, $actionName, $actionArgs, 
-                    $schemeVersion);
-            
-            $response[$requestId] = $result;
+            $response['results'][$requestId] = null;
+            $response['requestIds'][] = $requestId;
+            $response['actionErrors'][$requestId] = null;
 
-            if (!$result['success']) {
+            $result = null;
+
+            try {
+                $result = $this->getRequest($requestName)
+                        ->executeAction($device, $actionName, $actionArgs, 
+                        $schemeVersion);
+            } catch (\Exception $e) {
+                if (EDEBUG)
+                    throw $e;
+
                 $success = false;
+
+                $response['type'] = self::Response_Types_ActionError;
+                $response['errorMessage'] = "Action Error: '{$requestName}:{$actionName}'";
+                $response['actionErrors'][$requestId] = $e->getMessage();
+                break;
+            }
+            
+            if (!is_array($result)) {
+                $success = false;
+
+                $response['type'] = self::Response_Types_ActionError;
+                $response['errorMessage'] = "Action result is not an array: " .
+                        "'{$requestName}:{$actionName}'";
+                $response['actionErrors'][$requestId] = 
+                        "Action result is not an array.";
+
+                break;
+            }
+
+            if (!array_key_exists('_type', $result)) {
+                $success = false;
+
+                $response['type'] = self::Response_Types_ActionError;
+                $response['errorMessage'] = "No '_type' in action result: " .
+                        "'{$requestName}:{$actionName}'";
+                $response['actionErrors'][$requestId] = 
+                        "No '_type' in action result.";
+
+                break;
+            }
+
+            $response['results'][$requestId] = $result;
+
+            if ($result['_type'] >= 2) {    
+                $success = false;
+
+                $response['type'] = self::Response_Types_ResultError;
+                $response['errorMessage'] = "Result Error: " .
+                        "'{$requestName}:{$actionName}'";
+
+                break;
+            }
+
+            if ($result['_type'] === 1) {    
+                $success = false;
+
+                $response['type'] = self::Response_Types_ResultFailure;
+                $response['errorMessage'] = "Result Failure: " .
+                        "'{$requestName}:{$actionName}'";
+
                 break;
             }
         }
 
         if ($success) {
-            if (!$device->update($this->db))
+            if (!$device->update($this->db)) {
                 $success = false;
+
+                $response['type'] = self::Response_Types_Error;
+                $response['errorMessage'] = "Cannot update device.";
+            }
         }
 
         if ($localTransaction) {
-            if (!$this->db->transaction_Finish($success))
-                throw new \Exception('Cannot commit.');
+            if (!$this->db->transaction_Finish($success)) {
+                $response['type'] = self::Response_Types_Error;
+                $response['errorMessage'] = "Cannot commit changes to db.";
+            }
         }
 
         return $response;
