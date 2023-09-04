@@ -47,8 +47,6 @@ SPK.Module('eUsers_LogIn', ['eUsers_LogIn'],
 
         var self = this;
         SPK.$abApi.json(this.eFields.uris.api, fields, function(result) {
-            console.log(result);
-
             if (result.isSuccess())
                 window.location = self.eFields.uris.redirect;
             else if (result.isFailure()) {
@@ -58,7 +56,6 @@ SPK.Module('eUsers_LogIn', ['eUsers_LogIn'],
                 });
                 self.mNotifications.finishLoading();
             } else {
-                console.warn(result);
                 self.$fields.error.set({
                     show: true,
                     message: SPK.$eText.get('Users:logIn_LogIn_Error')

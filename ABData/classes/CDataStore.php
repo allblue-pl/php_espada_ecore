@@ -313,11 +313,11 @@ class CDataStore
     public function processRequests(CDevice $device, array $requests)
     {
         $response = [
-            'actionErrors' => [ 'stdObj' => '' ],
+            'actionErrors' => [ '_stdObj' => '' ],
             'type' => self::Response_Types_Success,
             'errorMessage' => null,
-            'info' => [ 'stdObj' => '' ],
-            'results' => [ 'stdObj' => '' ],
+            'info' => [ '_stdObj' => '' ],
+            'results' => [ '_stdObj' => '' ],
             'requestIds' => [],
         ];
 

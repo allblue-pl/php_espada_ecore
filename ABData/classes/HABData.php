@@ -119,7 +119,7 @@ class HABData
             $i++;
             
             if (!array_key_exists('_Id', $row))
-                throw new \Exception("No '_Id' column in row '${i}'.");
+                throw new \Exception("No '_Id' column in row '{$i}'.");
 
             if ($row['_Id'] === null)
                 throw new \Exception("'_Id' in rows '{$i}' cannot be null.");

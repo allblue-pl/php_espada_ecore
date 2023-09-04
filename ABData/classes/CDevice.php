@@ -56,7 +56,7 @@ class CDevice
 
         if ($rDevice['Expires'] !== null) {
             if ($rDevice['Expires'] < time()) {
-                $error = $error = EC\HText::_('ABData:Errors_SessionExpired');
+                $error = EC\HText::_('ABData:Errors_SessionExpired');
                 return null;
             }
         }
