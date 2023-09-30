@@ -11,6 +11,7 @@ abstract class VField
     private $validator = null;
     private $name = null;
 
+    
     public function __construct($args, $default_args)
     {
         $default_args['notNull'] = true;

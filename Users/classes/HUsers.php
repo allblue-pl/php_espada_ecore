@@ -15,10 +15,21 @@ class HUsers
 	const Password_MinCharacters = 6;
 
 
-	static public function Activate(EC\MDatabase $db, $userId, bool $active)
+	static public function Activate(EC\MDatabase $db, $userId, bool $active,
+            &$existingActiveUserId = null)
 	{
+        $rUser = (new TUsers($db))->row_ById($userId);
+        if ($rUser === null)    
+            throw new \Exception('User does not exist.');
+
+        if ($active) {
+            if (self::Exists_ByHash($db, $rUser['Type'], $rUser['LoginHash'], 
+                    [ $rUser['Id'] ], $existingActiveUserId, true))
+                return false;
+        }
+
 		return (new TUsers($db))->update_Where([ 
-            'Active' => $active 
+            'Active' => $active,
         ], [
             [ 'Id', '=', $userId ]
         ]);
@@ -119,6 +130,58 @@ class HUsers
         return (new TUsers($db))->delete_ById($userId);
     }
 
+    static public function Exists(EC\MDatabase $db, string $type, string $login, 
+            array $excludedIds = null, &$existingUserId = null, 
+            $onlyActive = false)
+    {
+        $loginHash = self::GetLoginHash($login);
+
+        if ($excludedIds === null)
+            $excludedIds = [ -1 ];
+
+        $where = [
+            [ 'Id', 'NOT IN', $excludedIds ],
+            [ 'LoginHash', '=', $loginHash ],
+        ];
+        if ($onlyActive)
+            $where[] = [ 'Active', '=', true ];
+
+        $row = (new TUsers($db))->row_Where($where);
+
+        if ($row !== null) {
+            $existingUserId = $row['Id'];
+            return true;
+        }
+            
+        $existingUserId = null;
+        return;
+    }
+
+    static public function Exists_ByHash(EC\MDatabase $db, string $type, 
+            string $loginHash, array $excludedIds = null, 
+            &$existingUserId = null, $onlyActive = false)
+    {
+        if ($excludedIds === null)
+            $excludedIds = [ -1 ];
+
+        $where = [
+            [ 'Id', 'NOT IN', $excludedIds ],
+            [ 'LoginHash', '=', $loginHash ],
+        ];
+        if ($onlyActive)
+            $where[] = [ 'Active', '=', true ];
+
+        $row = (new TUsers($db))->row_Where($where);
+
+        if ($row !== null) {
+            $existingUserId = $row['Id'];
+            return true;
+        }
+            
+        $existingUserId = null;
+        return;
+    }
+
 	static public function Get(EC\MDatabase $db, $userId)
 	{
 		return (new TUsers($db))->row_ById($userId);
@@ -179,29 +242,6 @@ class HUsers
 	// 	else
 	// 		return $id;
     // }
-
-    static public function Exists(EC\MDatabase $db, string $type, string $login, 
-            $excludedIds = null, &$existingUserId = null)
-    {
-        $loginHash = self::GetLoginHash($login);
-
-        if ($excludedIds === null)
-            $excludedIds = [ -1 ];
-
-		$row = (new TUsers($db))->row_Where([
-			[ 'Id', 'NOT IN', $excludedIds ],
-			[ 'LoginHash', '=', $loginHash ],
-        ]);
-
-		if ($row === null) {
-            $existingUserId = null;
-            return false;
-        }
-            
-        $existingUserId = $row['Id'];
-
-		return true;
-	}
 
 	static public function GetLoginHash($login, $hashRounds = null)
 	{

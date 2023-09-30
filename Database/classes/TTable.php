@@ -917,8 +917,15 @@ class TTable
     {
         $column = &$this->getColumnRef($columnName);
         $column['vFields'] = [];
-        if ($default_v_field_info !== null)
-            $column['vFields'][] = $column['field']->getVField($default_v_field_info);
+        if ($default_v_field_info !== null) {
+            try {
+                $column['vFields'][] = $column['field']->getVField(
+                        $default_v_field_info);
+            } catch (\Exception $e) {
+                throw new \Exception("Cannot set {$columnName} VFields -> " . 
+                        $e->getMessage());
+            }
+        }
 
         $this->addColumnVFields($columnName, $vFields);
     }

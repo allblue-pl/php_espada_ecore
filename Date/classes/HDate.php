@@ -37,13 +37,19 @@ class HDate
         return ($start + $diff);
     }
 
-    static public function GetDay($time)
+    static public function GetDay($time = null)
     {
+        if ($time === null)
+            $time = self::GetTime();
+
         return self::GetDay_UTC($time) - self::$UTCOffset * self::Span_Hour;
     }
 
-    static public function GetDay_UTC($time)
+    static public function GetDay_UTC($time = null)
     {
+        if ($time === null)
+            $time = self::GetTime();
+
         $time  = floor($time / self::Span_Day) * self::Span_Day;
 
         return $time;
@@ -67,7 +73,17 @@ class HDate
     static public function Format_Date($time)
     {
         if ($time === null)
-            return $time;
+            $time = time();
+
+        return gmdate(EC\HText::_('Date:format_Date'), $time);
+    }
+
+    static public function Format_Date_Rel($time)
+    {
+        if ($time === null)
+            $time = time();
+
+        $time = EC\HDate::GetTime_Rel($time);
 
         return gmdate(EC\HText::_('Date:format_Date'), $time);
     }
@@ -75,7 +91,17 @@ class HDate
     static public function Format_DateTime($time)
     {
         if ($time === null)
-            return $time;
+            $time = time();
+
+        return gmdate(EC\HText::_('Date:format_DateTime'), $time);
+    }
+
+    static public function Format_DateTime_Rel($time)
+    {
+        if ($time === null)
+            $time = time();
+
+        $time = EC\HDate::GetTime_Rel($time);
 
         return gmdate(EC\HText::_('Date:format_DateTime'), $time);
     }
@@ -83,7 +109,17 @@ class HDate
     static public function Format_Time($time)
     {
         if ($time === null)
-            return $time;
+            $time = time();
+
+        return gmdate(EC\HText::_('Date:format_Time'), $time);
+    }
+
+    static public function Format_Time_Rel($time)
+    {
+        if ($time === null)
+            $time = time();
+
+        $time = EC\HDate::GetTime_Rel($time);
 
         return gmdate(EC\HText::_('Date:format_Time'), $time);
     }

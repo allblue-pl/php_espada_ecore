@@ -40,12 +40,18 @@ class AUsers extends EC\Api\ABasic
                 return CResult::Failure('Permission denied.');
         }
 
-        $t_clients = new TUsers($this->db);
-        if (!$t_clients->update([[
-            'Id' => $args->id,
-            'Active' => $args->active,
-                ]]))
-            return CResult::Failure('Cannot update users.');
+        $existingActiveUserId = null;
+        if (!EC\HUsers::Activate($this->db, $args->id, $args->active, 
+                $existingActiveUserId)) {
+            if ($existingActiveUserId !== null) {
+                return CResult::Failure(EC\HText::_(
+                        'Users:Errors_ActiveUserWithLoginAlreadyExists'));
+            }
+
+            return CResult::Failure($args->active ?
+                    EC\HText::_('Users:Errors_CannotActivateUser') :
+                    EC\HText::_('Users:Errors_CannotDeactiveUser'));
+        }
 
         return CResult::Success();
     }
