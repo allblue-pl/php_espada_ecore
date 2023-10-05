@@ -184,7 +184,7 @@ class HDate
         if ($str === null || $str === '')
             return null;
 
-        return strtotime($str . ' UTC');
+        return (float)strtotime($str . ' UTC');
     }
 
 }
