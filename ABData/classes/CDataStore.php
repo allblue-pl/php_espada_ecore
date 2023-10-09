@@ -16,6 +16,8 @@ class CDataStore
 
     private $db = null;
     private $requests = null;
+    
+    private $tableRequests = null;
 
 
     public function __construct(EC\MDatabase $db, array $tableRequests)
@@ -63,7 +65,7 @@ class CDataStore
             $rows = [];
 
             $join = null;
-            $where = null;
+            $where = [];
 
             if ($lastUpdate !== null) {
                 $where = [
