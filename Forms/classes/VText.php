@@ -16,7 +16,7 @@ class VText extends Forms\VField
             'maxLength' => null,
             'regexp' => null,
             'trim' => false,
-            'chars' => EC\HStrings::GetCharsRegexp_Basic('\r\n')
+            'chars' => EC\HStrings::GetCharsRegexp_Basic()
         ]);
 
         $this->texts = EC\Text\HText::GetTranslations('Forms:fields');

@@ -73,7 +73,7 @@ class HDate
     static public function Format_Date($time)
     {
         if ($time === null)
-            $time = time();
+            return '-';
 
         return gmdate(EC\HText::_('Date:format_Date'), $time);
     }
@@ -81,7 +81,7 @@ class HDate
     static public function Format_Date_Rel($time)
     {
         if ($time === null)
-            $time = time();
+            return '-';
 
         $time = EC\HDate::GetTime_Rel($time);
 
@@ -91,7 +91,7 @@ class HDate
     static public function Format_DateTime($time)
     {
         if ($time === null)
-            $time = time();
+            return '-';
 
         return gmdate(EC\HText::_('Date:format_DateTime'), $time);
     }
@@ -99,7 +99,7 @@ class HDate
     static public function Format_DateTime_Rel($time)
     {
         if ($time === null)
-            $time = time();
+            return '-';
 
         $time = EC\HDate::GetTime_Rel($time);
 
@@ -109,7 +109,7 @@ class HDate
     static public function Format_Time($time)
     {
         if ($time === null)
-            $time = time();
+            return '-';
 
         return gmdate(EC\HText::_('Date:format_Time'), $time);
     }
@@ -117,7 +117,7 @@ class HDate
     static public function Format_Time_Rel($time)
     {
         if ($time === null)
-            $time = time();
+            return '-';
 
         $time = EC\HDate::GetTime_Rel($time);
 
@@ -126,6 +126,9 @@ class HDate
 
     static public function Format_DayOfWeek($time)
     {
+        if ($time === null)
+            return '-';
+
         $day_of_week = gmdate('l', $time);
         return EC\HText::_("Date:format_DayOfWeek_{$day_of_week}");
     }
