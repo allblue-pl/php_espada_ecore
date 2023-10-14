@@ -83,8 +83,6 @@ class HDate
         if ($time === null)
             return '-';
 
-        $time = EC\HDate::GetTime_Rel($time);
-
         return gmdate(EC\HText::_('Date:format_Date'), $time);
     }
 
@@ -101,9 +99,8 @@ class HDate
         if ($time === null)
             return '-';
 
-        $time = EC\HDate::GetTime_Rel($time);
-
-        return gmdate(EC\HText::_('Date:format_DateTime'), $time);
+        return gmdate(EC\HText::_('Date:format_DateTime'), 
+                self::GetTime_Rel($time));
     }
 
     static public function Format_Time($time)
@@ -118,8 +115,6 @@ class HDate
     {
         if ($time === null)
             return '-';
-
-        $time = EC\HDate::GetTime_Rel($time);
 
         return gmdate(EC\HText::_('Date:format_Time'), $time);
     }

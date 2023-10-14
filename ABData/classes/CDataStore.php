@@ -68,9 +68,10 @@ class CDataStore
             $where = [];
 
             if ($lastUpdate !== null) {
-                $where = [
+                $where = [ 'OR' => [
                     [ '_Modified_DateTime', '>=', $lastUpdate ],
-                ];
+                    [ '_Modified_DateTime', '=', null ],
+                ]];
             }
 
             $actionResult = $tableRequest->executeAction($device, 'select', [
