@@ -7,7 +7,6 @@ use E, EC;
 class SApi extends E\Site
 {
 
-    private $apiName = '';
     private $actionName = '';
 
     private $api = null;
@@ -31,8 +30,6 @@ class SApi extends E\Site
         $result = $this->getResult();
 
         if ($result instanceof CResult) {
-            $result_json = $result->getJSON();
-
             $this->setRootL(E\Layout::_('Basic:raw', [
                 'raw' => $result->getJSON(),
             ]));

@@ -16,16 +16,13 @@ class CCSV
     private $textArr = null;
     private $textArr_Current = 0;
 
+
     private $line_Index = -1;
     private $line0 = null;
     private $line1 = null;
 
     public function __construct(array $options = [])
     {
-        $separators = [ ';', ',' ];
-        $charset = '';
-        $hasQuotedRows = true;
-
         if (array_key_exists('separators', $options)) {
             $this->separators = $options['separators'];
         }
@@ -42,8 +39,6 @@ class CCSV
         if ($this->file !== null)
             fclose($this->file);
         $this->file = null;
-
-        $this->rowIndex = 0;
 
         $this->line0 = null;
         $this->line1 = null;

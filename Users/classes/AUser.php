@@ -79,7 +79,7 @@ class AUser extends EC\Api\ABasic
                 $args->newPassword))
             return CResult::Error();
 
-        return CResult::Success(EC\HText::_('Users:successes_PasswordChanged'));
+        return CResult::Success(EC\HText::_('Users:Successes_PasswordChanged'));
     }
 
     protected function action_Check()

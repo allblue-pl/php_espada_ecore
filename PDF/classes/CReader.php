@@ -48,6 +48,18 @@ class CReader
         return $fields;
     }
 
+    public function getTest()
+    {
+        $fields = [];
+
+        $pages = $this->pdf->getPages();
+        foreach ($pages as $page) {
+            print_r($page->extractDecodedRawData());
+        }
+
+        return $fields;
+    }
+
     // public function getPages()
     // {
     //     return $this->pages;

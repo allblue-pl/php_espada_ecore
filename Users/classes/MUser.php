@@ -9,7 +9,10 @@ class MUser extends E\Module
 	const HASH_ROUNDS = 7;
 
 	private $session = null;
-	private $database = null;
+    private $db = null;
+    private $type = null;
+
+    private $session_Name = null;
 
 	private $usersPermissions = [];
 

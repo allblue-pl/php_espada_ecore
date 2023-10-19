@@ -1010,7 +1010,7 @@ class TTable
             $row = $row_Filtered;
 
             if (count($columns) !== count($row)) {
-                throw new \Exception("Wrong columns number in row '${i}'" .
+                throw new \Exception("Wrong columns number in row '{$i}'" .
                         "(inconsistency with first row).");
             }
 

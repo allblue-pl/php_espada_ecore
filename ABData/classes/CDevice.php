@@ -277,9 +277,12 @@ class CDevice
     private $lastUpdate = null;
     private $expires = null;
 
+    private $itemIds_Declared = null;
     private $itemIds_Used = null;
     private $itemIds_Last = null;
 
+    private $systemDevice_Id = null;
+    private $systemDevice_ItemIds_Declared = null;
     private $systemDevice_ItemIds_Used = null;
     private $systemDevice_ItemIds_Last = null;
 
