@@ -54,7 +54,7 @@ class CReader
 
         $pages = $this->pdf->getPages();
         foreach ($pages as $page) {
-            print_r($page->extractDecodedRawData());
+            print_r($page->getTextArray());
         }
 
         return $fields;
