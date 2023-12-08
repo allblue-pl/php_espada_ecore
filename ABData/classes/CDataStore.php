@@ -290,7 +290,7 @@ class CDataStore
                 $success = false;
             
                 $response['type'] = self::Response_Types_Error;
-                $response['errorMessage'] = "Cannot update device requests.";
+                $response['message'] = "Cannot update device requests.";
             }
         }
 
@@ -299,14 +299,14 @@ class CDataStore
                 $success = false;
 
                 $response['type'] = self::Response_Types_Error;
-                $response['errorMessage'] = "Cannot update device.";
+                $response['message'] = "Cannot update device.";
             }
         }
 
         if ($localTransaction) {
             if (!$this->db->transaction_Finish($success)) {
                 $response['type'] = self::Response_Types_Error;
-                $response['errorMessage'] = "Cannot commit changes to db.";
+                $response['message'] = "Cannot commit changes to db.";
             }
         }
 

@@ -362,7 +362,7 @@ class CDevice
                 $lastSystemItemId = $systemDevice_ItemId_Used;
         }
 
-        return (new TDevices($this->db))->update([
+        $result = (new TDevices($this->db))->update([
             [
                 'Id' => $this->id,
                 'Expires' => $this->expires === null ? 
@@ -371,6 +371,14 @@ class CDevice
                 'SystemItemIds_Last' => $lastSystemItemId,
             ],
         ]);
+
+        if (!$result)
+            return false;
+
+        $this->itemIds_Last = $lastDeclaredItemId;
+        $this->systemDevice_ItemIds_Last = $lastSystemItemId;
+
+        return true;
     }
 
     public function useId($id)
