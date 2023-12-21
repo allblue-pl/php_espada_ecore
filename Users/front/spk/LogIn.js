@@ -38,7 +38,7 @@ SPK.Module('eUsers_LogIn', ['eUsers_LogIn'],
 
     logIn: function() {
         this.mNotifications.startLoading(
-                SPK.$eText.get('Users:logIn_LogIn_Loading'));
+                SPK.$eText.get('Users:LogIn_LogIn_Loading'));
 
         var fields = {
             login: this.$elems.login.value,
@@ -52,13 +52,13 @@ SPK.Module('eUsers_LogIn', ['eUsers_LogIn'],
             else if (result.isFailure()) {
                 self.$fields.error.set({
                     show: true,
-                    message: SPK.$eText.get('Users:logIn_LogIn_Failed')
+                    message: SPK.$eText.get('Users:LogIn_LogIn_Failed')
                 });
                 self.mNotifications.finishLoading();
             } else {
                 self.$fields.error.set({
                     show: true,
-                    message: SPK.$eText.get('Users:logIn_LogIn_Error')
+                    message: SPK.$eText.get('Users:LogIn_LogIn_Error')
                 });
                 self.mNotifications.finishLoading();
             }

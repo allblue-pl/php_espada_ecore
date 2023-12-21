@@ -56,7 +56,7 @@ SPK
                 class: 'has-error',
                 error: {
                     show: true,
-                    message: SPK.$eText.get('Users:changePassword' +
+                    message: SPK.$eText.get('Users:ChangePassword' +
                             '_PasswordsDoNotMatch')
                 }
             });
@@ -118,7 +118,7 @@ SPK
             return;
 
         this.mNotifications.startLoading(
-                SPK.$eText.get('Users:changePassword_Loading'));
+                SPK.$eText.get('Users:ChangePassword_Loading'));
 
         var fields = {
             oldPassword: this.$elems.oldPassword.value,
@@ -139,7 +139,7 @@ SPK
                     error: {
                         class: 'has-success',
                         show: true,
-                        message: SPK.$eText.get('Users:changePassword_Succeeded')
+                        message: SPK.$eText.get('Users:ChangePassword_Succeeded')
                     }
                 });
 
@@ -150,21 +150,21 @@ SPK
 
                     self.$fields.error.set({
                         show: true,
-                        message: SPK.$eText.get('Users:changePassword_Failed')
+                        message: SPK.$eText.get('Users:ChangePassword_Failed')
                     });
                 } else if (result.data.error.type == 'wrongPassword') {
                     self.$fields.oldPassword.set({
                         error: {
                             class: 'has-error',
                             show: true,
-                            message: SPK.$eText.get('Users:changePassword' +
+                            message: SPK.$eText.get('Users:ChangePassword' +
                                     '_WrongPassword')
                         }
                     });
                 } else if (result.data.error.type ='wrongPasswordFormat') {
                     self.$fields.error.set({
                         show: true,
-                        message: SPK.$eText.get('Users:changePassword' +
+                        message: SPK.$eText.get('Users:ChangePassword' +
                                 '_WrongPasswordFormat')
                     });
                 } else {
@@ -172,7 +172,7 @@ SPK
 
                     self.$fields.error.set({
                         show: true,
-                        message: SPK.$eText.get('Users:changePassword_Failed')
+                        message: SPK.$eText.get('Users:ChangePassword_Failed')
                     });
                 }
 
@@ -182,7 +182,7 @@ SPK
 
                 self.$fields.error.set({
                     show: true,
-                    message: SPK.$eText.get('Users:changePassword_Failed')
+                    message: SPK.$eText.get('Users:ChangePassword_Failed')
                 });
 
                 self.mNotifications.finishLoading();
