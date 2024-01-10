@@ -446,7 +446,7 @@ class TTable
         if ($updateColumns) {
             $db_update_columns_array = [];
             foreach ($columnNames_DB as $db_col_name)
-                $db_update_columns_array[] = "{$db_col_name} = VALUES($columnName)";
+                $db_update_columns_array[] = "{$db_col_name} = VALUES($db_col_name)";
             $db_update_columns = implode(',', $db_update_columns_array);
 
             $query .= " ON DUPLICATE KEY UPDATE {$db_update_columns}";

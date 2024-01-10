@@ -223,13 +223,14 @@ class CDataStore
                         ->executeAction($device, $actionName, $actionArgs, $schemeVersion);
             } catch (\Exception $e) {
                 if (EDEBUG)
-                throw $e;
+                    throw $e;
 
                 $success = false;
                 
                 $response['type'] = self::Response_Types_ActionError;
                 $response['errorMessage'] = "Action Error: '{$dbRequestName}:{$actionName}'";
-                $response['actionErrors'][$dbRequestId] = $e->getMessage();
+                $response['actionErrors'][$dbRequestId] = $e->getMessage() . 
+                        ": \r\n" . $e->getTraceAsString();
                 break;
             }
 
