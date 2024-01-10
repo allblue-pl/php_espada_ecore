@@ -78,14 +78,24 @@ class CDataStore
                 'where' => $where,
             ], $schemeVersion);
 
+            if (!array_key_exists('_type', $actionResult))
+                throw new \Exception("Wrong request action result format (no '_type'): " . 
+                    "{$tableName} -> select");
+
+            if (!array_key_exists('_message', $actionResult))
+                throw new \Exception("Wrong request action result format (no '_message'): " . 
+                    "{$tableName} -> select");
+
             if ($actionResult['_type'] !== 0) {
                 $error = "Cannot execute table '{$tableName}' request action '': " . 
                         $actionResult['_message'];
                 return null;
             }
 
-            if (!array_key_exists('rows', $actionResult))
+            if (!array_key_exists('rows', $actionResult)) {
+                print_r($actionResult);
                 throw new \Exception("No 'rows' in table '{$tableName}' request action 'select'.");
+            }
 
             $rows = $actionResult['rows'];
             $tableId = HABData::GetTableId($tableName);
@@ -168,7 +178,8 @@ class CDataStore
         $this->requests[$requestName] = $request;
     }
 
-    public function processDBRequests(CDevice $device, array $dbRequests)
+    public function processDBRequests(CDevice $device, array $dbRequests, 
+            &$responseError = null)
     {
         $response = [
             'type' => self::Response_Types_Success,
@@ -223,13 +234,14 @@ class CDataStore
                         ->executeAction($device, $actionName, $actionArgs, $schemeVersion);
             } catch (\Exception $e) {
                 if (EDEBUG)
-                throw $e;
+                    throw $e;
 
                 $success = false;
                 
                 $response['type'] = self::Response_Types_ActionError;
                 $response['errorMessage'] = "Action Error: '{$dbRequestName}:{$actionName}'";
                 $response['actionErrors'][$dbRequestId] = $e->getMessage();
+                $responseError = $e;
                 break;
             }
 
