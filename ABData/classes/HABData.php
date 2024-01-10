@@ -22,7 +22,7 @@ class HABData
             $deleteRows[] = $deleteRow;
         }
 
-        return (new EC\ABData\TDeletedRows($db))->insert($deleteRows, true);
+        return (new EC\ABData\TDeletedRows($db))->update($deleteRows);
     }
 
     static public function Delete_ByColumn(CDevice $device, EC\Database\TTable $table, 
