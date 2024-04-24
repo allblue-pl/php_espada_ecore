@@ -25,6 +25,38 @@ class HABData
         return (new EC\ABData\TDeletedRows($db))->update($deleteRows);
     }
 
+    static public function ClearDeviceRows_ByLastSync(EC\Database\MDatabase $db,
+            float $beforeTime)
+    {
+        $localTransaction = false;
+        if ($db->transaction_IsAutocommit()) {
+            $db->transaction_Start();
+            $localTransaction = true;
+        }
+
+        $rDevices = (new TDevices($db))->select_Where([
+            [ 'LastSync', '<', $beforeTime ],
+            [ 'LastSync', '<>', null ],
+        ]);
+
+        $deviceIds = array_column($rDevices, 'Id');
+
+        (new TDeviceRows($db))->delete_Where([
+            [ 'DeviceId', 'IN', $deviceIds ],
+        ]);
+
+        (new TDevices($db))->update_Where([
+            'LastSync' => null,
+        ],[
+            [ 'Id', 'IN', $deviceIds ],
+        ]);
+
+        if ($localTransaction) {
+            if (!$db->transaction_Finish(true))
+                throw new \Exception('Cannot commit.');
+        }
+    }
+
     static public function Delete_ByColumn(CDevice $device, EC\Database\TTable $table, 
             $columnName, $columnValue)
     {

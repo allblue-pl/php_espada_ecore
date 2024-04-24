@@ -6,6 +6,15 @@ use E, EC;
 class MDatabase extends E\Module
 {
 
+    static private $MinLogTimeSpan = null;
+
+
+    static public function SetMinLogTimeSpan(float $minLogTimeSpan) : void
+    {
+        self::$MinLogTimeSpan = $minLogTimeSpan;
+    }
+
+
 	private $prefix = null;
 
 	private $mysqli = null;
@@ -278,6 +287,8 @@ class MDatabase extends E\Module
 
 		$this->transaction_InProgress = true;
 
+        $timeFrom = time();
+
         try {
             if ($result = $this->mysqli->query($query)) {
                 $assoc = [];
@@ -286,6 +297,17 @@ class MDatabase extends E\Module
                     $assoc[] = $row;
 
                 $result->close();
+
+                if (self::$MinLogTimeSpan !== null) {
+                    $timeSpan = time() - $timeFrom;
+                    if ($timeSpan >= self::$MinLogTimeSpan) {
+                        $minLogTimeSpan = self::$MinLogTimeSpan;
+                        self::$MinLogTimeSpan = null;
+                        EC\HLog::Add($this, null, 'Database Query Time Span', 
+                                [ 'timeSpan' => $timeSpan, 'query' => $query ]);
+                        self::$MinLogTimeSpan = $minLogTimeSpan;
+                    }
+                }
 
                 return $assoc;
             }
@@ -308,9 +330,23 @@ class MDatabase extends E\Module
 
 		$this->transaction_InProgress = true;
 
+        $timeFrom = time();
+
         try {
-            if ($result = $this->mysqli->query($query))
+            if ($result = $this->mysqli->query($query)) {
+                if (self::$MinLogTimeSpan !== null) {
+                    $timeSpan = time() - $timeFrom;
+                    if ($timeSpan >= self::$MinLogTimeSpan) {
+                        $minLogTimeSpan = self::$MinLogTimeSpan;
+                        self::$MinLogTimeSpan = null;
+                        EC\HLog::Add($this, null, 'Database Query Time Span', 
+                                [ 'timeSpan' => $timeSpan, 'query' => $query ]);
+                        self::$MinLogTimeSpan = $minLogTimeSpan;
+                    }
+                }
+
                 return $result == 1;
+            }
         } catch (\Exception $e) {
             throw new \Exception('Database error: ' . $query . ' # ' .
                     $e->getMessage());    

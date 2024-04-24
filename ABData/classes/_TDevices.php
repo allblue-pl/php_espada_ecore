@@ -17,6 +17,7 @@ class _TDevices extends Database\TTable
             'SystemItemIds_Last' => new Database\FInt(true),
             'Hash' => new Database\FString(true, 64),
             'Expires' => new Database\FTime(false),
+            'LastSync' => new Database\FTime(false),
         ]);
         $this->setPKs([ 'Id' ]);
     }

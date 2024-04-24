@@ -31,28 +31,16 @@ class CDataStore
         // $ds->addRequest('Sys_TestItems', TTestItems);
     }
 
-    public function getDB()
-    {
-        return $this->db;
-    }
-
-    public function getRequest(string $requestName)
-    {
-        if (!$this->hasRequest($requestName))
-            throw new \Exception("Request '{$requestName}' does not exist.");
-
-        return $this->requests[$requestName];
-    }
-
-    public function getUpdateData(CDevice $device, ?int $schemeVersion, 
-            $rDeviceDeletedRows, &$error)
+    public function dbSync_GetUpdateData(CDevice $device, ?int $schemeVersion, 
+            ?float $lastSync, &$error)
     {
         $updateData = [
             'update' => [],
             'delete' => [],
         ];
 
-        $lastUpdate = $device->getLastUpdate();
+        $lastUpdate = $lastSync === null ? 
+                null : $device->getLastUpdate();
         $deviceRows_New = [];
 
         foreach ($this->tableRequests as $tableName => $tableRequest) {
@@ -111,23 +99,6 @@ class CDataStore
                 $updateData['update'][$tableName] = $rows;
         }
 
-        /* Update DeviceRows */
-        $deviceRows_DeletePairs = [ 'OR' => [] ];
-        foreach ($rDeviceDeletedRows as $rDeviceDeletedRow) {
-            $deviceRows_DeletePairs['OR'][] = [ 'AND' => [
-                [ 'TableId', '=', $rDeviceDeletedRow[0] ],
-                [ 'RowId', '=', $rDeviceDeletedRow[1] ],
-            ]];
-        }
-
-        if (count($deviceRows_DeletePairs['OR']) > 0) {
-            if (!(new TDeviceRows($this->db))->delete_Where([
-                [ 'DeviceId', '=', $device->getId() ],
-                $deviceRows_DeletePairs,
-                    ]))
-                throw new \Exception('Cannot delete device rows.');
-        }
-
         /* Deleted Rows */
         $rDeletedRows = [];
         if ($lastUpdate !== null) {
@@ -160,26 +131,8 @@ class CDataStore
         return $updateData;
     }
 
-    public function hasRequest(string $requestName)
-    {
-        return array_key_exists($requestName, $this->requests);
-    }
-
-    public function setR(string $requestName, RRequest $request)
-    {
-        $this->setRequest($requestName, $request);
-    }
-
-    public function setRequest(string $requestName, RRequest $request)
-    {
-        if (array_key_exists($requestName, $this->requests))
-            throw new \Exception("Request '{$requestName}' already exists.");
-
-        $this->requests[$requestName] = $request;
-    }
-
-    public function processDBRequests(CDevice $device, array $dbRequests, 
-            &$responseError = null)
+    public function dbSync_ProcessRequests(CDevice $device, array $dbRequests, 
+            array $rDeviceDeletedRows, &$responseError = null)
     {
         $response = [
             'type' => self::Response_Types_Success,
@@ -197,6 +150,24 @@ class CDataStore
         }
 
         $success = true;
+
+        /* Update DeviceRows */
+        $deviceRows_DeletePairs = [ 'OR' => [] ];
+        foreach ($rDeviceDeletedRows as $rDeviceDeletedRow) {
+            $deviceRows_DeletePairs['OR'][] = [ 'AND' => [
+                [ 'TableId', '=', $rDeviceDeletedRow[0] ],
+                [ 'RowId', '=', $rDeviceDeletedRow[1] ],
+            ]];
+        }
+
+        if (count($deviceRows_DeletePairs['OR']) > 0) {
+            if (!(new TDeviceRows($this->db))->delete_Where([
+                [ 'DeviceId', '=', $device->getId() ],
+                $deviceRows_DeletePairs,
+                    ]))
+                throw new \Exception('Cannot delete device rows.');
+        }
+        /* / Update DeviceRows */
 
         $dbRequestIds = array_column($dbRequests, 0);
         
@@ -307,6 +278,7 @@ class CDataStore
         }
 
         if ($success) {
+            $device->refreshLastSync();
             if (!$device->update($this->db)) {
                 $success = false;
 
@@ -323,6 +295,37 @@ class CDataStore
         }
 
         return $response;
+    }
+
+    public function getDB()
+    {
+        return $this->db;
+    }
+
+    public function getRequest(string $requestName)
+    {
+        if (!$this->hasRequest($requestName))
+            throw new \Exception("Request '{$requestName}' does not exist.");
+
+        return $this->requests[$requestName];
+    }
+
+    public function hasRequest(string $requestName)
+    {
+        return array_key_exists($requestName, $this->requests);
+    }
+
+    public function setR(string $requestName, RRequest $request)
+    {
+        $this->setRequest($requestName, $request);
+    }
+
+    public function setRequest(string $requestName, RRequest $request)
+    {
+        if (array_key_exists($requestName, $this->requests))
+            throw new \Exception("Request '{$requestName}' already exists.");
+
+        $this->requests[$requestName] = $request;
     }
 
     public function processRequests(CDevice $device, array $requests)

@@ -63,7 +63,7 @@ class CDevice
 
         return new CDevice($db, $deviceId, $lastUpdate, [], 
                 $rDevice['ItemIds_Last'], $rDevice['SystemItemIds_Last'],
-                $declaredItemIds, $rDevice['Expires']);
+                $declaredItemIds, $rDevice['Expires'], $rDevice['LastSync']);
     }
 
     static public function CreateNewDevice(EC\MDatabase $db, &$hash = null, 
@@ -96,6 +96,7 @@ class CDevice
                 'SystemItemIds_Last' => 0,
                 'Hash' => $hash_Hashed,
                 'Expires' => $expires,
+                'LastSync' => time(),
             ];
         } else {
             $expires = time() + self::$ExpirationTime;
@@ -132,6 +133,7 @@ class CDevice
                 'SystemItemIds_Last' => $newDevice ? 0 : $row['SystemItemIds_Last'],
                 'Hash' => $hash_Hashed,
                 'Expires' => $expires,
+                'LastSync' => time(),
             ];
         }
 
@@ -145,7 +147,7 @@ class CDevice
 
         return new CDevice($db, $row_Update['Id'], null, [], 
                 $row_Update['ItemIds_Last'], $row_Update['SystemItemIds_Last'],
-                [], $expires);
+                [], $row_Update['Expires'], $row_Update['LastSync']);
     }
 
     static public function ParseDeviceId($rawId, $type)
@@ -276,6 +278,7 @@ class CDevice
     private $createTime = null;
     private $lastUpdate = null;
     private $expires = null;
+    private $lastSync = null;
 
     private $itemIds_Declared = null;
     private $itemIds_Used = null;
@@ -288,14 +291,6 @@ class CDevice
 
     private $rowUpdates = null;
 
-
-    public function updateRow($tableId, $rowId)
-    {
-        $this->rowUpdates[] = [ 
-            'tableId' => $tableId, 
-            'rowId' => $rowId,
-        ];
-    }
 
     public function getCreateTime()
     {
@@ -310,6 +305,11 @@ class CDevice
     public function getLastItemId()
     {
         return $this->itemIds_Last;
+    }
+
+    public function getLastSync()
+    {
+        return $this->lastSync;
     }
 
     public function getLastUpdate()
@@ -347,6 +347,11 @@ class CDevice
         return self::ParseId($this->systemDevice_Id, $nextSystemItemId);
     }
 
+    public function refreshLastSync()
+    {
+        $this->lastSync = time();
+    }
+
     public function update()
     {
         /* Can probably be restricted to only used ids assuming that Id has to be used during one transaction. */
@@ -369,6 +374,7 @@ class CDevice
                         null : time() + self::$ExpirationTime,
                 'ItemIds_Last' => $lastDeclaredItemId,
                 'SystemItemIds_Last' => $lastSystemItemId,
+                'LastSync' => $this->lastSync,
             ],
         ]);
 
@@ -379,6 +385,14 @@ class CDevice
         $this->systemDevice_ItemIds_Last = $lastSystemItemId;
 
         return true;
+    }
+
+    public function updateRow($tableId, $rowId)
+    {
+        $this->rowUpdates[] = [ 
+            'tableId' => $tableId, 
+            'rowId' => $rowId,
+        ];
     }
 
     public function useId($id)
@@ -402,7 +416,7 @@ class CDevice
 
     private function __construct(EC\MDatabase $db, $deviceId, $lastUpdate,
             array $usedItemIds, int $lastItemId, int $lastSystemItemId,
-            array $declaredItemIds, $expires)
+            array $declaredItemIds, $expires, $lastSync)
     {
         $this->db = $db;
 
@@ -412,6 +426,7 @@ class CDevice
         $this->id = (float)($deviceId + 0);
         $this->lastUpdate = $lastUpdate;
         $this->expires = $expires;
+        $this->lastSync = $lastSync;
 
         $this->itemIds_Last = $lastItemId;
         $this->itemIds_Declared = $declaredItemIds;
