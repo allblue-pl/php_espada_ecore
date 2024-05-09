@@ -12,6 +12,7 @@ class RTableRequest extends RRequest
     }
 
 
+    private $db = null;
     private $dataStore = null;
     private $table = null;
 
@@ -35,10 +36,10 @@ class RTableRequest extends RRequest
                 ?int $schemeVersion) {
             return $this->action_Select($device, $args, $schemeVersion);
         });
-        $this->setA('set', function(CDevice $device, array $args, 
-                ?int $schemeVersion) {
-            return $this->action_Set($device, $args, $schemeVersion);
-        });
+        // $this->setA('set', function(CDevice $device, array $args, 
+        //         ?int $schemeVersion) {
+        //     return $this->action_Set($device, $args, $schemeVersion);
+        // });
         $this->setA('update', function(CDevice $device, array $args, 
                 ?int $schemeVersion) {
             return $this->action_Update($device, $args, $schemeVersion);

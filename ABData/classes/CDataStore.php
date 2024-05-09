@@ -14,6 +14,8 @@ class CDataStore
     const Response_Types_ActionError = 3;
     const Response_Types_Error = 4;
 
+    const MaxRowsInData = 5000;
+
     private $db = null;
     private $requests = null;
     
@@ -31,7 +33,79 @@ class CDataStore
         // $ds->addRequest('Sys_TestItems', TTestItems);
     }
 
+    public function dbSync_GetDataInfos()
+    {
+
+    }
+
     public function dbSync_GetUpdateData(CDevice $device, ?int $schemeVersion, 
+            ?float $lastSync, ?array &$dataInfos, &$error)
+    {
+        $updateData = [
+            'update' => [],
+            'delete' => [],
+        ];
+
+        $rowsCount = 0;
+
+        $lastUpdate = $lastSync === null ? 
+                null : $device->getLastUpdate();
+        $deviceRows_New = [];
+
+        foreach ($this->tableRequests as $tableName => $tableRequest) {
+            if (!($tableRequest instanceof RRequest))
+                throw new \Exception("Table request '{$tableName}' is not an instance of 'RRequest'.");
+
+            if (!($tableRequest->hasAction('select')))
+                throw new \Exception("Table request '{$tableName}' does not have action 'select'.");
+
+            $rows = [];
+
+            $limit = self::MaxRowsInData - $rowsCount;
+            if ($limit > 0) {
+                $rows = $this->_getUpdateData($device, $schemeVersion, 
+                        $tableRequest, $tableName, $lastUpdate, $rowsCount, 
+                        false);
+
+                if (count($rows) > 0) {
+                    $updateData['update'][$tableName] = $rows;
+                    $rowsCount += count($rows);
+                }
+
+                if (count($rows) < $limit)
+                    continue;
+            }
+
+            $rows = $this->_getUpdateData($device, $schemeVersion, 
+            $tableRequest, $tableName, $lastUpdate, $rowsCount, true);
+            if (count($rows) > 0) {
+                $dataInfos[$tableName] = array_keys($rows, '_Id');
+                $rowsCount += count($rows);
+            }
+        }
+
+        /* Deleted Rows */
+        $rDeletedRows = [];
+        if ($lastUpdate !== null) {
+            $where[] = [ 'DeviceId', '=', $device->getId() ];
+
+            $rDeletedRows = (new TDeletedRows($this->db))->select_Where($where);
+
+            foreach ($rDeletedRows as $row) {
+                if (!array_key_exists($row['TableId'], $updateData['delete']))
+                    $updateData['delete'][$row['TableId']] = [];
+    
+                $updateData['delete'][$row['TableId']][] = $row['RowId'];
+            }
+        }
+
+        if (!(new TDeviceRows($this->db))->update($deviceRows_New))
+            throw new \Exception('Cannot update device rows.');
+
+        return $updateData;
+    }
+
+    public function dbSync_GetUpdateData_Old(CDevice $device, ?int $schemeVersion, 
             ?float $lastSync, &$error)
     {
         $updateData = [
@@ -126,6 +200,75 @@ class CDataStore
         if ($localTransaction) {
             if (!$this->db->transaction_Finish(true))
                 throw new \Exception('Cannot commit.');
+        }
+
+        return $updateData;
+    }
+
+    public function dbSync_GetUpdateData_FromDataInfos(CDevice $device,
+            ?int $schemeVersion, array $dataInfos, &$error)
+    {
+        $updateData = [
+            'update' => [],
+        ];
+
+        $rowsCount = 0;
+
+        for ($i = 0; $i < count($dataInfos); $i++) {
+            $dataInfo = $dataInfos[$i];
+
+            if (!array_key_exists('tableName', $dataInfo))
+                throw new \Exception("No 'tableName' in 'dataInfo.");
+            if (!array_key_exists('ids', $dataInfo))
+                throw new \Exception("No 'ids' in 'dataInfo.");
+            $tableName = $dataInfo['tableName'];
+
+            $limit = null;
+            if ($rowsCount + count($dataInfo['ids']) > self::MaxRowsInData)
+                $limit = self::MaxRowsInData - $rowsCount;
+            $groupExt = $limit === null ? '' : " ORDER BY Id LIMIT {$limit}";
+
+            if (!array_key_exists($tableName, $this->tableRequests)) {
+                throw new \Exception("Table request '{$tableName}'" .
+                        " does not exist.");
+            }
+
+            $tableRequest = $this->tableRequests[$tableName];
+
+            if (!($tableRequest instanceof RRequest))
+                throw new \Exception("Table request '{$tableName}' is not an instance of 'RRequest'.");
+
+            if (!($tableRequest->hasAction('select')))
+                throw new \Exception("Table request '{$tableName}' does not have action 'select'.");
+
+            $where = [ '_Id', 'IN', $dataInfo['ids']];
+
+            $actionResult = $tableRequest->executeAction($device, 'select', [
+                'where' => $where,
+            ], $schemeVersion);
+
+            if (!array_key_exists('_type', $actionResult))
+                throw new \Exception("Wrong request action result format (no '_type'): " . 
+                    "{$tableName} -> select");
+
+            if (!array_key_exists('_message', $actionResult))
+                throw new \Exception("Wrong request action result format (no '_message'): " . 
+                    "{$tableName} -> select");
+
+            if ($actionResult['_type'] !== 0) {
+                $error = "Cannot execute table '{$tableName}' request action '': " . 
+                        $actionResult['_message'];
+                return null;
+            }
+
+            if (!array_key_exists('rows', $actionResult)) {
+                throw new \Exception("No 'rows' in table '{$tableName}'" .
+                        " request action 'select'.");
+            }
+
+            $rows = $actionResult['rows'];
+            if (count($rows) > 0)
+                $updateData['update'][$tableName] = $rows;
         }
 
         return $updateData;
@@ -437,6 +580,57 @@ class CDataStore
         }
 
         return $response;
+    }
+
+
+    private function _getUpdateData(CDevice $device, int $schemeVersion, 
+            RRequest $tableRequest, string $tableName, ?float $lastUpdate, 
+            int $rowsCount, bool $onlyIds, array &$error) : ?array
+    {
+        $limit = self::MaxRowsInData - $rowsCount;
+        $where = [];
+
+        if ($lastUpdate !== null) {
+            $where = [ 'OR' => [
+                [ '_Modified_DateTime', '>=', $lastUpdate ],
+                [ '_Modified_DateTime', '=', null ],
+            ]];
+        }
+
+        $actionResult = $tableRequest->executeAction($device, 'select', [
+            'columns' => $onlyIds ? '_Id' : null,
+            'limit' => $limit,
+            'where' => $where,
+        ], $schemeVersion);
+
+        if (!array_key_exists('_type', $actionResult))
+            throw new \Exception("Wrong request action result format (no '_type'): " . 
+                "{$tableName} -> select");
+
+        if (!array_key_exists('_message', $actionResult))
+            throw new \Exception("Wrong request action result format (no '_message'): " . 
+                "{$tableName} -> select");
+
+        if ($actionResult['_type'] !== 0) {
+            $error = "Cannot execute table '{$tableName}' request action '': " . 
+                    $actionResult['_message'];
+            return null;
+        }
+
+        if (!array_key_exists('rows', $actionResult)) {
+            print_r($actionResult);
+            throw new \Exception("No 'rows' in table '{$tableName}' request action 'select'.");
+        }
+
+        $rows = $actionResult['rows'];
+        $tableId = HABData::GetTableId($tableName);
+        foreach ($rows as $row) {
+            $deviceRows_New[] = [
+                'DeviceId' => $device->getId(),
+                'TableId' => $tableId,
+                'RowId' => $row['_Id'],
+            ];
+        }
     }
 
 }
