@@ -14,7 +14,8 @@ class CDataStore
     const Response_Types_ActionError = 3;
     const Response_Types_Error = 4;
 
-    const MaxRowsInData = 5000;
+    // const MaxRowsInData = 5000;
+    const MaxRowsInData = 6;
 
     private $db = null;
     private $requests = null;
@@ -39,7 +40,7 @@ class CDataStore
     }
 
     public function dbSync_GetUpdateData(CDevice $device, ?int $schemeVersion, 
-            ?float $lastSync, ?array &$dataInfos, &$error)
+            ?float $lastSync, ?array &$dataInfos, ?string &$error)
     {
         $updateData = [
             'update' => [],
@@ -60,26 +61,33 @@ class CDataStore
                 throw new \Exception("Table request '{$tableName}' does not have action 'select'.");
 
             $rows = [];
+            $rowsOffset = 0;
 
-            $limit = self::MaxRowsInData - $rowsCount;
-            if ($limit > 0) {
+            $rowsLimit = self::MaxRowsInData - $rowsCount;
+            if ($rowsLimit > 0) {
                 $rows = $this->_getUpdateData($device, $schemeVersion, 
-                        $tableRequest, $tableName, $lastUpdate, $rowsCount, 
-                        false);
+                        $tableRequest, $tableName, $lastUpdate, $rowsOffset,
+                        $rowsLimit, false, $error);
 
                 if (count($rows) > 0) {
                     $updateData['update'][$tableName] = $rows;
                     $rowsCount += count($rows);
                 }
 
-                if (count($rows) < $limit)
+                if (count($rows) < $rowsLimit)
                     continue;
+
+                $rowsOffset = $rowsLimit;
             }
 
             $rows = $this->_getUpdateData($device, $schemeVersion, 
-            $tableRequest, $tableName, $lastUpdate, $rowsCount, true);
+                    $tableRequest, $tableName, $lastUpdate, $rowsOffset, 
+                    null, true, $error);
             if (count($rows) > 0) {
-                $dataInfos[$tableName] = array_keys($rows, '_Id');
+                $dataInfos[] = [
+                    'tableName' => $tableName,
+                    'ids' => array_column($rows, '_Id'),
+                ];
                 $rowsCount += count($rows);
             }
         }
@@ -206,7 +214,7 @@ class CDataStore
     }
 
     public function dbSync_GetUpdateData_FromDataInfos(CDevice $device,
-            ?int $schemeVersion, array $dataInfos, &$error)
+            ?int $schemeVersion, array &$dataInfos, ?string &$error)
     {
         $updateData = [
             'update' => [],
@@ -215,18 +223,11 @@ class CDataStore
         $rowsCount = 0;
 
         for ($i = 0; $i < count($dataInfos); $i++) {
-            $dataInfo = $dataInfos[$i];
-
-            if (!array_key_exists('tableName', $dataInfo))
+            if (!array_key_exists('tableName', $dataInfos[$i]))
                 throw new \Exception("No 'tableName' in 'dataInfo.");
-            if (!array_key_exists('ids', $dataInfo))
+            if (!array_key_exists('ids', $dataInfos[$i]))
                 throw new \Exception("No 'ids' in 'dataInfo.");
-            $tableName = $dataInfo['tableName'];
-
-            $limit = null;
-            if ($rowsCount + count($dataInfo['ids']) > self::MaxRowsInData)
-                $limit = self::MaxRowsInData - $rowsCount;
-            $groupExt = $limit === null ? '' : " ORDER BY Id LIMIT {$limit}";
+            $tableName = $dataInfos[$i]['tableName'];
 
             if (!array_key_exists($tableName, $this->tableRequests)) {
                 throw new \Exception("Table request '{$tableName}'" .
@@ -241,7 +242,13 @@ class CDataStore
             if (!($tableRequest->hasAction('select')))
                 throw new \Exception("Table request '{$tableName}' does not have action 'select'.");
 
-            $where = [ '_Id', 'IN', $dataInfo['ids']];
+            $limit = null;
+            if ($rowsCount + count($dataInfos[$i]['ids']) > self::MaxRowsInData)
+                $limit = self::MaxRowsInData - $rowsCount;
+
+            $ids = array_splice($dataInfos[$i]['ids'], 0, $limit);
+
+            $where = [[ '_Id', 'IN', $ids ]];
 
             $actionResult = $tableRequest->executeAction($device, 'select', [
                 'where' => $where,
@@ -269,6 +276,15 @@ class CDataStore
             $rows = $actionResult['rows'];
             if (count($rows) > 0)
                 $updateData['update'][$tableName] = $rows;
+
+            $rowsCount += count($rows);
+            if ($rowsCount >= self::MaxRowsInData)
+                break;
+
+            if (count($dataInfos[$i]['ids']) === 0) {
+                array_splice($dataInfos, $i, 1);
+                $i--;
+            }
         }
 
         return $updateData;
@@ -445,7 +461,7 @@ class CDataStore
         return $this->db;
     }
 
-    public function getRequest(string $requestName)
+    public function getRequest(string $requestName) : RRequest
     {
         if (!$this->hasRequest($requestName))
             throw new \Exception("Request '{$requestName}' does not exist.");
@@ -585,9 +601,9 @@ class CDataStore
 
     private function _getUpdateData(CDevice $device, int $schemeVersion, 
             RRequest $tableRequest, string $tableName, ?float $lastUpdate, 
-            int $rowsCount, bool $onlyIds, array &$error) : ?array
+            int $rowsOffset, ?int $rowsLimit, bool $onlyIds, ?string &$error)
+            : ?array
     {
-        $limit = self::MaxRowsInData - $rowsCount;
         $where = [];
 
         if ($lastUpdate !== null) {
@@ -598,8 +614,8 @@ class CDataStore
         }
 
         $actionResult = $tableRequest->executeAction($device, 'select', [
-            'columns' => $onlyIds ? '_Id' : null,
-            'limit' => $limit,
+            'columnNames' => $onlyIds ? [ '_Id' ] : null,
+            'limit' => [ $rowsOffset, $rowsLimit ],
             'where' => $where,
         ], $schemeVersion);
 
@@ -631,6 +647,8 @@ class CDataStore
                 'RowId' => $row['_Id'],
             ];
         }
+
+        return $rows;
     }
 
 }

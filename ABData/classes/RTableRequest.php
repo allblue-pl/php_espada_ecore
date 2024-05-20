@@ -6,6 +6,85 @@ use E, EC;
 class RTableRequest extends RRequest
 {
 
+    // static public $ArgNames = [ 'columnNames', 'groupBy', 'join', 'limit' ];
+
+
+    static public function Table_Select(EC\Database\TTable $table, array $args, 
+            ?string &$error) : ?array
+    {
+        // foreach ($args as $argName => $arg) {
+        //     if (!in_array($argName, self::$ArgNames)) {
+        //         $error = "Unknown arg '{$argName}'.";
+        //         return null;
+        //     }
+        // }
+
+        if (!array_key_exists('columnNames', $args))
+            $args['columnNames'] = null;
+        if (!array_key_exists('groupBy', $args))
+            $args['groupBy'] = null;
+        if (!array_key_exists('limit', $args))
+            $args['limit'] = null;
+        if (array_key_exists('orderBy', $args))
+            $args['orderBy'][] = [ '_Id', false ];
+        else
+            $args['orderBy'] = [[ '_Id', false ]];
+
+        $queryExtension = '';
+
+        if ($args['columnNames'] === null)
+            $args['columnNames'] = $table->getColumnNames(true);
+        else {
+            foreach ($args['columnNames'] as $columnName) {
+                if (!$table->hasColumn($columnName)) {
+                    $error = "Column '{$columnName}' in 'columnNames'" .
+                            " does not exist.";
+                    return null;
+                }
+            }
+        }
+
+        if ($args['groupBy'] !== null) {
+            $groupBy_ColNames_DB = [];
+            foreach ($args['groupBy'] as $columnName) {
+                if (!$table->hasColumn($columnName)) {
+                    $error = "Column '{$columnName}' in 'groupBy' does not exist.";
+                    return null;
+                }
+
+                $groupBy_ColNames_DB[] = $table->getDB()->quote($columnName);
+            }
+
+            $queryExtension .= ' GROUP BY ' . implode(',', $groupBy_ColNames_DB);
+        }   
+
+        $queryExtension .= " ORDER BY";
+        $firstOrderBy = true; 
+        foreach ($args['orderBy'] as $orderBy) {
+            if ($firstOrderBy)
+                $firstOrderBy = false;
+            else
+                $queryExtension .= ',';
+
+            $queryExtension .= ' ' . $orderBy[0] . ' ' . 
+                    ($orderBy[1] === true ? 'DESC' : 'ASC');
+        }
+
+        if ($args['limit'] !== null) {
+            $offset = $args['limit'][0] === null ? 
+                    0 : floor((float)$args['limit'][0]);
+            $limit = $args['limit'][1] === null ? 
+                    '18446744073709551615' : floor((float)$args['limit'][1]);
+
+            $queryExtension .= " LIMIT {$offset}, {$limit}";
+        }
+
+        $rows = $table->select_Columns_Where($args['columnNames'], $args['where'], 
+                $queryExtension);
+
+        return $rows;
+    }
+
     static public function ParseRequest(array $request)
     {
         
@@ -93,53 +172,8 @@ class RTableRequest extends RRequest
 
     public function action_Select(CDevice $device, array $args, ?int $schemeVersion)
     {
-        $queryExtension = '';
-
-        if ($args['columns'] === null)
-            $args['columns'] = $this->table->getColumnNames_Select();
-        else {
-            foreach ($args['columns'] as $columnName) {
-                if (!$this->table->hasColumn($columnName)) {
-                    return [
-                        'success' => false,
-                        'rows' => null,
-                        'error' => "Column '{$columnName}' in 'columns' does not exist.",
-                    ];
-                }
-            }
-        }
-
-        for ($i = 0; $i < count($args['columns']); $i++) {
-            if ($args['columns'] === '_Modified_DateTime') {
-                unset($args['columns']);
-                break;
-            }
-        }
-
-        if ($args['groupBy'] !== null) {
-            $groupBy_ColNames_DB = [];
-            foreach ($args['groupBy'] as $columnName) {
-                if (!$this->table->hasColumn($columnName)) {
-                    return [
-                        'success' => false,
-                        'rows' => null,
-                        'error' => "Column '{$columnName}' in 'groupBy' does not exist.",
-                    ];
-                }
-
-                $groupBy_ColNames_DB[] = $this->db->quote($columnName);
-            }
-
-            $queryExtension .= ' GROUP BY ' . implode(',', $groupBy_ColNames_DB);
-        }   
-
-        if ($args['limit'] !== null) {
-            $queryExtension .= ' LIMIT ' . (int)$args['limit'][0] . ' ' . 
-                    (int)$args['limit'][1];
-        }
-
-        $rows = $this->table->select_Columns_Where($args['columns'], $args['where'], 
-                $queryExtension);
+        $error = null;
+        $rows = self::Table_Select($this->table, $args, $error);
 
         if ($args['join'] !== null) {
             $result = $this->join($device, $rows, $args);
@@ -147,10 +181,9 @@ class RTableRequest extends RRequest
         }
 
         return [
-            'success' => true,
-            'rows' => $this->table->select_Columns_Where($args['columns'], 
-                    $args['where'], $queryExtension),
-            'error' => null,
+            'success' => $error !== null,
+            'rows' => $rows,
+            'error' => $error,
         ];
     }
 
