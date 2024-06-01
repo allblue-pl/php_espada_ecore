@@ -3,7 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class RDBSync extends RRequest
+class RTable_DBSync extends RRequest
 {
 
     static public function Table_Select(EC\Database\TTable $table, array $args, 
