@@ -15,6 +15,10 @@ class RTable_DBSync extends RRequest
             $args['groupBy'] = null;
         if (!array_key_exists('limit', $args))
             $args['limit'] = null;
+        if (!array_key_exists('permitted', $args))
+            $args['permitted'] = true;
+        if (!array_key_exists('requestType', $args))
+            $args['requestType'] = 'raw';
         if (array_key_exists('orderBy', $args))
             $args['orderBy'][] = [ '_Id', false ];
         else
@@ -74,5 +78,18 @@ class RTable_DBSync extends RRequest
 
         return $rows;
     }
+
+
+    /* RRequest */
+    public function getDeviceRowIds(EC\ABData\CDevice $device) : array
+    {
+        $rows = (new TDeviceRows($this->db))->select_Where([
+            [ 'DeviceId', '=', $device->getId() ],
+            [ 'TableId', '=', EC\HABData::GetTableId($this->table) ],
+        ]);
+
+        return array_column($rows, '_Id');
+    }
+    /* / RRequest */
 
 }

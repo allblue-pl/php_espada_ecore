@@ -3,7 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class RRequest
+abstract class RRequest
 {
 
     private $dataStore = null;
@@ -15,14 +15,14 @@ class RRequest
         $this->actions = [];
     }
 
-    public function executeAction(CDevice $device, 
-            string $actionName, array $actionArgs, ?int $schemeVersion)
+    public function executeAction(CDevice $device, string $actionName, 
+            array $actionArgs, ?int $schemeVersion, ?float $lastUpdate)
     {
         if (!array_key_exists($actionName, $this->actions))
             throw new \Exception("Action '{$actionName}' does not exists.");
 
         return $this->actions[$actionName]['fn']($device, $actionArgs, 
-                $schemeVersion);
+                $schemeVersion, $lastUpdate);
     }
 
     public function getDS()
@@ -54,5 +54,8 @@ class RRequest
             'fn' => $actionFn
         ];
     }
+
+
+    abstract public function getDeviceRowIds(CDevice $device) : array;
 
 }

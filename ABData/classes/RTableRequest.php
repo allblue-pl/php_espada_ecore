@@ -25,6 +25,8 @@ class RTableRequest extends RRequest
             $args['groupBy'] = null;
         if (!array_key_exists('limit', $args))
             $args['limit'] = null;
+        if (!array_key_exists('permitted', $args))
+            $args['permitted'] = true;
         if (array_key_exists('orderBy', $args))
             $args['orderBy'][] = [ '_Id', false ];
         else
@@ -172,6 +174,9 @@ class RTableRequest extends RRequest
 
     public function action_Select(CDevice $device, array $args, ?int $schemeVersion)
     {
+        if (!$args['permitted'])
+            return [];
+
         $error = null;
         $rows = self::Table_Select($this->table, $args, $error);
 
@@ -347,5 +352,18 @@ class RTableRequest extends RRequest
         
     //     return $rows_ForId[0]['MaxId'] + 1;
     // }
+
+
+    /* RRequest */
+    public function getDeviceRowIds(CDevice $device) : array
+    {
+        $rows = (new TDeviceRows($this->db))->select_Where([
+            [ 'DeviceId', '=', $device->getId() ],
+            [ 'TableId', '=', HABData::GetTableId($this->table->getTableName()) ],
+        ]);
+
+        return array_column($rows, 'RowId');
+    }
+    /* / RRequest */
 
 }

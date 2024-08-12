@@ -21,48 +21,48 @@ class HPermissions
         return $permissions;
     }
 
-    static private function Get_ByGroup($raw_groups, &$groups,
-			$group_name, $stack)
-	{
-		if (isset($groups[$group_name]))
-			return $groups[$group_name];
+    // static private function Get_ByGroup($raw_groups, &$groups,
+	// 		$group_name, $stack)
+	// {
+	// 	if (isset($groups[$group_name]))
+	// 		return $groups[$group_name];
 
-		if (!array_key_exists($group_name, $raw_groups)) {
-			throw new \Exception("No `{$group_name}` in `users_Groups`" .
-					' in Config.');
-		}
+	// 	if (!array_key_exists($group_name, $raw_groups)) {
+	// 		throw new \Exception("No `{$group_name}` in `users_Groups`" .
+	// 				' in Config.');
+	// 	}
 
-		$permissions = self::ParsePermissions($raw_groups[$group_name]);
+	// 	$permissions = self::ParsePermissions($raw_groups[$group_name]);
 
-		$parsed_name = explode(':', $group_name);
+	// 	$parsed_name = explode(':', $group_name);
 
-		if (count($parsed_name) === 1) {
-			$groups[$parsed_name[0]] = $permissions;
-			return $permissions;
-		}
+	// 	if (count($parsed_name) === 1) {
+	// 		$groups[$parsed_name[0]] = $permissions;
+	// 		return $permissions;
+	// 	}
 
-		$extend_group_names =
-				explode(',', str_replace(' ', '', $parsed_name[1]));
+	// 	$extend_group_names =
+	// 			explode(',', str_replace(' ', '', $parsed_name[1]));
 
-		foreach ($extend_group_names as $extend_group_name) {
-			if ($extend_group_name === '')
-				continue;
+	// 	foreach ($extend_group_names as $extend_group_name) {
+	// 		if ($extend_group_name === '')
+	// 			continue;
 
-			if (in_array($group_name, $stack)) {
-				throw new \Exception('Circular dependency in `users_Groups`' .
-						' in Config.');
-			}
+	// 		if (in_array($group_name, $stack)) {
+	// 			throw new \Exception('Circular dependency in `users_Groups`' .
+	// 					' in Config.');
+	// 		}
 
-			$extend_permissions = self::GetGroupPermissions($raw_groups,
-					$groups, $extend_group_name, $stack);
+	// 		$extend_permissions = self::GetGroupPermissions($raw_groups,
+	// 				$groups, $extend_group_name, $stack);
 
-			$stack[] = $extend_group_name;
-			$permissions = array_merge($permissions, $extend_permissions);
-		}
+	// 		$stack[] = $extend_group_name;
+	// 		$permissions = array_merge($permissions, $extend_permissions);
+	// 	}
 
-		$groups[$parsed_name[0]] = $permissions;
-		return $permissions;
-	}
+	// 	$groups[$parsed_name[0]] = $permissions;
+	// 	return $permissions;
+	// }
 
     static public function Parse($permissions_string)
 	{

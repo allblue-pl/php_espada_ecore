@@ -1308,17 +1308,23 @@ class TTable
         if (!is_array($column_values))
             throw new \Exception('`column_values` must be an array.');
 
+        $args = [];
+        if ($logic_operator === 'NOT') {
+            return 'NOT (' . $this->getQuery_Conditions_Helper($column_values, 
+                    'AND', $tableOnly) . ')';
+        }
+
         if (count($column_values) === 0)
             return '';
 
         if (count($column_values) === 2) {
-            if ($column_values[0] === 'AND' || $column_values[0] === 'OR') {
+            if ($column_values[0] === 'AND' || $column_values[0] === 'OR' ||
+                    $column_values[0] === 'NOT') {
                 return $this->getQuery_Conditions_Helper($column_values[1], 
                         $column_values[0], $tableOnly);
             }
         }
 
-        $args = [];
         foreach ($column_values as $key => $column_condition) {
             if (!is_array($column_condition)) {
                 // echo "Test: \r\n";
@@ -1360,7 +1366,8 @@ class TTable
             }
 
             if (count($column_condition) === 2) {
-                if ($column_condition[0] === 'OR' || $column_condition[0] === 'AND') {
+                if ($column_condition[0] === 'OR' || $column_condition[0] === 'AND' 
+                        || $column_condition[0] === 'NOT') {
                     $args[] = '(' . $this->getQuery_Conditions_Helper(
                             $column_condition[1], $column_condition[0], 
                             $tableOnly) . ')';
