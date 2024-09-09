@@ -6,10 +6,6 @@ use E, EC, EC\Forms;
 class VInt extends Forms\VField
 {
 
-    private $min = 0;
-    private $max = 0;
-    private $required = true;
-
     public function __construct($args = [])
     {
         parent::__construct($args, [
@@ -43,14 +39,14 @@ class VInt extends Forms\VField
                 if ($args['minValue'] !== null) {
                     if ($number < $args['minValue']) {
                         $this->error(EC\Text\HText::_(
-                                'Forms:fields.int_BelowMin', array($this->min)));
+                                'Forms:fields.int_BelowMin', [ $args['minValue'] ]));
                     }
                 }
 
                 if ($args['maxValue']) {
                     if ($number > $args['maxValue']) {
                         $this->error(EC\Text\HText::_(
-                                'Forms:fields.int_AboveMax', array($this->max)));
+                                'Forms:fields.int_AboveMax', [ $args['maxValue'] ]));
                     }
                 }
             }
