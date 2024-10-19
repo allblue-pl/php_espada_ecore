@@ -79,9 +79,6 @@ export class Site extends spocky.Module {
                     let result = await webABApi.json_Async(
                             lbSetup.uris['userApi'] + 'log-out', {});
 
-                    console.log(result);
-                    console.log('test');
-
                     if (result.isSuccess()) {
                         return {
                             success: true,

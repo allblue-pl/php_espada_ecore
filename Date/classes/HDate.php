@@ -60,7 +60,7 @@ class HDate
         return EC\HText::_('Date:monthNames_' . $monthNr);
     }
 
-    static public function GetTimezoneOffset($timezone_name)
+    static public function GetTimeZoneOffset($timezone_name)
     {
         $utc_time = new \DateTime('now', new \DateTimeZone('UTC'));
 
@@ -169,7 +169,7 @@ class HDate
 
     static public function SetTimezoneOffset($timezone_name)
     {
-        EC\HDate::SetUTCOffset(self::GetTimezoneOffset($timezone_name));
+        EC\HDate::SetUTCOffset(self::GetTimeZoneOffset($timezone_name));
     }
 
     static public function SetUTCOffset($utc_offset)
