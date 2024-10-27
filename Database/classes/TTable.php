@@ -940,7 +940,7 @@ class TTable
         return $row;
     }
 
-    public function update($rows, $ignoreNotExistingColumns = false)
+    public function update(array $rows, bool $ignoreNotExistingColumns = false)
     {
         $this->checkColumns();
 

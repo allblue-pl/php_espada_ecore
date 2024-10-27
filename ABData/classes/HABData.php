@@ -174,7 +174,7 @@ class HABData
             if (!in_array($row_Existing_ByDevice['_Id'], 
                     $rows_Existsing_DB_Ids)) {
                 // throw new \Exception("'_Id' '{$row_Existing['_Id']}'" .
-                //         " does not exist in database.");
+                //         " does not exist in database.");`
                 continue;
             }
 
@@ -206,7 +206,7 @@ class HABData
     }
 
     static public function Update_ByColumns(CDevice $device, EC\Database\TTable $table, 
-            array $whenColumns, array $rows)
+            array $whenColumns, array $rows, array $defaultValues = [])
     {        
         $existing_Conditions = [ 'OR', []];
         $rows = array_values($rows);
@@ -259,6 +259,9 @@ class HABData
             if (!$rowMatch) {
                 $row['_Id'] = $device->nextSystemId();
                 $newIds[] = $row['_Id'];
+                
+                foreach ($defaultValues as $columnName => $columnValue)
+                    $row[$columnName] = $columnValue;
             }
         }
 
