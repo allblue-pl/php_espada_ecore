@@ -68,9 +68,19 @@ class AUser extends EC\Api\ABasic
         $userId = $user->getId();
         $userLogin = $user->getLogin();
 
+        $logInError = null;
         if (!HUsers::CheckLoginAndPassword($db, $this->user->getType(),
-                $userLogin, $args->password))
-            return CResult::Failure(EC\HText::_('Users:Errors_WrongPassword'));
+                $userLogin, $args->password, $logInError)) {
+            $errorMessage = null;
+            if ($logInError === EC\HUsers::LogInError_UserDoesNotExist)
+                $errorMessage = EC\HText::_('Users:Errors_UserDoesNotExist');
+            else if ($logInError === EC\HUsers::LogInError_UserNotActive)
+                $errorMessage = EC\HText::_('Users:Errors_UserNotActive');
+            else
+                $errorMessage = EC\HText::_('Users:Errors_WrongLoginOrPassword');
+
+            return CResult::Failure($errorMessage);
+        }
 
         if (!HUsers::CheckPasswordStrength($args->newPassword))
             return CResult::Failure(EC\HText::_('Users:Errors_WrongPasswordFormat'));
@@ -119,11 +129,20 @@ class AUser extends EC\Api\ABasic
 			return $result;
         }
 
+        $logInError = null;
         $userInfo = EC\HUsers::CheckLoginAndPassword($db, $user->getType(), 
-                $login, $password);
+                $login, $password, $logInError);
 
 		if ($userInfo === null) {
-			return CResult::Failure(EC\HText::_('Users:Errors_WrongLoginOrPassword'))
+            $errorMessage = null;
+            if ($logInError === EC\HUsers::LogInError_UserDoesNotExist)
+                $errorMessage = EC\HText::_('Users:Errors_UserDoesNotExist');
+            else if ($logInError === EC\HUsers::LogInError_UserNotActive)
+                $errorMessage = EC\HText::_('Users:Errors_UserNotActive');
+            else
+                $errorMessage = EC\HText::_('Users:Errors_WrongLoginOrPassword');
+
+			return CResult::Failure($errorMessage)
                 ->add('user', [
                     'login' => null,
                     'permissions' => [],

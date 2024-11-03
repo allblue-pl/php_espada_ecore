@@ -14,6 +14,10 @@ class HUsers
 
 	const Password_MinCharacters = 6;
 
+    const LogInError_UserDoesNotExist   = 0;
+    const LogInError_UserNotActive      = 1;
+    const LogInError_WrongPassword      = 2;
+
 
 	static public function Activate(EC\MDatabase $db, $userId, bool $active,
             &$existingActiveUserId = null)
@@ -51,7 +55,7 @@ class HUsers
 	}
 
     static public function CheckLoginAndPassword(EC\MDatabase $db, string $type, 
-            string $login, string $password)
+            string $login, string $password, &$errorCode)
 	{
         $login = trim(mb_strtolower($login));
 
@@ -60,15 +64,16 @@ class HUsers
             if ($testUser['type'] !== $type || $testUser['login'] !== $login)
                 continue;
 
-
             $authenticated = false;
             if (array_key_exists('passwordHash', $testUser))
                 $authenticated = EC\HHash::CheckPassword($password, $testUser['passwordHash']);
             else if (array_key_exists('password', $testUser))
                 $authenticated = $testUser['password'] === $password;
 
-            if (!$authenticated)
-                continue;
+            if (!$authenticated) {
+                $errorCode = self::LogInError_WrongPassword;
+			    return null;
+            }
 
             $user = [];
 
@@ -78,6 +83,15 @@ class HUsers
                     str_replace(' ', '', $testUser['groups']));
             $user['permissions'] = HPermissions::Get_FromGroups($user['groups']);
             
+            $row = (new TUsers($db))->row_Where([[ 'Id', '=', $user['id'] ]]);
+            if ($row === null)
+                throw new \Exception(`Test user row does not exist.`);
+
+            if (!$row['Active']) {
+                $errorCode = self::LogInError_UserNotActive;
+                return null;
+            }
+
             return $user;
 		}
 
@@ -87,14 +101,22 @@ class HUsers
 		$row = (new TUsers($db))->row_Where([
             [ 'Type', '=', $type ],
 			[ 'LoginHash', '=', $loginHash ],
-			[ 'Active', '=', true ]
         ]);
 
-		if ($row === null)
+		if ($row === null) {
+            $errorCode = self::LogInError_UserDoesNotExist;
 			return null;
+        }
 
-		if (!self::CheckPasswordHash($password, $row['PasswordHash']))
+        if (!$row['Active']) {
+            $errorCode = self::LogInError_UserNotActive;
+            return null;
+        }
+
+		if (!self::CheckPasswordHash($password, $row['PasswordHash'])) { 
+            $errorCode = self::LogInError_WrongPassword;
 			return null;
+        }
 
 		return [
 			'id' => $row['Id'],
