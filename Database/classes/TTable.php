@@ -1320,6 +1320,7 @@ class TTable
         if (count($column_values) === 2) {
             if ($column_values[0] === 'AND' || $column_values[0] === 'OR' ||
                     $column_values[0] === 'NOT') {
+                // print_r($column_values[1]);
                 return $this->getQuery_Conditions_Helper($column_values[1], 
                         $column_values[0], $tableOnly);
             }
