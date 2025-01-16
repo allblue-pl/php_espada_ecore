@@ -45,14 +45,18 @@ class CDataStore
     
     private $db = null;
     private $requests = null;
+    private $maxRowsInData = null;
     
     private $tableRequests = null;
 
 
-    public function __construct(EC\MDatabase $db, array $tableRequests)
+    public function __construct(EC\MDatabase $db, array $tableRequests, 
+            ?int $maxRowsInData = null)
     {
         $this->db = $db;
         $this->requests = [];
+        $this->maxRowsInData = $maxRowsInData === null ? 
+                self::MaxRowsInData : $maxRowsInData;
 
         $this->tableRequests = $tableRequests;
 
@@ -66,7 +70,7 @@ class CDataStore
     }
 
     public function dbSync_GetUpdateData(CDevice $device, ?int $schemeVersion, 
-            ?float $lastSync, ?array &$dataInfos, ?string &$error)
+            ?float $lastSync, ?array &$dataInfos, ?\Exception &$error)
     {
         $updateData = [
             'update' => [],
@@ -96,7 +100,7 @@ class CDataStore
             $rows = [];
             $rowsOffset = 0;
 
-            $rowsLimit = self::MaxRowsInData - $rowsCount;
+            $rowsLimit = $this->maxRowsInData - $rowsCount;
             if ($rowsLimit > 0) {
                 $rows = $this->_getUpdateData($device, $schemeVersion, 
                         $rDeviceRows_New, $updateData['delete'],
@@ -307,8 +311,9 @@ class CDataStore
                 throw new \Exception("Table request '{$tableRequestName}' does not have action 'select'.");
 
             $limit = null;
-            if ($rowsCount + count($dataInfos[$i]['ids']) > self::MaxRowsInData)
-                $limit = self::MaxRowsInData - $rowsCount;
+            if ($rowsCount + count($dataInfos[$i]['ids']) > 
+                    $this->maxRowsInData)
+                $limit = $this->maxRowsInData - $rowsCount;
 
             $ids = array_splice($dataInfos[$i]['ids'], 0, $limit);
 
@@ -352,7 +357,7 @@ class CDataStore
                 $rowsCount += count($rows);
             }
 
-            if ($rowsCount >= self::MaxRowsInData)
+            if ($rowsCount >= $this->maxRowsInData)
                 break;
 
             if (count($dataInfos[$i]['ids']) === 0) {
@@ -365,7 +370,7 @@ class CDataStore
     }
 
     public function dbSync_ProcessRequests(CDevice $device, array $dbRequests, 
-            array $rDeviceDeletedRows, &$responseError = null)
+            array $rDeviceDeletedRows, ?\Exception &$responseError = null)
     {
         $response = [
             'type' => self::Response_Types_Success,
@@ -512,7 +517,8 @@ class CDataStore
         }
 
         if ($success) {
-            $device->refreshLastSync();
+            if ($device->getLastSync() !== null)
+                $device->refreshLastSync();
             if (!$device->update($this->db)) {
                 $success = false;
 
