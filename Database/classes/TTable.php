@@ -1120,7 +1120,7 @@ class TTable
             if (!$this->db->query_Execute($update_Query))
                 throw new \Exception("Cannot update rows.");
         }
-
+        
         /* Insert */
         if (count($rows_Insert) > 0) {
             $valuesArr_DB = [];
