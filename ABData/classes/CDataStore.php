@@ -140,7 +140,7 @@ class CDataStore
         if ($lastUpdate !== null) {
             $where[] = [ 'DeviceId', '=', $device->getId() ];
 
-            $rDeletedRows = (new TDeletedRows($this->db))->select_Where($where);
+            $rDeletedRows = (new TDeletedRows_ByDevice($this->db))->select_Where($where);
 
             foreach ($rDeletedRows as $row) {
                 if (!array_key_exists($row['TableId'], $updateData['delete']))
