@@ -6,7 +6,9 @@ use E, EC;
 class MDatabase extends E\Module
 {
 
-    static private $MinLogTimeSpan = null;
+    static public $MinLogTimeSpan = null;
+    static public $MaxInsertRows = 50000;
+    // static public $MaxInsertRows_InTransaction = 100000;
 
 
     static public function SetMinLogTimeSpan(float $minLogTimeSpan) : void

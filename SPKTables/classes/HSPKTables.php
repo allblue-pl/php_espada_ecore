@@ -52,7 +52,10 @@ SCRIPT;
         if ($where !== '')
             $where = 'WHERE ' . $where;
 
-        $group_extension = 'ORDER BY ' . $query_info['orderBy'] .
+        $group_extension = '';
+        if ($query_info['orderBy'] !== null)
+            $group_extension .= 'ORDER BY ' . $query_info['orderBy'];
+        $group_extension .=
                 " LIMIT {$query_info['limit']['offset']}" .
                 ", {$query_info['limit']['limit']}";
 
@@ -290,8 +293,12 @@ SCRIPT;
             return $col_b['orderBy']['priority'] - $col_a['orderBy']['priority'];
         });
 
-        if ($first_order_column_name === null)
+        if ($first_order_column_name === null) {
+            if (count($order_columns) === 0)
+                return null;
+
             $first_order_column_name = array_keys($spk_table['columns'])[0];
+        }
 
         $table_column = $t_table->getColumn($first_order_column_name);
         $first_order_column_expr = $table_column['expr'];

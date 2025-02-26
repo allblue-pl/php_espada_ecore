@@ -1122,9 +1122,17 @@ class TTable
         }
         
         /* Insert */
-        if (count($rows_Insert) > 0) {
+        $rowsInserted = 0;
+        // if (count($rows_Insert) >= 2) {
+        //     $rows_Insert[100] = $rows_Insert[0];
+        // }
+        while (count($rows_Insert) > $rowsInserted) {
+            $rows_Insert_Part = array_slice($rows_Insert, $rowsInserted, 
+                    min(count($rows_Insert) - $rowsInserted, 
+                    EC\MDatabase::$MaxInsertRows));
+
             $valuesArr_DB = [];
-            foreach ($rows_Insert as $row) {
+            foreach ($rows_Insert_Part as $row) {
                 $row_DB = [];
                 foreach ($columns as $columnName => $column) {
                     $row_DB[$columnName] = $this->escapeColumn($row, $column, 
@@ -1151,11 +1159,27 @@ class TTable
             if (!$this->db->query_Execute($insert_Query))
                 throw new \Exception("Cannot insert rows.");
 
-            if ($this->db->getAffectedRows() !== count($rows_Insert))
-                throw new \Exception("Cannot insert all rows.");
+            $affectedRowsCount = $this->db->getAffectedRows();
+            $rows_Insert_Count = count($rows_Insert_Part);
+            if ($affectedRowsCount !== $rows_Insert_Count) {
+                // print_r($insert_Query);
+                // echo "#";
+                // print_r($this->db->getAffectedRows());
+                // echo "#";
+                print_r($rowsInserted);
+
+                throw new \Exception("Cannot insert all rows." .
+                        " Affected: {$affectedRowsCount}." .
+                        " To Insert: {$rows_Insert_Count}.");
+            }
+
+            $rowsInserted += $rows_Insert_Count;
 
             $this->lastInsertedId = $this->db->getLastInsertedId();
         }
+
+        if ($rowsInserted !== count($rows_Insert))
+            throw new \Exception("'rowsInserted' does not equal 'rows_Insert'.");
 
         if ($localTransaction) {
             if (!$this->db->transaction_Finish(true))

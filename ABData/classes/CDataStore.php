@@ -150,7 +150,7 @@ class CDataStore
             }
         }
 
-        if (!(new TDeviceRows($this->db))->update($rDeviceRows_New))
+        if (!(new TDeviceRows($this->db))->insert($rDeviceRows_New))
             throw new \Exception('Cannot update device rows.');
 
         return $updateData;
