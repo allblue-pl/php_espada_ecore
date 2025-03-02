@@ -1,3 +1,0 @@
-[submodule "PDF/3rdparty/pdfparser"]
-	path = PDF/3rdparty/pdfparser
-	url = https://github.com/smalot/pdfparser
