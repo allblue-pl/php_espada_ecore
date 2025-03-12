@@ -30,8 +30,15 @@ class SApi extends E\Site
         $result = $this->getResult();
 
         if ($result instanceof CResult) {
+            // header('ContentType: text/json');
+            $raw = $result->getJSON();
+            if ($result->isCompressed()) {
+                $raw = gzencode($raw);
+                header('Content-Encoding: gzip');
+            }
+            
             $this->setRootL(E\Layout::_('Basic:raw', [
-                'raw' => $result->getJSON(),
+                'raw' => $raw,
             ]));
         } else if ($result instanceof CResult_Bytes) {
             echo "ABApi" . "\r\n";

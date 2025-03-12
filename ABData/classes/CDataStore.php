@@ -20,8 +20,7 @@ class CDataStore
 
     static function ValidateActionResult_Select(array $actionResult, 
             string $tableName, ?string &$error) 
-            : void
-    {
+            : void {
         if (!array_key_exists('_type', $actionResult))
             throw new \Exception("Wrong request action result format (no '_type'): " . 
                 "{$tableName} -> select");
@@ -51,8 +50,7 @@ class CDataStore
 
 
     public function __construct(EC\MDatabase $db, array $tableRequests, 
-            ?int $maxRowsInData = null)
-    {
+            ?int $maxRowsInData = null) {
         $this->db = $db;
         $this->requests = [];
         $this->maxRowsInData = $maxRowsInData === null ? 
@@ -64,16 +62,15 @@ class CDataStore
         // $ds->addRequest('Sys_TestItems', TTestItems);
     }
 
-    public function dbSync_GetDataInfos()
-    {
+    public function dbSync_GetDataInfos() {
 
     }
 
     public function dbSync_GetUpdateData(CDevice $device, ?int $schemeVersion, 
-            ?float $lastSync, ?array &$dataInfos, ?\Exception &$error)
-    {
+            ?float $lastSync, ?array &$dataInfos, bool $assocUpdateData, ?\Exception &$error) {
         $updateData = [
             'update' => [],
+            'update_ColumnNames' => [],
             'delete' => [],
         ];
 
@@ -108,11 +105,27 @@ class CDataStore
                         $lastUpdate, $rowsOffset, $rowsLimit, false, $error);
 
                 if (count($rows) > 0) {
+                    if ($assocUpdateData)
+                        $rows_New = $rows;
+                    else {
+                        $rows_TableColumns = array_keys($rows[0]);
+                        $rows_New = [];
+                        foreach ($rows as $row) {
+                            $row_New = [];
+                            for ($j = 0; $j < count($rows_TableColumns); $j++)
+                                $row_New[] = $row[$rows_TableColumns[$j]];
+                            $rows_New[] = $row_New;
+                        }
+                    }
+
                     if (array_key_exists($tableName, $updateData['update'])) {
                         $updateData['update'][$tableName] = array_merge(
-                                $updateData['update'][$tableName], $rows);
-                    } else
-                        $updateData['update'][$tableName] = $rows;
+                                $updateData['update'][$tableName], $rows_New);
+                    } else {
+                        $updateData['update'][$tableName] = $rows_New;
+                        if (!$assocUpdateData)
+                            $updateData['update_ColumnNames'][$tableName] = $rows_TableColumns;
+                    }
                     $rowsCount += count($rows);
                 }
 
@@ -138,6 +151,10 @@ class CDataStore
         /* Deleted Rows */
         $rDeletedRows = [];
         if ($lastUpdate !== null) {
+            $where[] = [ 'OR', [
+                [ '_Modified_DateTime', '>=', $lastUpdate ],
+                [ '_Modified_DateTime', '=', null ],
+            ]];
             $where[] = [ 'DeviceId', '=', $device->getId() ];
 
             $rDeletedRows = (new TDeletedRows_ByDevice($this->db))->select_Where($where);
@@ -157,8 +174,7 @@ class CDataStore
     }
 
     public function dbSync_GetUpdateData_Old(CDevice $device, ?int $schemeVersion, 
-            ?float $lastSync, &$error)
-    {
+            ?float $lastSync, &$error) {
         $updateData = [
             'update' => [],
             'delete' => [],
@@ -281,8 +297,8 @@ class CDataStore
     }
 
     public function dbSync_GetUpdateData_FromDataInfos(CDevice $device,
-            ?int $schemeVersion, array &$dataInfos, ?string &$error)
-    {
+            ?int $schemeVersion, array &$dataInfos, bool $assocUpdateData, 
+            ?string &$error) {
         $updateData = [
             'update' => [],
         ];
@@ -348,11 +364,27 @@ class CDataStore
 
             $rows = $actionResult['rows'];
             if (count($rows) > 0) {
+                if ($assocUpdateData)
+                    $rows_New = $rows;
+                else {
+                    $rows_TableColumns = array_keys($rows[0]);
+                    $rows_New = [];
+                    foreach ($rows as $row) {
+                        $row_New = [];
+                        for ($j = 0; $j < count($rows_TableColumns); $j++)
+                            $row_New[] = $row[$rows_TableColumns[$j]];
+                        $rows_New[] = $row_New;
+                    }
+                }
+
                 if (array_key_exists($tableName, $updateData['update'])) {
                     $updateData['update'][$tableName] = array_merge(
-                            $updateData['update'][$tableName], $rows);
-                } else
-                    $updateData['update'][$tableName] = $rows;        
+                            $updateData['update'][$tableName], $rows_New);
+                } else {
+                    $updateData['update'][$tableName] = $rows_New;        
+                    if (!$assocUpdateData)
+                        $updateData['update_ColumnNames'][$tableName] = $rows_TableColumns;
+                }
 
                 $rowsCount += count($rows);
             }
@@ -370,8 +402,7 @@ class CDataStore
     }
 
     public function dbSync_ProcessRequests(CDevice $device, array $dbRequests, 
-            array $rDeviceDeletedRows, ?\Exception &$responseError = null)
-    {
+            array $rDeviceDeletedRows, ?\Exception &$responseError = null) {
         $response = [
             'type' => self::Response_Types_Success,
             'errorMessage' => null,
@@ -537,39 +568,33 @@ class CDataStore
         return $response;
     }
 
-    public function getDB()
-    {
+    public function getDB() {
         return $this->db;
     }
 
-    public function getRequest(string $requestName) : RRequest
-    {
+    public function getRequest(string $requestName) : RRequest {
         if (!$this->hasRequest($requestName))
             throw new \Exception("Request '{$requestName}' does not exist.");
 
         return $this->requests[$requestName];
     }
 
-    public function hasRequest(string $requestName)
-    {
+    public function hasRequest(string $requestName) {
         return array_key_exists($requestName, $this->requests);
     }
 
-    public function setR(string $requestName, RRequest $request)
-    {
+    public function setR(string $requestName, RRequest $request) {
         $this->setRequest($requestName, $request);
     }
 
-    public function setRequest(string $requestName, RRequest $request)
-    {
+    public function setRequest(string $requestName, RRequest $request) {
         if (array_key_exists($requestName, $this->requests))
             throw new \Exception("Request '{$requestName}' already exists.");
 
         $this->requests[$requestName] = $request;
     }
 
-    public function processRequests(CDevice $device, array $requests)
-    {
+    public function processRequests(CDevice $device, array $requests) {
         $response = [
             'actionErrors' => [ '_stdObj' => '' ],
             'type' => self::Response_Types_Success,
@@ -684,9 +709,8 @@ class CDataStore
             array &$rDeviceRows_New, array &$updateData_Delete, 
             string $tableRequestName, string $tableName, RRequest $tableRequest, 
             ?float $lastUpdate, int $rowsOffset, ?int $rowsLimit, bool $onlyIds, 
-            ?string &$error) : ?array
-    {
-        $deviceRowIds = [];
+            ?string &$error) : ?array {
+        // $deviceRowIds = [];
         $where = [];
 
         if ($lastUpdate !== null) {
@@ -723,6 +747,7 @@ class CDataStore
 
         /* Indirectly Deleted Rows */
         if (!$onlyIds && $lastUpdate !== null) {
+            $deviceRowIds = $tableRequest->getDeviceRowIds($device);
             $where = [
                 [ '_Id', 'IN', $deviceRowIds ],
             ];
@@ -743,7 +768,7 @@ class CDataStore
             foreach ($rIndirectlyDeletedRows as $row) {
                 if (!array_key_exists($tableId, $updateData_Delete))
                     $updateData_Delete[$tableId] = [];
-            
+
                 $updateData_Delete[$tableId][] = $row['_Id'];
             }
         }

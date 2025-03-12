@@ -41,14 +41,23 @@ class CResult_Base
     }
 
 
-    private $result = null;
-    private $message = null;
-    private $debug = null;
+    private $result;
+    private $message;
+    private $compress;
+    private $debug;
 
     public function __construct(int $result, string $message)
     {
         $this->result = $result;
         $this->message = $message;
+        $this->compress = false;
+        $this->debug = null;
+    }
+
+    public function compress(bool $compress) {
+        $this->compress = $compress;
+
+        return $this;
     }
 
     public function debug($message)
@@ -61,6 +70,10 @@ class CResult_Base
         }
 
         return $this;
+    }
+
+    public function isCompressed() {
+        return $this->compress;
     }
 
     public function isSuccess()

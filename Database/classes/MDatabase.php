@@ -281,7 +281,7 @@ class MDatabase extends E\Module
 	}
 
 	/* Query */
-	public function query_Select($query)
+	public function query_Select($query, $noAssoc = false)
 	{
 		$this->requirePreInitialize();
 
@@ -295,8 +295,15 @@ class MDatabase extends E\Module
             if ($result = $this->mysqli->query($query)) {
                 $assoc = [];
 
-                while ($row = $result->fetch_assoc())
-                    $assoc[] = $row;
+                $assoc = $result->fetch_all($noAssoc ? MYSQLI_NUM : MYSQLI_ASSOC);
+
+                // if ($noAssoc) {
+                //     while ($row = $result->fetch_row())
+                //         $assoc[] = $row;
+                // } else {
+                //     while ($row = $result->fetch_assoc())
+                //         $assoc[] = $row;
+                // }
 
                 $result->close();
 
