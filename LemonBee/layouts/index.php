@@ -28,6 +28,6 @@
         </script>
 
         <?php $eHolders->debug; ?>
-        <?php $eHolders->postBodyInit; ?>
+        <?php $eHolders->postBody; ?>
     </body>
 </html>

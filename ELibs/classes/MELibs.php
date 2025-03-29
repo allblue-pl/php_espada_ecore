@@ -67,7 +67,7 @@ class MELibs extends E\Module
 
     function _preDisplay(E\Site $site)
     {
-        $site->addL('postBodyInit', new EC\Basic\LScript(function() {
+        $site->addL('postBody', new EC\Basic\LScript(function() {
             return $this->getScript(); }, $this->scriptCSPHash));
     }
 
@@ -98,7 +98,6 @@ class MELibs extends E\Module
         $fieldsString = str_replace("'", "\\'", $fields_JSON);
         $textsString = str_replace("'", "\\'", json_encode($this->texts));
 
-        $date_UTCOffset = EC\HDate::GetUTCOffset();
         $date_Formats_Date = EC\HText::_('ELibs:date_Formats_Date');
         $date_Formats_DateTime = EC\HText::_('ELibs:date_Formats_DateTime');
         $date_Formats_Time = EC\HText::_('ELibs:date_Formats_Time');
@@ -108,7 +107,6 @@ class MELibs extends E\Module
         let abDate = jsLibs.require('ab-date');
         let eLibs = jsLibs.require('e-libs');
 
-        abDate.utfOffset = {$date_UTCOffset};
         abDate.formats_Date = '{$date_Formats_Date}';
         abDate.formats_DateTime = '{$date_Formats_DateTime}';
         abDate.formats_Time = '{$date_Formats_Time}';

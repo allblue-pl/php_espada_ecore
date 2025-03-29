@@ -15,7 +15,7 @@ class _TLogs extends Database\TTable
             'Id'                => new Database\FId(false, 11),
             'User_Id'           => new Database\FLong(false, 11),
 
-            'DateTime'          => new Database\FTime(false),
+            'DateTime'          => new Database\FLong(false),
             'Message'           => new Database\FString(true, 256),
             'Data'              => new Database\FText(true, 'medium')
         ]);

@@ -12,11 +12,11 @@ class LScript extends E\Layout
                 function() use ($script, $cspHash) {
             $script_Raw = $script();
             return [
-                'raw' => "<script" . ($cspHash === null ? '' : " nonce=\"${cspHash}\"") .  
+                'raw' => "<script" . ($cspHash === null ? '' : " nonce=\"{$cspHash}\"") .  
                         ">{$script_Raw}</script>",    
             ];
         } : [
-            'raw' => "<script" . ($cspHash === null ? '' : " nonce=\"${cspHash}\"") .  
+            'raw' => "<script" . ($cspHash === null ? '' : " nonce=\"{$cspHash}\"") .  
                     ">{$script}</script>",
         ]);
     }
