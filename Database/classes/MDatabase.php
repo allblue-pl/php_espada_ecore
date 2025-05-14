@@ -3,8 +3,7 @@ defined( '_ESPADA' ) or die( NO_ACCESS);
 
 use E, EC;
 
-class MDatabase extends E\Module
-{
+class MDatabase extends E\Module {
 
     static public $MinLogTimeSpan = null;
     static public $MaxInsertRows = 50000;

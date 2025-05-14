@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HMailer extends E\Module
-{
+class HMailer extends E\Module {
 
 	static public function NewMail($to_mail, $to_name)
 	{

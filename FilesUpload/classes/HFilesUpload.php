@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HFilesUpload
-{
+class HFilesUpload {
 
     static public function Copy($filePath_Src, $filePath)
     {

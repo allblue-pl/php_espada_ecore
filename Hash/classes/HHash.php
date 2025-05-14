@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HHash
-{
+class HHash {
 
 	static public function Get($salt, $string, $hash_rounds = 12)
 	{

@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-class DDownloader
-{
+class DDownloader {
 
     private $site = null;
     private $downloads = [];

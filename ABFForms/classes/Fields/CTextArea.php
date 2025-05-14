@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\SPKForms;
 
-class HTextArea extends SPKForms\VField
-{
+class HTextArea extends SPKForms\VField {
 
     public function __construct($name, $placeholder = '', $label = '',
             $default_value = '')

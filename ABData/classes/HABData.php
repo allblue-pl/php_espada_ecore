@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HABData
-{
+class HABData {
 
     static public function AddDeletedRows(CDevice $device, 
             EC\Database\TTable $table, array $rows)

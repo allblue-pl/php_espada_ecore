@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class TLogs extends _TLogs
-{
+class TLogs extends _TLogs {
 
     public function __construct(EC\MDatabase $db)
     {

@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HFiles
-{
+class HFiles {
 
     static public function Dir_Create_Safe(string $dirPath, 
             int $permissions = 0777, bool $recursive = false): bool

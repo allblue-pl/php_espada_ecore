@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class LLikes extends E\Layout
-{
+class LLikes extends E\Layout {
 
     public function __construct($href)
     {

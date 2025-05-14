@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class FDate extends FField
-{
+class FDate extends FField {
 
     public function __construct($is_null)
     {

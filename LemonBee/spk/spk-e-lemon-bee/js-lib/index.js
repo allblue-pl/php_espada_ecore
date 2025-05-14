@@ -130,8 +130,7 @@ export class Site extends spocky.Module {
 
 }
 
-export function init(modulePath, debug)
-{
+export function init(modulePath, debug) {
     spocky.setDebug(debug);
     spkForms.setDebug(debug);
     webABApi.setDebug(debug);

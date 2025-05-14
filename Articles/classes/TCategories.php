@@ -5,8 +5,7 @@ use E, EC,
     EC\Database,
     EC\Web;
 
-class TCategories extends _TCategories
-{
+class TCategories extends _TCategories {
 
     public function __construct(EC\MDatabase $db)
     {

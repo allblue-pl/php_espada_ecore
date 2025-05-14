@@ -6,8 +6,7 @@ require(__DIR__ . '/../3rdparty/php-publisher/library/Publisher.php');
 use E, EC,
     pubsubhubbub\publisher\Publisher;
 
-class HRss
-{
+class HRss {
 
     static private $RssItemFields = [ 'title', 'link', 'description', 'pubDate' ];
 

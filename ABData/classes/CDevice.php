@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CDevice
-{
+class CDevice {
 
     static public $ExpirationTime =     15 * EC\HDate::Span_Minute;
 

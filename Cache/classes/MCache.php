@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MCache extends E\Module
-{
+class MCache extends E\Module {
 
     const Dir = PATH_CACHE . '/MCache';
 

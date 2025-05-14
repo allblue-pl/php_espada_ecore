@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CValidator
-{
+class CValidator {
 
     private $info = [
         'valid' => true,

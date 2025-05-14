@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HDate
-{
+class HDate {
 
     const Span_Second = 1;
     const Span_Minute = 60;

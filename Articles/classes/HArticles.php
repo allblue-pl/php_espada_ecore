@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HArticles
-{
+class HArticles {
 
     static public function AddColumnParsers(EC\Database\TTable $table)
     {

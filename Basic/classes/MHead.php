@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MHead extends E\Module
-{
+class MHead extends E\Module {
 
     private $fields = null;
 

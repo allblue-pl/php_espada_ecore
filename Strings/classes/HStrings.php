@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HStrings
-{
+class HStrings {
 
     static public $CharacterTypes = [ 'digits', 'letters', 'special' ];
 

@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-abstract class FField
-{
+abstract class FField {
 
     private $notNull = false;
 

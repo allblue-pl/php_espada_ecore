@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CCSV
-{
+class CCSV {
 
     private $separators = [ ';', ',' ];
     private $charset = '';

@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
 
-class VRadio extends Forms\VField
-{
+class VRadio extends Forms\VField {
 
     private $texts = null;
 

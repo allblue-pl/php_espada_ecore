@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-class ABasic extends AApi
-{
+class ABasic extends AApi {
 
     private $actionRequiredPermissions = [];
     private $requiredPermissions = null;

@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MHtml extends E\Module
-{
+class MHtml extends E\Module {
 
     const OUTPUT_HTML = 0;
 

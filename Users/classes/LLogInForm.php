@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class LLogInForm extends EC\LSPK
-{
+class LLogInForm extends EC\LSPK {
 
     public function __construct(EC\MSPK $abf,
             $api_page_uri, $redirect_page_uri)

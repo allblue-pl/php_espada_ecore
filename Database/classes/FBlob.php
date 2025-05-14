@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class FBlob extends FField
-{
+class FBlob extends FField {
 
     private $types = [
         'tiny'      => 256,

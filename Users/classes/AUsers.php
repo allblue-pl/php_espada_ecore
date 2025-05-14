@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC, EC\Users,
     EC\Api\CResult, EC\Api\CArgs;
 
-class AUsers extends EC\Api\ABasic
-{
+class AUsers extends EC\Api\ABasic {
 
     private $requiredPermissions = null;
 

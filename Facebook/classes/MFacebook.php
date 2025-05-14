@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MFacebook extends E\Module
-{
+class MFacebook extends E\Module {
 
     private $header = null;
     private $version = null;

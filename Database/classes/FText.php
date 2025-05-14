@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class FText extends FField
-{
+class FText extends FField {
 
     private $types = [
         'tiny'      => 256,

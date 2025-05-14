@@ -28,8 +28,7 @@ namespace PHPMailer\PHPMailer;
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author Brent R. Matzelle (original founder)
  */
-class PHPMailer
-{
+class PHPMailer {
     const CHARSET_ASCII = 'us-ascii';
     const CHARSET_ISO88591 = 'iso-8859-1';
     const CHARSET_UTF8 = 'utf-8';

@@ -5,8 +5,7 @@ require(__DIR__ . '/../3rdparty/phpqrcode/qrlib.php');
 
 use E, EC;
 
-class HQRCodes
-{
+class HQRCodes {
 
     static public function Generate(string $text, $filePath, $size = 1)
     {

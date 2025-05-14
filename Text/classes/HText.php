@@ -3,8 +3,7 @@ defined('_ESPADA') or die;
 
 use E, EC;
 
-class HText
-{
+class HText {
 
 	static private $Translations = [];
 

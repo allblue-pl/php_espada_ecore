@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CResult_Base
-{
+class CResult_Base {
 
     const SUCCESS       = 0;
     const FAILURE       = 1;

@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-class CApi extends EC\Api\CBasicApi
-{
+class CApi extends EC\Api\CBasicApi {
 
     private $facebook = null;
 

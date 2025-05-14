@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class RTableRequest extends RRequest
-{
+class RTableRequest extends RRequest {
 
     // static public $ArgNames = [ 'columnNames', 'groupBy', 'join', 'limit' ];
 

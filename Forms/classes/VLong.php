@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
 
-class VLong extends Forms\VField
-{
+class VLong extends Forms\VField {
 
     private $min = 0;
     private $max = 0;

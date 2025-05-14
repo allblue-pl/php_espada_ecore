@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class TDeletedRows_ByDevice extends TDeletedRows
-{
+class TDeletedRows_ByDevice extends TDeletedRows {
 
     public function __construct(EC\MDatabase $db)
     {

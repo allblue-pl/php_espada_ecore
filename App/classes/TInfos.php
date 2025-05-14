@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class TInfos extends _TInfos
-{
+class TInfos extends _TInfos {
 
     public function __construct(EC\MDatabase $db)
     {

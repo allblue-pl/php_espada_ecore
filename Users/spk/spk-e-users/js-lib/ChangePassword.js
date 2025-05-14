@@ -9,8 +9,7 @@ const
     $layouts = require('./$layouts')
 ;
 
-export default class ChangePassword extends spocky.Module
-{
+export default class ChangePassword extends spocky.Module {
 
     constructor()
     { super();

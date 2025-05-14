@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MFacebookPixel extends E\Module
-{
+class MFacebookPixel extends E\Module {
 
     private $trackingCode = null;
 

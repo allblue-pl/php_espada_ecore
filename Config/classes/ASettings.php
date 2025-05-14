@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC, EC\Sys,
     EC\Api\CArgs, EC\Api\CResult;
 
-class ASettings extends EC\Api\ABasic
-{
+class ASettings extends EC\Api\ABasic {
 
     public function __construct(EC\SApi $site, array $apiArgs)
     {

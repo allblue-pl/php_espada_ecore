@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MCookiesPolicy extends E\Module
-{
+class MCookiesPolicy extends E\Module {
 
     private $head = null;
     private $title = null;

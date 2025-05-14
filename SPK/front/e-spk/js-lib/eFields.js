@@ -1,8 +1,7 @@
 'use strict';
 
 
-class eFields_Class
-{
+class eFields_Class {
 
     constructor()
     {

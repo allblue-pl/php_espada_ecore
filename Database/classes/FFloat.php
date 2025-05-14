@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class FFloat extends FField
-{
+class FFloat extends FField {
 
     public function __construct($is_null)
     {

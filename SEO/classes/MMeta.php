@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MMeta extends E\Module
-{
+class MMeta extends E\Module {
 
     private $title = '';
     private $description = '';

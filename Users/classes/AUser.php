@@ -5,8 +5,7 @@ use E, EC,
     EC\Users,
     EC\Api\CResult, EC\Api\CArgs;
 
-class AUser extends EC\Api\ABasic
-{
+class AUser extends EC\Api\ABasic {
 
     private $userType = null;
     private $requiredPermissions = null;

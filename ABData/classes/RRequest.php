@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-abstract class RRequest
-{
+abstract class RRequest {
 
     private $dataStore = null;
     private $actions = null;

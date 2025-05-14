@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HPermissions
-{
+class HPermissions {
 
     static public function Get_FromGroups($groups)
     {

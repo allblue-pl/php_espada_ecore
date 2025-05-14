@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class DBasic extends DDownloader
-{
+class DBasic extends DDownloader {
 
     public function __construct(EC\SDownloader $site, array $requiredPermissions = [],
             $userType = 'Default')

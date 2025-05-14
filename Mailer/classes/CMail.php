@@ -10,8 +10,7 @@ require(__DIR__.'/../3rdparty/PHPMailer/src/SMTP.php');
 use E, EC,
 	PHPMailer\PHPMailer;
 
-class CMail
-{
+class CMail {
 
 	private $from_Mail = '';
 	private $from_Name = '';

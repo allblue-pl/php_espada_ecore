@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CConfig_Setter
-{
+class CConfig_Setter {
 
     private $properties = [];
 

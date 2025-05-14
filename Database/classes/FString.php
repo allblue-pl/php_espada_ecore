@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class FString extends FField
-{
+class FString extends FField {
 
     private $maxLength = 0;
 

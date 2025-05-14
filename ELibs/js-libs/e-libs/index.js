@@ -1,8 +1,7 @@
 'use strict';
 
 
-class eLibs_Class
-{
+class eLibs_Class {
 
     get eField() {
         return (fieldName) => {

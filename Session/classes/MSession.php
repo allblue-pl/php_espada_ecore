@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MSession extends E\Module
-{
+class MSession extends E\Module {
 
     private $db = null;
 

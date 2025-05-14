@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MSPK extends E\Module
-{
+class MSPK extends E\Module {
 
     private $header = null;
     private $abTemplate = null;

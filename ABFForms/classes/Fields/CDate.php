@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\SPKForms;
 
-class CDate extends SPKForms\VField
-{
+class CDate extends SPKForms\VField {
 
     private $locale = '';
 

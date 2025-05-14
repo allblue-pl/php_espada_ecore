@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\SPKForms;
 
-class CInput extends SPKForms\VField
-{
+class CInput extends SPKForms\VField {
 
     public function __construct($name, $type, $placeholder = '', $label = '',
             $default_value = '')

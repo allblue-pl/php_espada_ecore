@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HSort
-{
+class HSort {
 
     static public function UA_Stable($arr, $fn)
     {

@@ -38,8 +38,7 @@ namespace PHPMailer\PHPMailer;
  * @author Jim Jagielski (jimjag) <jimjag@gmail.com>
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  */
-class POP3
-{
+class POP3 {
     /**
      * The POP3 PHPMailer Version number.
      *

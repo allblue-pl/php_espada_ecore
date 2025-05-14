@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-abstract class CField
-{
+abstract class CField {
 
     private $name = '';
     private $object = null;

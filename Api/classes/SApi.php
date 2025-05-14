@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-class SApi extends E\Site
-{
+class SApi extends E\Site {
 
     private $actionName = '';
 

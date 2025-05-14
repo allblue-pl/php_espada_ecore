@@ -5,8 +5,7 @@ use E, EC,
     EC\Sys,
     EC\Api\CArgs, EC\Api\CResult;
 
-class CDataStore
-{
+class CDataStore {
 
     const Response_Types_Success = 0;
     const Response_Types_ResultFailure = 1;

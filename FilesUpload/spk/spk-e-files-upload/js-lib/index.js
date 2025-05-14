@@ -9,8 +9,7 @@ const
     webABApi = require('web-ab-api')
 ;
 
-export class FilesUpload extends spocky.Module
-{
+export class FilesUpload extends spocky.Module {
 
     get id() {
         if (this._id === null)

@@ -4,8 +4,7 @@ const
     js0 = require('js0')
 ;
 
-class eTexts_Class
-{
+class eTexts_Class {
 
     constructor()
     {

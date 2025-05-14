@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class TDeviceRequests extends _TDeviceRequests
-{
+class TDeviceRequests extends _TDeviceRequests {
 
     public function __construct(EC\MDatabase $db)
     {

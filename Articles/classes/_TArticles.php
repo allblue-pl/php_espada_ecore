@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class _TArticles extends Database\TTable
-{
+class _TArticles extends Database\TTable {
 
     public function __construct(EC\MDatabase $db, $tablePrefix = 't')
     {

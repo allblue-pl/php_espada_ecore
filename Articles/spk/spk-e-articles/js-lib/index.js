@@ -12,8 +12,7 @@ const
     $layouts = require('./$layouts')
 ;
 
-export class Form extends spocky.Module
-{
+export class Form extends spocky.Module {
 
     get id() {
         if (this._id === null)

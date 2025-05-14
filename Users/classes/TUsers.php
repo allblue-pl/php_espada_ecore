@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class TUsers extends _TUsers
-{
+class TUsers extends _TUsers {
 
     public function __construct(EC\MDatabase $db)
     {

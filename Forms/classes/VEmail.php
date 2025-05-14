@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
 
-class VEmail extends Forms\VField
-{
+class VEmail extends Forms\VField {
 
     public function __construct($args = [])
     {

@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MABTemplate extends \E\Module
-{
+class MABTemplate extends \E\Module {
 
     private $name = null;
     private $header = null;

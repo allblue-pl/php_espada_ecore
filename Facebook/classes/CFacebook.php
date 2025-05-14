@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class CFacebook
-{
+class CFacebook {
 
     private $config = null;
 

@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-class AApi
-{
+class AApi {
 
     private $site = null;
     private $actions = [];

@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
 
-class VDate extends Forms\VField
-{
+class VDate extends Forms\VField {
 
     private $texts = null;
 

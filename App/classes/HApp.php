@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HApp
-{
+class HApp {
 
     static public function Authenticate(EC\MDatabase $db, $app_id,
             $authentication_hash)

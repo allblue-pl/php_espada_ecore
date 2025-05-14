@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class HLog extends Database\TTable
-{
+class HLog extends Database\TTable {
 
     static public function Add(EC\MDatabase $db, $user_id, string $message, $data = null)
     {

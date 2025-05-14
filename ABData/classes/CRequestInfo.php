@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CRequestInfo
-{
+class CRequestInfo {
 
     public static function Create(int $deviceId, $deviceHash,
             int $lastUpdate)

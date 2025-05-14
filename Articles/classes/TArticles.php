@@ -5,8 +5,7 @@ use E, EC,
     EC\Database,
     EC\Web;
 
-class TArticles extends _TArticles
-{
+class TArticles extends _TArticles {
 
     static public function GetNew(EC\MDatabase $db, $userId)
     {

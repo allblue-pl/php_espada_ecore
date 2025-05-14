@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-class SDownloader extends E\Site
-{
+class SDownloader extends E\Site {
 
     private $downloader = null;
     private $downloadName = null;

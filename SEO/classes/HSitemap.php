@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HSitemap
-{
+class HSitemap {
 
     static public function Update($sitemap_item_infos)
     {

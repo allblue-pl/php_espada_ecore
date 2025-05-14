@@ -5,8 +5,7 @@ const
 ;
 
 
-class eTasks_Class
-{
+class eTasks_Class {
 
     constructor()
     {

@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-class HUsers
-{
+class HUsers {
 
     const Exists_Login  = 1;
     const Exists_Email  = 2;

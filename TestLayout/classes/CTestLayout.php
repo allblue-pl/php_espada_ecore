@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-class CTestLayout
-{
+class CTestLayout {
 
     static public function _(E\ILayout $layout, $holder_name, $layout_path,
             $fields_path = null)

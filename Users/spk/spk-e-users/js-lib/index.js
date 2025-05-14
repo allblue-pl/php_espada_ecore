@@ -4,8 +4,7 @@ const
     eLibs = require('e-libs')
 ;
 
-class eUsers_Class
-{
+class eUsers_Class {
 
     get ChangePassword() {
         return require('./ChangePassword');

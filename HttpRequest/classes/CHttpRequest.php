@@ -5,8 +5,7 @@ require(__DIR__ . '/../composer/vendor/autoload.php');
 
 use E, EC;
 
-class CHttpRequest
-{
+class CHttpRequest {
 
     private $auth = null;
     private $headers = null;

@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HTasks
-{
+class HTasks {
 
     static public function Create(EC\MDatabase $db, $user_id = null)
     {

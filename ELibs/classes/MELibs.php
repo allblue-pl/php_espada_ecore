@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MELibs extends E\Module
-{
+class MELibs extends E\Module {
 
     private $head = null;
     private $scriptCSPHash = null;

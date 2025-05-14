@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Api\CArgs, EC\Api\CResult;
 
-class AFilesUpload extends EC\Api\ABasic
-{
+class AFilesUpload extends EC\Api\ABasic {
 
     private $config = null;
 

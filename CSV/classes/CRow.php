@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CRow
-{
+class CRow {
 
     private $columns = [];
 

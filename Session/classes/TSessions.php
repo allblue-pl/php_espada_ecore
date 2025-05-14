@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class TSessions extends _TSessions
-{
+class TSessions extends _TSessions {
 
     public function __construct(EC\MDatabase $db)
     {

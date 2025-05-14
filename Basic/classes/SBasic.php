@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class SBasic extends E\Site
-{
+class SBasic extends E\Site {
 
     public function __construct()
     {

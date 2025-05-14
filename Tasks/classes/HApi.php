@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HApi
-{
+class HApi {
 
     static public function Parse(EC\MDatabase $db, $user_id = null, $task_arg = [],
             &$error = null)

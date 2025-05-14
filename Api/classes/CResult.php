@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CResult extends CResult_Base
-{
+class CResult extends CResult_Base {
 
     static public function Success($message = '')
     {

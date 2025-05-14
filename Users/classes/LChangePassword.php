@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class LChangePassword extends EC\LSPK
-{
+class LChangePassword extends EC\LSPK {
 
     public function __construct(EC\MSPK $abf, $user_api_uri)
     {

@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MUser extends E\Module
-{
+class MUser extends E\Module {
 
 	const HASH_ROUNDS = 7;
 

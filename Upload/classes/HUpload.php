@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HUpload
-{
+class HUpload {
 
     static public function Validate($file, $info = [], &$error = null)
     {

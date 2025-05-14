@@ -5,8 +5,7 @@ require (__DIR__ . '/../3rdparty/facebook-php-sdk-v4/src/Facebook/autoload.php')
 
 use E, EC;
 
-class HFacebook
-{
+class HFacebook {
 
     static public function Autoload()
     {

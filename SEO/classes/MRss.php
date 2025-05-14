@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MRss extends E\Module
-{
+class MRss extends E\Module {
 
     private $header = null;
     private $info = null;

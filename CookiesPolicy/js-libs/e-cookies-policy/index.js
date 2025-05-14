@@ -6,8 +6,7 @@ const
     js0 = require('js0')
 ;
 
-class eCookiesPolicy_Class
-{
+class eCookiesPolicy_Class {
 
     constructor()
     {

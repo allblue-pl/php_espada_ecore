@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HGallery
-{
+class HGallery {
 
     static public function GetGallery($categoryName, $id, $hasThumbs = true,
             $hasFull = true)

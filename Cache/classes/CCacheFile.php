@@ -3,8 +3,7 @@ defined('_ESPADA') or die('NO_ACCESS');
 
 use E, EC;
 
-class CCacheFile
-{
+class CCacheFile {
 
     private $cache = null;
     private $id = '';

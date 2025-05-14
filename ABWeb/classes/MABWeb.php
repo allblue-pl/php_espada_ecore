@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class MABWeb extends E\Module
-{
+class MABWeb extends E\Module {
 
     private EC\Basic\MHead $_header;
     private string $_dirPath;

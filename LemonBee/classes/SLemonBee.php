@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class SLemonBee extends EC\SBasic
-{
+class SLemonBee extends EC\SBasic {
 
     private $modulePath = null;
 

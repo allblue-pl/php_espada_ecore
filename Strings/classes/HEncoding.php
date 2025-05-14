@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class HEncoding
-{
+class HEncoding {
 
     static public function Convert($str, $to_encoding, $from_encoding)
     {

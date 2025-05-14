@@ -4,8 +4,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC,
     EC\Database;
 
-class TTasks extends _TTasks
-{
+class TTasks extends _TTasks {
 
     public function __construct(EC\MDatabase $db)
     {

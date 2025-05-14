@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class CTranslations
-{
+class CTranslations {
 
 	private $package = '';
 	private $path = '';
