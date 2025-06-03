@@ -9,21 +9,18 @@ class AApi {
     private $site = null;
     private $actions = [];
 
-    public function __construct(EC\SApi $site)
-    {
+    public function __construct(EC\SApi $site) {
         $this->site = $site;
     }
 
-    public function getAction($actionName)
-    {
+    public function getAction($actionName) {
         if (!array_key_exists($actionName, $this->actions))
             return null;
 
         return $this->actions[$actionName];
     }
 
-    public function getResult($action_name, $args)
-    {
+    public function getResult($action_name, $args) {
         if (!isset($this->actions[$action_name])) {
             return EC\Api\CResult::Failure("Action `{$action_name}`" .
                     ' does not exist.');
@@ -63,8 +60,7 @@ class AApi {
         return $result;
     }
 
-    protected function action($name, $fn, $arg_infos = [])
-    {
+    protected function action($name, $fn, $arg_infos = []) {
         if (!method_exists($this, $fn))
             throw new \Exception("Action method `$fn` does not exist.");
 
@@ -75,8 +71,7 @@ class AApi {
         ];
     }
 
-    protected function action_Bytes($name, $fn, $arg_infos = [])
-    {
+    protected function action_Bytes($name, $fn, $arg_infos = []) {
         if (!method_exists($this, $fn))
             throw new \Exception("Action method `$fn` does not exist.");
 
@@ -87,8 +82,7 @@ class AApi {
         ];
     }
 
-    protected function getSite()
-    {
+    protected function getSite() {
         return $this->site;
     }
 

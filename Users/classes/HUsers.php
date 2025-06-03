@@ -146,15 +146,13 @@ class HUsers {
 		return true;
 	}
 
-    static public function Delete(EC\MDatabase $db, $userId)
-    {
+    static public function Delete(EC\MDatabase $db, $userId) {
         return (new TUsers($db))->delete_ById($userId);
     }
 
     static public function Exists(EC\MDatabase $db, string $type, string $login, 
             array $excludedIds = null, &$existingUserId = null, 
-            $onlyActive = false)
-    {
+            $onlyActive = false) {
         $loginHash = self::GetLoginHash($login);
 
         if ($excludedIds === null)
@@ -180,8 +178,7 @@ class HUsers {
 
     static public function Exists_ByHash(EC\MDatabase $db, string $type, 
             string $loginHash, array $excludedIds = null, 
-            &$existingUserId = null, $onlyActive = false)
-    {
+            &$existingUserId = null, $onlyActive = false) {
         if ($excludedIds === null)
             $excludedIds = [ -1 ];
 
@@ -272,28 +269,24 @@ class HUsers {
 				self::GetHashRounds());
 	}
 
-	static public function GetEmailHash($email, $hashRounds = null)
-    {
+	static public function GetEmailHash($email, $hashRounds = null) {
         $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
 
         return EC\HHash::GetPassword(mb_strtolower($email), self::GetHashRounds());
     }
 
-    static public function GetHashRounds()
-    {
+    static public function GetHashRounds() {
         return EC\HConfig::Get('Users', 'hashRounds', 
                 self::HashRounds_Default);
     }
 
-    static public function GetPasswordHash($password, $hashRounds = null)
-    {
+    static public function GetPasswordHash($password, $hashRounds = null) {
         $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
 
         return EC\HHash::GetPassword($password, self::GetHashRounds());
     }
 
-    static public function InitSPK(EC\MELibs $eLibs, $userApiUri)
-    {
+    static public function InitSPK(EC\MELibs $eLibs, $userApiUri) {
         $eLibs->addTranslations('Users');
         $eLibs->setField('eUsers', [
             'userApiUri' => $userApiUri,
@@ -301,8 +294,7 @@ class HUsers {
     }
 
     static public function ResetPassword_CreateHash(EC\MDatabase $db, 
-            float $userId, string &$hash)
-    {
+            float $userId, string &$hash) {
         $hash = EC\HHash::Generate(128);
 
         (new TResetPasswordHashes($db))->delete_Where([
@@ -348,8 +340,7 @@ class HUsers {
     }
     
     static public function ValidateEmail(EC\MDatabase $db, $userType, 
-            EC\Forms\CValidator $validator, $fieldName, $login, $userId)
-    {
+            EC\Forms\CValidator $validator, $fieldName, $login, $userId) {
         $excludedIds = [ -1 ];
         if ($userId !== null)
             $excludedIds[] = $userId;

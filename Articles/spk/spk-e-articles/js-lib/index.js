@@ -51,8 +51,7 @@ export class Form extends spocky.Module {
     }
 
 
-    constructor(msgs)
-    { super();
+    constructor(msgs) { super();
         js0.args(arguments, spkMessages.Messages);
 
         if (!eLibs.eFields.exists('eArticles'))
@@ -101,18 +100,15 @@ export class Form extends spocky.Module {
         return fields;
     }
 
-    insertFile(file)
-    {
+    insertFile(file) {
         this.editor.insertHtml_AtCursor(`<ul><li><a href="${file.uri}">${file.id}</a></li></ul>`);
     }null
 
-    insertImage(file)
-    {
+    insertImage(file) {
         this.editor.insertHtml_AtCursor(`<img src="${file.uri}" />`);
     }
 
-    refreshMedia()
-    {
+    refreshMedia() {
         if (this._mediaId === null)
             throw new Error('Media id not set.');
 
@@ -122,8 +118,7 @@ export class Form extends spocky.Module {
         this.galleryUpload.refresh();
     }
 
-    setValues(values, ignoreNotExisting = false)
-    {
+    setValues(values, ignoreNotExisting = false) {
         this.f.setValues(values, ignoreNotExisting);
         if ('Content_Raw' in values)
             this.editor.setHtml(values.Content_Raw);

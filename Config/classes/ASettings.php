@@ -6,8 +6,7 @@ use E, EC, EC\Sys,
 
 class ASettings extends EC\Api\ABasic {
 
-    public function __construct(EC\SApi $site, array $apiArgs)
-    {
+    public function __construct(EC\SApi $site, array $apiArgs) {
         parent::__construct($site, $apiArgs['userType'], [ 'Sys_Settings' ]);
 
         $this->db = $site->m->db;
@@ -24,8 +23,7 @@ class ASettings extends EC\Api\ABasic {
         ]);
     }
 
-    public function action_Get(CArgs $args)
-    {
+    public function action_Get(CArgs $args) {
         $settings = [];
         foreach ($args->names as $name)
             $settings[$name] = EC\HConfig::DB_Get($this->db, $name);
@@ -34,8 +32,7 @@ class ASettings extends EC\Api\ABasic {
             ->add('settings', $settings);
     }
 
-    public function action_Set(CArgs $args)
-    {
+    public function action_Set(CArgs $args) {
         $this->db->transaction_Start();
 
         for ($i = 1; $i <= 3; $i++) {

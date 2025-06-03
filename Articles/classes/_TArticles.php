@@ -6,8 +6,7 @@ use E, EC,
 
 class _TArticles extends Database\TTable {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix = 't')
-    {
+    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Articles_Articles', $tablePrefix);
 
         $this->setColumns([

@@ -7,8 +7,7 @@ use E, EC;
 
 class HQRCodes {
 
-    static public function Generate(string $text, $filePath, $size = 1)
-    {
+    static public function Generate(string $text, $filePath, $size = 1) {
         \QRcode::png($text, $filePath, QR_ECLEVEL_L, $size);
     }
 

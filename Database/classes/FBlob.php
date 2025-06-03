@@ -13,8 +13,7 @@ class FBlob extends FField {
 
     private $type = null;
 
-    public function __construct($is_null, $type = 'regular')
-    {
+    public function __construct($is_null, $type = 'regular') {
         parent::__construct($is_null);
 
         if (!array_key_exists($type, $this->types))
@@ -23,26 +22,22 @@ class FBlob extends FField {
         $this->type = $type;
     }
 
-    public function getVField($info = [])
-    {
+    public function getVField($info = []) {
         return new EC\Forms\VText(array_merge([
             'notNull' => $this->isNotNull(),
             'maxLength' => $this->types[$this->type]
         ], $info));
     }
 
-    protected function _escape(EC\MDatabase $db, $value)
-    {
+    protected function _escape(EC\MDatabase $db, $value) {
         return $db->escapeString($value);
     }
 
-    protected function _parse($value)
-    {
+    protected function _parse($value) {
         return (string)$value;
     }
 
-    protected function _unescape(EC\MDatabase $db, $value)
-    {
+    protected function _unescape(EC\MDatabase $db, $value) {
         return $db->unescapeString($value);
     }
 

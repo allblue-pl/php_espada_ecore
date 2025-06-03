@@ -9,13 +9,11 @@ class DDownloader {
     private $site = null;
     private $downloads = [];
 
-    public function __construct(EC\SDownloader $site)
-    {
+    public function __construct(EC\SDownloader $site) {
         $this->site = $site;
     }
 
-    public function outputDownload($download_name)
-    {
+    public function outputDownload($download_name) {
         if (!array_key_exists($download_name, $this->downloads))
             throw new \Exception("Download `{$download_name}` does not exist.");
 
@@ -31,8 +29,7 @@ class DDownloader {
         }
     }
 
-    protected function download($name, $fn)
-    {
+    protected function download($name, $fn) {
         if (!method_exists($this, $fn))
             throw new \Exception("Action method `$fn` does not exist.");
 
@@ -41,8 +38,7 @@ class DDownloader {
         ];
     }
 
-    protected function getSite()
-    {
+    protected function getSite() {
         return $this->site;
     }
 

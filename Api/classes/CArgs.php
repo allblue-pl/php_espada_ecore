@@ -7,8 +7,7 @@ class CArgs {
 
     private $args = [];
 
-    public function __construct($argInfos)
-    {
+    public function __construct($argInfos) {
         foreach ($argInfos as $argName => $argInfo) {
             if ($argName === 'get' || $argName === 'getAll' || $argName === 'set')
                 throw new \Exception("'{$argName}' is a reserved arg name.");
@@ -20,13 +19,11 @@ class CArgs {
         }
     }
 
-    public function exists($name)
-    {
+    public function exists($name) {
         return in_array($name, array_keys($this->args));
     }
 
-    public function &get($name)
-    {
+    public function &get($name) {
         $this->validateArg($name);
 
         if (!$this->args[$name]['set'])
@@ -35,8 +32,7 @@ class CArgs {
         return $this->args[$name]['value'];
     }
 
-    public function getAll()
-    {
+    public function getAll() {
         $args = [];
         foreach ($this->args as $argName => $argInfo) {
             if (!$argInfo['set'])
@@ -48,39 +44,33 @@ class CArgs {
         return $args;
     }
 
-    public function isset($name)
-    {
+    public function isset($name) {
         $this->validateArg($name);
 
         return $this->args[$name]['set'];
     }
 
-    public function &__get($name)
-    {
+    public function &__get($name) {
         return $this->get($name);
     }
 
-    public function __isset($name)
-    {
+    public function __isset($name) {
         return $this->isset($name);
     }
 
-    public function __set($name, $value)
-    {
+    public function __set($name, $value) {
         $this->validateArg($name);
 
         $this->args[$name]['set'] = true;
         $this->args[$name]['value'] = $value;
     }
 
-    public function __exists($name)
-    {
+    public function __exists($name) {
         return $this->exists($name);
     }
 
 
-    private function validateArg($name)
-    {
+    private function validateArg($name) {
         if (!in_array($name, array_keys($this->args)))
             throw new \Exception("Api arg `{$name}` does not exist.");
     }

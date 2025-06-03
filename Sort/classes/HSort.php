@@ -5,8 +5,7 @@ use E, EC;
 
 class HSort {
 
-    static public function UA_Stable($arr, $fn)
-    {
+    static public function UA_Stable($arr, $fn) {
         $t_arr = [];
         $i = 0;
         foreach ($arr as $key => $item) {

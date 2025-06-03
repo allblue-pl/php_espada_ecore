@@ -11,8 +11,7 @@ $: {
         this._tables[name] = info;
     },
 
-    get: function(name)
-    {
+    get: function(name) {
         if (!(name in this._tables)) {
             throw new Error('Table `' + name +
                     '` does not exist.');

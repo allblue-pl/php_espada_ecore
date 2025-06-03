@@ -13,24 +13,20 @@ class MELibs extends E\Module {
     private $texts = [];
     private $script = '';
 
-    function __construct(EC\Basic\MHead $head)
-    {
+    function __construct(EC\Basic\MHead $head) {
         $this->head = $head;
         $this->scriptCSPHash = $head->generateScriptCSPHash();
     }
 
-    function addScript(string $script)
-    {
+    function addScript(string $script) {
         $this->script .= $script;
     }
 
-    function addTexts(array $texts)
-    {
+    function addTexts(array $texts) {
         $this->texts = array_merge($this->texts, $texts);
     }
 
-    function addTranslations($path)
-    {
+    function addTranslations($path) {
         $pkg = explode(':', $path)[0];
         $texts = [];
         $translationsArr = EC\HText::GetTranslations($pkg)->getArray();
@@ -41,8 +37,7 @@ class MELibs extends E\Module {
         $this->addTexts($texts);
     }
 
-    function addTranslations_As($prefixName, $path)
-    {
+    function addTranslations_As($prefixName, $path) {
         $texts = [];
         $translationsArr = EC\HText::GetTranslations($path)->getArray();
 
@@ -52,26 +47,22 @@ class MELibs extends E\Module {
         $this->addTexts($texts);
     }
 
-    function setField($fieldName, $fieldValue)
-    {
+    function setField($fieldName, $fieldValue) {
         // $this->requireBeforePreDisplay();
 
         $this->fields[$fieldName] = $fieldValue;
     } 
 
-    function setFieldFn($fieldName, $fieldFn)
-    {
+    function setFieldFn($fieldName, $fieldFn) {
         $this->fieldFns[$fieldName] = $fieldFn;
     }
 
-    function _preDisplay(E\Site $site)
-    {
+    function _preDisplay(E\Site $site) {
         $site->addL('postBody', new EC\Basic\LScript(function() {
             return $this->getScript(); }, $this->scriptCSPHash));
     }
 
-    function getScript()
-    {
+    function getScript() {
         /* Defaults */
         $uris = [
             'base' => E\Uri::Base(),

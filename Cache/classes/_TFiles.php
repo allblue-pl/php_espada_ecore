@@ -6,8 +6,7 @@ use E, EC,
 
 class _TFiles extends Database\TTable {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix = 't')
-    {
+    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Cache_Files', $tablePrefix);
 
         $this->setColumns([

@@ -7,8 +7,7 @@ class VBool extends Forms\VField {
 
     private $texts = null;
 
-    public function __construct($args = [])
-    {
+    public function __construct($args = []) {
         parent::__construct($args, [
             'required' => false,
         ]);
@@ -16,8 +15,7 @@ class VBool extends Forms\VField {
         $this->texts = EC\Text\HText::GetTranslations('Forms:fields');
     }
 
-    protected function _validate(&$value)
-    {
+    protected function _validate(&$value) {
         $args = $this->getArgs();
 
         if (!$value) {

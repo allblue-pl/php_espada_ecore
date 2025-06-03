@@ -249,8 +249,7 @@ class SMTP {
      * @see SMTP::$Debugoutput
      * @see SMTP::$do_debug
      */
-    protected function edebug($str, $level = 0)
-    {
+    protected function edebug($str, $level = 0) {
         if ($level > $this->do_debug) {
             return;
         }
@@ -308,8 +307,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function connect($host, $port = null, $timeout = 30, $options = [])
-    {
+    public function connect($host, $port = null, $timeout = 30, $options = []) {
         static $streamok;
         //This is enabled by default since 5.0.0 but some providers disable it
         //Check this once and cache the result
@@ -403,8 +401,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function startTLS()
-    {
+    public function startTLS() {
         if (!$this->sendCommand('STARTTLS', 'STARTTLS', 220)) {
             return false;
         }
@@ -575,8 +572,7 @@ class SMTP {
      *
      * @return string
      */
-    protected function hmac($data, $key)
-    {
+    protected function hmac($data, $key) {
         if (function_exists('hash_hmac')) {
             return hash_hmac('md5', $data, $key);
         }
@@ -607,8 +603,7 @@ class SMTP {
      *
      * @return bool True if connected
      */
-    public function connected()
-    {
+    public function connected() {
         if (is_resource($this->smtp_conn)) {
             $sock_status = stream_get_meta_data($this->smtp_conn);
             if ($sock_status['eof']) {
@@ -634,8 +629,7 @@ class SMTP {
      *
      * @see quit()
      */
-    public function close()
-    {
+    public function close() {
         $this->setError('');
         $this->server_caps = null;
         $this->helo_rply = null;
@@ -660,8 +654,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function data($msg_data)
-    {
+    public function data($msg_data) {
         //This will use the standard timelimit
         if (!$this->sendCommand('DATA', 'DATA', 354)) {
             return false;
@@ -752,8 +745,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function hello($host = '')
-    {
+    public function hello($host = '') {
         //Try extended hello first (RFC 2821)
         return $this->sendHello('EHLO', $host) or $this->sendHello('HELO', $host);
     }
@@ -769,8 +761,7 @@ class SMTP {
      *
      * @see hello()
      */
-    protected function sendHello($hello, $host)
-    {
+    protected function sendHello($hello, $host) {
         $noerror = $this->sendCommand($hello, $hello . ' ' . $host, 250);
         $this->helo_rply = $this->last_reply;
         if ($noerror) {
@@ -788,8 +779,7 @@ class SMTP {
      *
      * @param string $type `HELO` or `EHLO`
      */
-    protected function parseHelloFields($type)
-    {
+    protected function parseHelloFields($type) {
         $this->server_caps = [];
         $lines = explode("\n", $this->helo_rply);
 
@@ -836,8 +826,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function mail($from)
-    {
+    public function mail($from) {
         $useVerp = ($this->do_verp ? ' XVERP' : '');
 
         return $this->sendCommand(
@@ -856,8 +845,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function quit($close_on_error = true)
-    {
+    public function quit($close_on_error = true) {
         $noerror = $this->sendCommand('QUIT', 'QUIT', 221);
         $err = $this->error; //Save any error
         if ($noerror || $close_on_error) {
@@ -880,8 +868,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function recipient($address, $dsn = '')
-    {
+    public function recipient($address, $dsn = '') {
         if (empty($dsn)) {
             $rcpt = 'RCPT TO:<' . $address . '>';
         } else {
@@ -915,8 +902,7 @@ class SMTP {
      *
      * @return bool True on success
      */
-    public function reset()
-    {
+    public function reset() {
         return $this->sendCommand('RSET', 'RSET', 250);
     }
 
@@ -929,8 +915,7 @@ class SMTP {
      *
      * @return bool True on success
      */
-    protected function sendCommand($command, $commandstring, $expect)
-    {
+    protected function sendCommand($command, $commandstring, $expect) {
         if (!$this->connected()) {
             $this->setError("Called $command without being connected");
 
@@ -1000,8 +985,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function sendAndMail($from)
-    {
+    public function sendAndMail($from) {
         return $this->sendCommand('SAML', "SAML FROM:$from", 250);
     }
 
@@ -1012,8 +996,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function verify($name)
-    {
+    public function verify($name) {
         return $this->sendCommand('VRFY', "VRFY $name", [250, 251]);
     }
 
@@ -1023,8 +1006,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function noop()
-    {
+    public function noop() {
         return $this->sendCommand('NOOP', 'NOOP', 250);
     }
 
@@ -1037,8 +1019,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function turn()
-    {
+    public function turn() {
         $this->setError('The SMTP TURN command is not implemented');
         $this->edebug('SMTP NOTICE: ' . $this->error['error'], self::DEBUG_CLIENT);
 
@@ -1053,8 +1034,7 @@ class SMTP {
      *
      * @return int|bool The number of bytes sent to the server or false on error
      */
-    public function client_send($data, $command = '')
-    {
+    public function client_send($data, $command = '') {
         //If SMTP transcripts are left enabled, or debug output is posted online
         //it can leak credentials, so hide credentials in all but lowest level
         if (self::DEBUG_LOWLEVEL > $this->do_debug &&
@@ -1075,8 +1055,7 @@ class SMTP {
      *
      * @return array
      */
-    public function getError()
-    {
+    public function getError() {
         return $this->error;
     }
 
@@ -1085,8 +1064,7 @@ class SMTP {
      *
      * @return array|null
      */
-    public function getServerExtList()
-    {
+    public function getServerExtList() {
         return $this->server_caps;
     }
 
@@ -1107,8 +1085,7 @@ class SMTP {
      *
      * @return string|bool|null
      */
-    public function getServerExt($name)
-    {
+    public function getServerExt($name) {
         if (!$this->server_caps) {
             $this->setError('No HELO/EHLO was sent');
 
@@ -1135,8 +1112,7 @@ class SMTP {
      *
      * @return string
      */
-    public function getLastReply()
-    {
+    public function getLastReply() {
         return $this->last_reply;
     }
 
@@ -1149,8 +1125,7 @@ class SMTP {
      *
      * @return string
      */
-    protected function get_lines()
-    {
+    protected function get_lines() {
         // If the connection is bad, give up straight away
         if (!is_resource($this->smtp_conn)) {
             return '';
@@ -1210,8 +1185,7 @@ class SMTP {
      *
      * @param bool $enabled
      */
-    public function setVerp($enabled = false)
-    {
+    public function setVerp($enabled = false) {
         $this->do_verp = $enabled;
     }
 
@@ -1220,8 +1194,7 @@ class SMTP {
      *
      * @return bool
      */
-    public function getVerp()
-    {
+    public function getVerp() {
         return $this->do_verp;
     }
 
@@ -1233,8 +1206,7 @@ class SMTP {
      * @param string $smtp_code    An associated SMTP error code
      * @param string $smtp_code_ex Extended SMTP code
      */
-    protected function setError($message, $detail = '', $smtp_code = '', $smtp_code_ex = '')
-    {
+    protected function setError($message, $detail = '', $smtp_code = '', $smtp_code_ex = '') {
         $this->error = [
             'error' => $message,
             'detail' => $detail,
@@ -1248,8 +1220,7 @@ class SMTP {
      *
      * @param string|callable $method The name of the mechanism to use for debugging output, or a callable to handle it
      */
-    public function setDebugOutput($method = 'echo')
-    {
+    public function setDebugOutput($method = 'echo') {
         $this->Debugoutput = $method;
     }
 
@@ -1258,8 +1229,7 @@ class SMTP {
      *
      * @return string
      */
-    public function getDebugOutput()
-    {
+    public function getDebugOutput() {
         return $this->Debugoutput;
     }
 
@@ -1268,8 +1238,7 @@ class SMTP {
      *
      * @param int $level
      */
-    public function setDebugLevel($level = 0)
-    {
+    public function setDebugLevel($level = 0) {
         $this->do_debug = $level;
     }
 
@@ -1278,8 +1247,7 @@ class SMTP {
      *
      * @return int
      */
-    public function getDebugLevel()
-    {
+    public function getDebugLevel() {
         return $this->do_debug;
     }
 
@@ -1288,8 +1256,7 @@ class SMTP {
      *
      * @param int $timeout The timeout duration in seconds
      */
-    public function setTimeout($timeout = 0)
-    {
+    public function setTimeout($timeout = 0) {
         $this->Timeout = $timeout;
     }
 
@@ -1298,8 +1265,7 @@ class SMTP {
      *
      * @return int
      */
-    public function getTimeout()
-    {
+    public function getTimeout() {
         return $this->Timeout;
     }
 
@@ -1311,8 +1277,7 @@ class SMTP {
      * @param string $errfile The file the error occurred in
      * @param int    $errline The line number the error occurred on
      */
-    protected function errorHandler($errno, $errmsg, $errfile = '', $errline = 0)
-    {
+    protected function errorHandler($errno, $errmsg, $errfile = '', $errline = 0) {
         $notice = 'Connection failed.';
         $this->setError(
             $notice,
@@ -1334,8 +1299,7 @@ class SMTP {
      *
      * @return bool|string|null
      */
-    protected function recordLastTransactionID()
-    {
+    protected function recordLastTransactionID() {
         $reply = $this->getLastReply();
 
         if (empty($reply)) {
@@ -1362,8 +1326,7 @@ class SMTP {
      *
      * @see recordLastTransactionID()
      */
-    public function getLastTransactionID()
-    {
+    public function getLastTransactionID() {
         return $this->last_smtp_transaction_id;
     }
 }

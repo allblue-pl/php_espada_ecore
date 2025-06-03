@@ -6,8 +6,7 @@ use E, EC;
 class HABData {
 
     static public function AddDeletedRows(CDevice $device, 
-            EC\Database\TTable $table, array $rows)
-    {
+            EC\Database\TTable $table, array $rows) {
         $db = $table->getDB();
 
         $deleteRows = [];
@@ -25,8 +24,7 @@ class HABData {
     }
 
     static public function ClearDeviceRows_ByLastSync(EC\Database\MDatabase $db,
-            float $beforeTime)
-    {
+            float $beforeTime) {
         $localTransaction = false;
         if ($db->transaction_IsAutocommit()) {
             $db->transaction_Start();
@@ -57,16 +55,14 @@ class HABData {
     }
 
     static public function Delete_ByColumn(CDevice $device, EC\Database\TTable $table, 
-            $columnName, $columnValue)
-    {
+            $columnName, $columnValue) {
         return self::Delete_Where($device, $table, [
             [ $columnName, '=', $columnValue ],
         ]);
     }
 
     static public function Delete_Where(CDevice $device, EC\Database\TTable $table,
-            $whereConditions)
-    {
+            $whereConditions) {
         $db = $table->getDB();
 
         $localTransaction = false;
@@ -98,8 +94,7 @@ class HABData {
         return true;
     }
 
-    static public function GetTableId(string $tableName)
-    {
+    static public function GetTableId(string $tableName) {
         if (self::$TableIds === null) {
             self::$TableIds = json_decode(file_get_contents(PATH_PRESETS . 
                     '/Sys/tableIds.json'), true);
@@ -111,8 +106,7 @@ class HABData {
         return self::$TableIds[$tableName];
     }
 
-    static public function GetTableName(int $tableId)
-    {
+    static public function GetTableName(int $tableId) {
         if (self::$TableIds === null) {
             self::$TableIds = json_decode(file_get_contents(PATH_PRESETS . 
                     '/Sys/tableIds.json'), true);
@@ -125,8 +119,7 @@ class HABData {
         return $tableName;
     }
 
-    static public function ParseUpdateRow(EC\ABData\CDevice $device, &$row)
-    {
+    static public function ParseUpdateRow(EC\ABData\CDevice $device, &$row) {
         $maxExecutionTime = EC\HDate::Millis_Span_Second * 
                 ini_get('max_execution_time');
 
@@ -138,8 +131,7 @@ class HABData {
     }
 
     static public function Update(CDevice $device, EC\Database\TTable $table, 
-            $rows)
-    {        
+            $rows) {        
         // $updatedIds = [];
 
         $rows_New = [];
@@ -205,8 +197,7 @@ class HABData {
     }
 
     static public function Update_ByColumns(CDevice $device, EC\Database\TTable $table, 
-            array $whenColumns, array $rows, array $defaultValues = [])
-    {        
+            array $whenColumns, array $rows, array $defaultValues = []) {        
         $existing_Conditions = [ 'OR', []];
         $rows = array_values($rows);
         for ($i = 0; $i < count($rows); $i++) {
@@ -293,16 +284,14 @@ class HABData {
     }
 
     static public function Update_Where(CDevice $device, EC\Database\TTable $table, 
-            $values, $whereConditions)
-    {
+            $values, $whereConditions) {
         self::ParseUpdateRow($device, $values);
 
         return $table->update_Where($values, $whereConditions, true);
     }
 
     static public function ValidateDefault_All(EC\Database\TTable $table, 
-            EC\Forms\CValidator $validator, array $row, array $ignoreColumns = [])
-    {
+            EC\Forms\CValidator $validator, array $row, array $ignoreColumns = []) {
         $ignoreColumns[] = '_Modified_DateTime';
 
         return $table->validateDefault_All($validator, $row, $ignoreColumns);
@@ -311,9 +300,8 @@ class HABData {
 
     static private $TableIds = null;
 
-
-    static private function RowsMatch($table, $whenColumns, $rowA, $rowB)
-    {
+    
+    static private function RowsMatch($table, $whenColumns, $rowA, $rowB) {
         $whenMatch = true;
         foreach ($whenColumns as $whenColumn) {
             $column = $table->getColumn($whenColumn, true);

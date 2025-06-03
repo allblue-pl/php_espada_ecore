@@ -7,8 +7,7 @@ class VFile extends Forms\VField {
 
     private $texts;
 
-    public function __construct($args = [])
-    {
+    public function __construct($args = []) {
         parent::__construct($args, [
             'required' => true
         ]);
@@ -16,8 +15,7 @@ class VFile extends Forms\VField {
         $this->texts = EC\Text\HText::GetTranslations('Forms:fields');
     }
 
-    protected function _validate(&$value)
-    {
+    protected function _validate(&$value) {
         $args = $this->getArgs();
 
         if ($args['required'] && $value === '') {

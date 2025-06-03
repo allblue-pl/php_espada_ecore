@@ -6,13 +6,11 @@ const
 
 class eTexts_Class {
 
-    constructor()
-    {
+    constructor() {
         this._texts = [];
     }
 
-    get(text, args = [])
-    {
+    get(text, args = []) {
         js0.args(arguments, 'string', [ Array, js0.Default ]);
 
         if (text in this._texts) {
@@ -26,13 +24,11 @@ class eTexts_Class {
         return `#${text}#` + (args.length === 0 ? '' : ' (' + args.join(', ') + ')');
     }
 
-    getAll()
-    {
+    getAll() {
         return this._texts;
     }
 
-    add(texts)
-    {
+    add(texts) {
         for (let text in texts)
             this._texts[text] = texts[text];
     }

@@ -6,8 +6,7 @@ use E, EC, EC\SPKForms;
 class HTextArea extends SPKForms\VField {
 
     public function __construct($name, $placeholder = '', $label = '',
-            $default_value = '')
-    {
+            $default_value = '') {
         parent::__construct('textArea', $name, $label);
 
         $abf_object = $this->getObject();

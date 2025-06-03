@@ -5,8 +5,7 @@ use E, EC;
 
 class HEncoding {
 
-    static public function Convert($str, $to_encoding, $from_encoding)
-    {
+    static public function Convert($str, $to_encoding, $from_encoding) {
         $from_encoding = mb_strtolower($from_encoding);
         $to_encoding = mb_strtolower($to_encoding);
 
@@ -23,8 +22,7 @@ class HEncoding {
     }
 
 
-    static private function CP1250_To_UTF8($str)
-    {
+    static private function CP1250_To_UTF8($str) {
         $map = [
             chr(0x8A) => chr(0xA9),
             chr(0x8C) => chr(0xA6),

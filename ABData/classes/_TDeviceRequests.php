@@ -6,8 +6,7 @@ use E, EC,
 
 class _TDeviceRequests extends Database\TTable {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix)
-    {
+    public function __construct(EC\MDatabase $db, $tablePrefix) {
         parent::__construct($db, '_ABData_DeviceRequests', $tablePrefix);
 
         $this->setColumns([

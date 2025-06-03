@@ -11,8 +11,7 @@ const
 
 export default class ChangePassword extends spocky.Module {
 
-    constructor()
-    { super();
+    constructor() { super();
         eUsers.init();
 
         this.l = eLibs.createLayout($layouts.ChangePassword);
@@ -34,26 +33,22 @@ export default class ChangePassword extends spocky.Module {
         this.$view = this.l;
     }
 
-    clearErrorMessage()
-    {
+    clearErrorMessage() {
         this.l.$fields.message = null;
         this.l.$fields.messageType = 'dark';
     }
 
-    setMessage_Error(message)
-    {
+    setMessage_Error(message) {
         this.l.$fields.message = message;
         this.l.$fields.messageType = 'danger';
     }
 
-    setMessage_Success(message)
-    {
+    setMessage_Success(message) {
         this.l.$fields.message = message;
         this.l.$fields.messageType = 'success';
     }
 
-    submit()
-    {
+    submit() {
         if (this.l.$elems.newPassword.value === '') {
             this.setMessage_Error(eLibs.eText('Users:Errors_EmptyNewPassword'));
             return;

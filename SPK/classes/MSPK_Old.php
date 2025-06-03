@@ -19,8 +19,7 @@ class MSPK extends E\Module {
     private $appScripts = [];
 
     public function __construct(EC\Basic\MHead $header,
-            EC\MABTemplate $ab_template)
-    {
+            EC\MABTemplate $ab_template) {
         parent::__construct();
 
         $this->header = $header;
@@ -29,13 +28,11 @@ class MSPK extends E\Module {
         $this->addTexts('SPK');
     }
 
-    public function addAppScript($script)
-    {
+    public function addAppScript($script) {
         $this->appScripts[] = $script;
     }
 
-    public function addFields($fields_name, $fields)
-    {
+    public function addFields($fields_name, $fields) {
         if (is_array($fields))
             $fields = json_encode($fields);
 
@@ -44,8 +41,7 @@ class MSPK extends E\Module {
 
     public function addModule($module_id, $elem_id = null,
             $module_name = null,
-            $path = null)
-    {
+            $path = null) {
         if ($elem_id === null)
             $elem_id = $module_id;
 
@@ -62,13 +58,11 @@ class MSPK extends E\Module {
             $this->addScript($path);
     }
 
-    public function addModuleLayout($layout_name)
-    {
+    public function addModuleLayout($layout_name) {
         $this->moduleLayouts[] = $layout_name;
     }
 
-    public function addPage($name, $alias, $title)
-    {
+    public function addPage($name, $alias, $title) {
         $this->pages[] = [
             'name' => $name,
             'alias' => $alias,
@@ -76,8 +70,7 @@ class MSPK extends E\Module {
         ];
     }
 
-    public function addScript($path)
-    {
+    public function addScript($path) {
         if ($path !== null) {
             $file_uri = E\Package::Uri_FromPath(
                     $path, 'front/spk', '.js');
@@ -89,8 +82,7 @@ class MSPK extends E\Module {
         }
     }
 
-    public function addTexts($lang_path)
-    {
+    public function addTexts($lang_path) {
         if (isset($this->texts[$lang_path]))
             return;
 
@@ -98,8 +90,7 @@ class MSPK extends E\Module {
                 $lang_path)->getArray());
     }
 
-    protected function _postInitialize(E\Site $site)
-    {
+    protected function _postInitialize(E\Site $site) {
         /* Module Uris */
         foreach ($this->moduleUris as $uri)
             $this->header->addScript($uri);

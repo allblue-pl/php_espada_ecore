@@ -7,18 +7,15 @@ class CConfig_Setter {
 
     private $properties = [];
 
-    public function __construct()
-    {
+    public function __construct() {
 
     }
 
-    public function getProperties()
-    {
+    public function getProperties() {
         return $this->properties;
     }
 
-    public function set(array $values)
-    {
+    public function set(array $values) {
         $this->properties = array_replace_recursive($this->properties, $values);
     }
 

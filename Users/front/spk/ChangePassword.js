@@ -39,8 +39,7 @@ SPK
     this.$view = this.$layout;
 }, {
 
-    checkNewPassword: function()
-    {
+    checkNewPassword: function() {
         if (this.$elems.newPasswordConfirmation.value === '') {
             this.clearNewPasswordError();
             this.$fields.newPassword.set({
@@ -63,8 +62,7 @@ SPK
         }
     },
 
-    clearNewPasswordError: function()
-    {
+    clearNewPasswordError: function() {
         this.$fields.newPassword.set({
             class: '',
             error: {
@@ -74,8 +72,7 @@ SPK
         });
     },
 
-    clearOldPasswordError: function()
-    {
+    clearOldPasswordError: function() {
         this.$fields.oldPassword.set({
             class: '',
             error: {
@@ -85,8 +82,7 @@ SPK
         });
     },
 
-    createElems: function()
-    {
+    createElems: function() {
         var elems = this.$elems;
         var self = this;
 
@@ -111,8 +107,7 @@ SPK
         })
     },
 
-    changePassword: function()
-    {
+    changePassword: function() {
         if (this.$elems.newPassword.value !==
                 this.$elems.newPasswordConfirmation.value)
             return;

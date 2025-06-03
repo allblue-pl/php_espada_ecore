@@ -5,8 +5,7 @@ use E, EC;
 
 class HImages {
 
-    static public function Create($file_path)
-    {
+    static public function Create($file_path) {
         if (!file_exists($file_path))
             throw new \Exception("File path '{$file_path}'  does not exist.");
 
@@ -22,8 +21,7 @@ class HImages {
         return null;
     }
 
-    static public function Save($image, $dest_file_path, $quality)
-    {
+    static public function Save($image, $dest_file_path, $quality) {
         $ext = mb_strtolower(pathinfo($dest_file_path, PATHINFO_EXTENSION));
         if ($ext === 'jpg' || $ext === 'jpeg')
             return imagejpeg($image, $dest_file_path, $quality);
@@ -36,8 +34,7 @@ class HImages {
     }
 
     static public function Scale_ToMinSize($file_path, $dest_file_path,
-            $min_width, $min_height, $quality = 75, $compress = true)
-    {
+            $min_width, $min_height, $quality = 75, $compress = true) {
         $memory_limit = ini_get('memory_limit');
         ini_set('memory_limit', '128M');
 
@@ -105,8 +102,7 @@ class HImages {
     }
 
     static public function Scale_ToMinSize_Image($image, $min_width, $min_height,
-            $scale_up = false)
-    {
+            $scale_up = false) {
         $image_width = imagesx($image);
         $image_height = imagesy($image);
 

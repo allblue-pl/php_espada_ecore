@@ -27,28 +27,23 @@ class MHead extends E\Module {
     /* Other */
     private $html = '';
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
-    public function setContentSecurityPolicy(string $contentSecurityPolicy)
-    {
+    public function setContentSecurityPolicy(string $contentSecurityPolicy) {
         $this->csp = $contentSecurityPolicy;
     }
 
-    public function setContentSecurityPolicy_ScriptSrc(string $scriptSrc)
-    {
+    public function setContentSecurityPolicy_ScriptSrc(string $scriptSrc) {
         $this->csp_ScriptSrc = $scriptSrc;
     }
 
-    public function addHtml($html)
-    {
+    public function addHtml($html) {
         $this->html .= $html . "\r\n";
     }
 
-    public function addScript($uri)
-    {
+    public function addScript($uri) {
         if (EDEBUG)
             $uri .= "?v=" . EC\HHash::Generate(8);
         else
@@ -60,20 +55,17 @@ class MHead extends E\Module {
         ]);
     }
 
-    public function addKeywords($keywords)
-    {
+    public function addKeywords($keywords) {
         $this->keywords = array_merge($this->keywords, explode(',', $keywords));
     }
 
     public function addTag($name, $attribs = [], $self_closing = false,
-            $value = '')
-    {
+            $value = '') {
         $this->html .= $this->getNode($name, $attribs, $self_closing, $value) .
                 "\n";
     }
 
-    public function generateScriptCSPHash()
-    {
+    public function generateScriptCSPHash() {
         $this->requireBeforePostInitialize();
 
         $hash = EC\HHash::Generate(16);
@@ -82,8 +74,7 @@ class MHead extends E\Module {
         return $hash;
     }
 
-    public function generateStyleCSPHash()
-    {
+    public function generateStyleCSPHash() {
         $this->requireBeforePostInitialize();
 
         $hash = EC\HHash::Generate(16);
@@ -92,28 +83,23 @@ class MHead extends E\Module {
         return $hash;
     }
 
-    public function setAuthor($author)
-    {
+    public function setAuthor($author) {
         $this->author = $author;
     }
 
-    public function setDescription($description)
-    {
+    public function setDescription($description) {
         $this->description = $description;
     }
 
-    public function setKeywords($keywords)
-    {
+    public function setKeywords($keywords) {
         $this->keywords = explode(',', $keywords);
     }
 
-    public function setTitle($title)
-    {
+    public function setTitle($title) {
         $this->title = $title;
     }
 
-    protected function _postInitialize(E\Site $site)
-    {
+    protected function _postInitialize(E\Site $site) {
         if ($this->csp !== null) {
             header("Content-Security-Policy: {$this->csp}" . 
                     " script-src 'self' 'unsafe-eval' " . 
@@ -123,8 +109,7 @@ class MHead extends E\Module {
         }
     }
 
-    protected function _preDisplay(E\Site $site)
-    {
+    protected function _preDisplay(E\Site $site) {
         $site->addL('postHead', E\Layout::_('Basic:raw', function() {
             $header = '';
 
@@ -166,8 +151,7 @@ class MHead extends E\Module {
     }
 
     private function getNode($name, $attribs = [], $self_closing = false,
-        $value = '')
-    {
+        $value = '') {
         /* Open Tag */
         $node = '<' . $name;
         foreach ($attribs as $attrib_name => $attrib_value) {

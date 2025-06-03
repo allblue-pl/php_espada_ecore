@@ -5,8 +5,7 @@ use E, EC, EC\Forms;
 
 class VInt extends Forms\VField {
 
-    public function __construct($args = [])
-    {
+    public function __construct($args = []) {
         parent::__construct($args, [
             'required' => true,
             'minValue' => null,
@@ -14,8 +13,7 @@ class VInt extends Forms\VField {
         ]);
     }
 
-    protected function _validate(&$value)
-    {
+    protected function _validate(&$value) {
         $args = $this->getArgs();
 
         if ($value === '') {

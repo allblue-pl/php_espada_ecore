@@ -96,8 +96,7 @@ class MSession extends E\Module {
 		return $this->get($name);
     }
     
-    public function __isset($name)
-    {
+    public function __isset($name) {
         return isset($_SESSION[$name]);
     }
 
@@ -113,13 +112,11 @@ class MSession extends E\Module {
     
 
     /* Session Handlers */
-    public function _sessionHandlers_Close()
-    {
+    public function _sessionHandlers_Close() {
         return true;
     }
 
-    public function _sessionHandlers_Destroy($id)
-    {
+    public function _sessionHandlers_Destroy($id) {
         if (!$this->db->isConnected())
             return true;
 
@@ -131,8 +128,7 @@ class MSession extends E\Module {
         return true;
     }
 
-    public function _sessionHandlers_GC($max)
-    {
+    public function _sessionHandlers_GC($max) {
         if (!$this->db->isConnected())
             return true;
 
@@ -144,13 +140,11 @@ class MSession extends E\Module {
         return true;
     }
 
-    public function _sessionHandlers_Open()
-    {
+    public function _sessionHandlers_Open() {
         return true;
     }
 
-    public function _sessionHandlers_Read($id)
-    {
+    public function _sessionHandlers_Read($id) {
         if (!$this->db->isConnected())
             return true;
 
@@ -164,8 +158,7 @@ class MSession extends E\Module {
         return $row['Data'];
     }
 
-    public function _sessionHandlers_Write($id, $data)
-    {
+    public function _sessionHandlers_Write($id, $data) {
         if (!$this->db->isConnected())
             return true;
 

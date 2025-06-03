@@ -22,8 +22,7 @@ export class FilesUpload extends spocky.Module {
     }
 
 
-    constructor(msgs, categoryName, title, onInsertFn = null, fileExts = '*')
-    { super();
+    constructor(msgs, categoryName, title, onInsertFn = null, fileExts = '*') { super();
         js0.args(arguments, require('spk-messages').Messages, 'string', 'string',
                 [ 'function', js0.Null, js0.Default ], [ 'string', js0.Default ]);
 
@@ -68,8 +67,7 @@ export class FilesUpload extends spocky.Module {
         this.$view = this._liveUpload;
     }
 
-    refresh()
-    {
+    refresh() {
         this._liveUpload.showLoading();
         this._liveUpload.deleteAllFiles();
         webABApi.json(this.apiUri + 'list', { 
@@ -101,8 +99,7 @@ export class FilesUpload extends spocky.Module {
     }
 
 
-    _escapeFileName(fileName)
-    {
+    _escapeFileName(fileName) {
         js0.args(arguments, 'string');
 
         fileName = fileName.toLowerCase();
@@ -114,8 +111,7 @@ export class FilesUpload extends spocky.Module {
         return fileName;
     }
 
-    _files_Delete(file)
-    {
+    _files_Delete(file) {
         this._liveUpload.deleteFile(file.id);
 
         webABApi.json(this.apiUri + 'delete', { 
@@ -139,8 +135,7 @@ export class FilesUpload extends spocky.Module {
         });
     }
 
-    _files_Upload(files)
-    {
+    _files_Upload(files) {
         let files_Valid = [];
         let fileNames_Invalid = [];
         for (var i = 0; i < files.length; i++) {
@@ -197,8 +192,7 @@ export class FilesUpload extends spocky.Module {
         }
     }
 
-    _getFileId(fileBaseName)
-    {
+    _getFileId(fileBaseName) {
         return this.category.multiple ? this._escapeFileName(fileBaseName) : 0;
     }
 

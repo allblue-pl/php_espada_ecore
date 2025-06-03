@@ -7,8 +7,7 @@ class VTime extends Forms\VField {
 
     private $texts = null;
 
-    public function __construct($args = [])
-    {
+    public function __construct($args = []) {
         parent::__construct($args, [
             'type' => 'dateTime',
             'required' => true,
@@ -19,8 +18,7 @@ class VTime extends Forms\VField {
         $this->texts = EC\HText::GetTranslations('Forms:fields');
     }
 
-    protected function _validate(&$value)
-    {
+    protected function _validate(&$value) {
         $args = $this->getArgs();
 
         if ($value === null) {

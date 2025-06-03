@@ -18,8 +18,7 @@ class MHtml extends E\Module {
         $this->fields = [];
 	}
 
-    public function setField($name, $value)
-    {
+    public function setField($name, $value) {
         $this->fields[$name] = $value;
     }
 

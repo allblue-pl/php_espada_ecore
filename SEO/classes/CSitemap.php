@@ -7,18 +7,15 @@ class CSitemap {
 
     private $urls = null;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->urls = [];
     }
 
-    public function addUrl(CUrl $url)
-    {
+    public function addUrl(CUrl $url) {
         $this->urls[] = $url;
     }
 
-    public function getXML()
-    {
+    public function getXML() {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\r\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\r\n";
         

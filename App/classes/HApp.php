@@ -6,8 +6,7 @@ use E, EC;
 class HApp {
 
     static public function Authenticate(EC\MDatabase $db, $app_id,
-            $authentication_hash)
-    {
+            $authentication_hash) {
         $info_row = (new TInfos($db))->row_Where([
             [ 'Id', '=', $app_id ],
             [ 'Active', '=', true]
@@ -22,8 +21,7 @@ class HApp {
         return $info_row;
     }
 
-    static public function CreateAppInfo(EC\MDatabase $db, $userId, $data = [])
-    {
+    static public function CreateAppInfo(EC\MDatabase $db, $userId, $data = []) {
         if ($db->transaction_IsAutocommit())
             throw new \Exception('Transaction required.');
 

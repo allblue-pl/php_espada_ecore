@@ -9,8 +9,7 @@ class VLong extends Forms\VField {
     private $max = 0;
     private $required = true;
 
-    public function __construct($args = [])
-    {
+    public function __construct($args = []) {
         parent::__construct($args, [
             'required' => true,
             'minValue' => null,
@@ -18,8 +17,7 @@ class VLong extends Forms\VField {
         ]);
     }
 
-    protected function _validate(&$value)
-    {
+    protected function _validate(&$value) {
         $args = $this->getArgs();
 
         if ($value === '') {

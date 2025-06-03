@@ -9,8 +9,7 @@ class CUrl {
     public $lastMod = null;
     public $changeFreq = null;
 
-    public function __construct($loc)
-    {
+    public function __construct($loc) {
         $this->loc = $loc;
     }
 

@@ -6,8 +6,7 @@ use E, EC,
 
 class TResetPasswordHashes extends _TResetPasswordHashes {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'u_rph');
     }
 

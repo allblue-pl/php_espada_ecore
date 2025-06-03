@@ -7,8 +7,7 @@ use E, EC;
 
 class HFacebook {
 
-    static public function Autoload()
-    {
+    static public function Autoload() {
         /* Nothing is required here. */
     }
 

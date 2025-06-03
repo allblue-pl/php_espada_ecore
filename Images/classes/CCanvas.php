@@ -7,13 +7,11 @@ class CCanvas {
 
     private $image = null;
 
-    public function __construct($image)
-    {
+    public function __construct($image) {
         $this->image = $image;
     }
 
-    public function image($file_path, $coords, array $size = null)
-    {
+    public function image($file_path, $coords, array $size = null) {
         $t_image = HImages::Create($file_path);
         if ($t_image === null)
             throw new \Exception('Cannot create image.');
@@ -44,8 +42,7 @@ class CCanvas {
         return $this;
     }
 
-    public function text($text, $font_path, $font_size, $color, array $coords)
-    {
+    public function text($text, $font_path, $font_size, $color, array $coords) {
         imagettftext($this->image, $font_size, 0,
                 $coords[0], $coords[1] + $font_size,
                 $color, $font_path, $text);

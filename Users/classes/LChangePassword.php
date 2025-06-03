@@ -5,8 +5,7 @@ use E, EC;
 
 class LChangePassword extends EC\LSPK {
 
-    public function __construct(EC\MSPK $abf, $user_api_uri)
-    {
+    public function __construct(EC\MSPK $abf, $user_api_uri) {
         parent::__construct('eUsers_ChangePassword');
 
         $abf->addScript('Users:ChangePassword');

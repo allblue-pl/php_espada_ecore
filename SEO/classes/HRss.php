@@ -10,18 +10,15 @@ class HRss {
 
     static private $RssItemFields = [ 'title', 'link', 'description', 'pubDate' ];
 
-    static public function GetFilePath()
-    {
+    static public function GetFilePath() {
         return PATH_TMP . '/rss.xml';
     }
 
-    static public function GetFileUri()
-    {
+    static public function GetFileUri() {
         return SITE_DOMAIN . URI_TMP . 'rss.xml';
     }
 
-    static public function Update($rss_item_infos)
-    {
+    static public function Update($rss_item_infos) {
         foreach ($rss_item_infos as $rss_item_info) {
             $rss_item = [];
 
@@ -50,8 +47,7 @@ class HRss {
         }
     }
 
-    static private function Save($rss_items)
-    {
+    static private function Save($rss_items) {
         $file_path = PATH_TMP . '/rss.xml';
 
         $xml_items = '';

@@ -6,8 +6,7 @@ use E, EC,
 
 class TDevices extends _TDevices {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'abd_d');
 
         // $this->setColumnParser('ItemIds_Used', [

@@ -9,8 +9,7 @@ class MGoogleAnalytics extends E\Module {
     private $scriptCSPHash = null;
 
 
-    public function __construct(EC\Basic\MHead $head, $trackingCode = null)
-    {
+    public function __construct(EC\Basic\MHead $head, $trackingCode = null) {
         parent::__construct();
 
         $this->head = $head;
@@ -18,14 +17,12 @@ class MGoogleAnalytics extends E\Module {
         $this->scriptCSPHash = $this->head->generateScriptCSPHash();        
     }
 
-    public function setTrackingCode($trackingCode)
-    {
+    public function setTrackingCode($trackingCode) {
         $this->trackingCode = $trackingCode;
     }
 
 
-    protected function _preDisplay(E\Site $site)
-    {
+    protected function _preDisplay(E\Site $site) {
         if ($this->trackingCode === null)
             return;
             // throw new \Exception('Google Analytics tracking code not set.');

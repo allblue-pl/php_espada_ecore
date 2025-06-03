@@ -8,24 +8,20 @@ class MABTemplate extends \E\Module {
     private $name = null;
     private $header = null;
 
-    public function __construct(\EC\Basic\MHead $header, $name)
-    {
+    public function __construct(\EC\Basic\MHead $header, $name) {
         $this->header = $header;
         $this->name = $name;
     }
 
-    public function getBuildPath()
-    {
+    public function getBuildPath() {
         return PATH_CACHE . "/ABTemplate/{$this->name}";
     }
 
-    public function getBuildUri()
-    {
+    public function getBuildUri() {
         return URI_TMP . "ab-template/{$this->name}";
     }
 
-    protected function _preInitialize(E\Site $site)
-    {
+    protected function _preInitialize(E\Site $site) {
         // if ($this->name === null)
         //     throw new \Exception('ABTemplate name not set.');
 

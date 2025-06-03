@@ -27,8 +27,7 @@ class CDevice {
 
     static public function Create(EC\MDatabase $db, $deviceId, 
             $deviceHash, $lastUpdate, $declaredItemIds = [],
-            &$error = null)
-    {
+            &$error = null) {
         $rDevice = (new TDevices($db))->row_Where([
             [ 'Id', '=', $deviceId ],
             [ 'Id', '<>', 0 ],
@@ -66,8 +65,7 @@ class CDevice {
     }
 
     static public function CreateNewDevice(EC\MDatabase $db, &$hash = null, 
-            $fixed = false)
-    {
+            $fixed = false) {
         $db->requireTransaction();
 
         $table = new EC\ABData\TDevices($db);
@@ -149,8 +147,7 @@ class CDevice {
                 [], $row_Update['Expires'], $row_Update['LastSync']);
     }
 
-    static public function ParseDeviceId($rawId, $type)
-    {
+    static public function ParseDeviceId($rawId, $type) {
         if ($type === 'temp')
             return $rawId * 10 + 1;
         if ($type === 'temp_System')
@@ -161,8 +158,7 @@ class CDevice {
             return $rawId * 10 + 4;
     }
 
-    static public function GetIdInfo($id)
-    {
+    static public function GetIdInfo($id) {
         $deviceId = (int)floor($id / self::$Devices_Offset);
 
         return [
@@ -226,8 +222,7 @@ class CDevice {
     //     return self::ParseId(self::$SystemDevice_Id, $nextItemId);
     // }
 
-    static public function ParseId($deviceId, $id)
-    {
+    static public function ParseId($deviceId, $id) {
         return $deviceId * self::$Devices_Offset + $id;
     }
 
@@ -291,38 +286,31 @@ class CDevice {
     private $rowUpdates = null;
 
 
-    public function getCreateTime()
-    {
+    public function getCreateTime() {
         return $this->createTime;
     }
 
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
-    public function getLastItemId()
-    {
+    public function getLastItemId() {
         return $this->itemIds_Last;
     }
 
-    public function getLastSync()
-    {
+    public function getLastSync() {
         return $this->lastSync;
     }
 
-    public function getLastUpdate()
-    {
+    public function getLastUpdate() {
         return $this->lastUpdate;
     }
 
-    public function getRowUpdates()
-    {
+    public function getRowUpdates() {
         return $this->rowUpdates;
     }
 
-    public function isNewId($id)
-    {
+    public function isNewId($id) {
         if (!is_numeric($id))
             throw new \Exception("'_Id' must be a Long.");
 
@@ -338,21 +326,18 @@ class CDevice {
         return false;
     }
 
-    public function nextSystemId()
-    {
+    public function nextSystemId() {
         $nextSystemItemId = ++$this->systemDevice_ItemIds_Last;
         $this->systemDevice_ItemIds_Declared[] = $nextSystemItemId;
 
         return self::ParseId($this->systemDevice_Id, $nextSystemItemId);
     }
 
-    public function refreshLastSync()
-    {
+    public function refreshLastSync() {
         $this->lastSync = time();
     }
 
-    public function update()
-    {
+    public function update() {
         /* Can probably be restricted to only used ids assuming that Id has to be used during one transaction. */
         $lastDeclaredItemId = $this->itemIds_Last;
         foreach ($this->itemIds_Declared as $itemId_Declared) {
@@ -386,16 +371,14 @@ class CDevice {
         return true;
     }
 
-    public function updateRow($tableId, $rowId)
-    {
+    public function updateRow($tableId, $rowId) {
         $this->rowUpdates[] = [ 
             'tableId' => $tableId, 
             'rowId' => $rowId,
         ];
     }
 
-    public function useId($id)
-    {
+    public function useId($id) {
         $idInfo = self::GetIdInfo($id);
 
         if ($this->isNewId_Device($idInfo)) {
@@ -415,8 +398,7 @@ class CDevice {
 
     private function __construct(EC\MDatabase $db, $deviceId, $lastUpdate,
             array $usedItemIds, int $lastItemId, int $lastSystemItemId,
-            array $declaredItemIds, $expires, $lastSync)
-    {
+            array $declaredItemIds, $expires, $lastSync) {
         $this->db = $db;
 
         $this->createTime = $db->query_Select(
@@ -439,8 +421,7 @@ class CDevice {
         $this->rowUpdates = [];
     }
 
-    private function isNewId_Device($idInfo)
-    {
+    private function isNewId_Device($idInfo) {
         if ($idInfo['deviceId'] !== $this->id)
             return false;
 
@@ -453,8 +434,7 @@ class CDevice {
         return false;
     }
 
-    private function isNewId_SystemDevice($idInfo)
-    {
+    private function isNewId_SystemDevice($idInfo) {
         if ($idInfo['deviceId'] !== $this->systemDevice_Id)
             return false;
 

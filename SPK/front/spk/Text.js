@@ -7,20 +7,17 @@ $: {
 
     _Texts: {},
 
-    add: function(file_path, texts)
-    {
+    add: function(file_path, texts) {
         this._texts[file_path] = texts;
     },
 
-    create: function(prefix)
-    {
+    create: function(prefix) {
         return function(text, args) {
             return this.Get(prefix + '.' + text, args);
         };
     },
 
-    get: function(text, args)
-    {
+    get: function(text, args) {
         text = String(text);
 
         var separator_index = text.lastIndexOf('.');
@@ -51,8 +48,7 @@ $: {
         return t_text;
     },
 
-    init: function(layout)
-    {
+    init: function(layout) {
         layout.$fields.eText = function(text) {
             return SPK.$eText.get(text);
         };

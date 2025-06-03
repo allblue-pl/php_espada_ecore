@@ -11,8 +11,7 @@ class AUsers extends EC\Api\ABasic {
     private $db = null;
     private $user = null;
 
-    public function __construct(EC\SApi $site, $args)
-    {
+    public function __construct(EC\SApi $site, $args) {
         parent::__construct($site, $args['userType']);
 
         if (!isset($args['requiredPermissions']))
@@ -32,8 +31,7 @@ class AUsers extends EC\Api\ABasic {
         ]);
     }
 
-    public function action_Activate(EC\Api\CArgs $args)
-    {
+    public function action_Activate(EC\Api\CArgs $args) {
         foreach ($this->requiredPermissions as $permission) {
             if (!$this->user->hasPermission($permission))
                 return CResult::Failure('Permission denied.');

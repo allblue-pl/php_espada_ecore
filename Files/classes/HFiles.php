@@ -6,8 +6,7 @@ use E, EC;
 class HFiles {
 
     static public function Dir_Create_Safe(string $dirPath, 
-            int $permissions = 0777, bool $recursive = false): bool
-    {
+            int $permissions = 0777, bool $recursive = false): bool {
         if (file_exists($dirPath)) {
             if (is_dir($dirPath)) {
                 return true;
@@ -31,8 +30,7 @@ class HFiles {
         return $result;
     }
 
-    static public function Dir_Remove($dir_path)
-    {
+    static public function Dir_Remove($dir_path) {
         $objects = scandir($dir_path);
 
         foreach ($objects as $object) {

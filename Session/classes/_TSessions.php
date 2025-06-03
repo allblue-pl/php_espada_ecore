@@ -6,8 +6,7 @@ use E, EC,
 
 class _TSessions extends Database\TTable {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix = 't')
-    {
+    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Session_Sessions', $tablePrefix);
 
         $this->setColumns([

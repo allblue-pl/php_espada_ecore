@@ -10,20 +10,17 @@ class SApi extends E\Site {
 
     private $api = null;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
 
         $this->parseArgs(E\Args::Uri('_extra'));
     }
 
-    public function api(AApi $api)
-    {
+    public function api(AApi $api) {
         $this->api = $api;
     }
 
-    protected function _initialize()
-    {
+    protected function _initialize() {
         parent::_initialize();
 
         $result = $this->getResult();
@@ -71,14 +68,12 @@ class SApi extends E\Site {
         }
     }
 
-    private function parseArgs($args)
-    {
+    private function parseArgs($args) {
         if (count($args) >= 1)
             $this->actionName = $args[0];
     }
 
-    private function getResult()
-    {
+    private function getResult() {
         if ($this->actionName === '') {
             $uri = E\Uri::Current();
             return CResult::Failure("Api `action` not set: `{$uri}`.");

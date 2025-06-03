@@ -6,8 +6,7 @@ use E, EC,
 
 class TUsers extends _TUsers {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'u_u');
 
         /* Columns - Extra */

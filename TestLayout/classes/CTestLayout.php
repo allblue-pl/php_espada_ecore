@@ -7,8 +7,7 @@ use E, EC;
 class CTestLayout {
 
     static public function _(E\ILayout $layout, $holder_name, $layout_path,
-            $fields_path = null)
-    {
+            $fields_path = null) {
         $fields = null;
 
         if ($fields_path === null)

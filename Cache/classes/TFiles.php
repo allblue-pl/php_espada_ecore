@@ -5,8 +5,7 @@ use E, EC;
 
 class TFiles extends _TFiles {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'f');
 
         $this->setJoin(

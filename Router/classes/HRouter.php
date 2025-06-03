@@ -5,8 +5,7 @@ use E, EC;
 
 class HRouter {
 
-    static public function GetAlias(string $str)
-    {
+    static public function GetAlias(string $str) {
         $str = trim(mb_strtolower($str));
         $str = EC\HStrings::EscapeLangCharacters($str);
         $str = str_replace(' ', '-', $str);

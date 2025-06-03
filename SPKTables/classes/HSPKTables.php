@@ -7,8 +7,7 @@ class HSPKTables {
 
     static private $Initialized = false;
 
-    static public function Create(EC\MSPK $abf, $table_name, $table_info)
-    {
+    static public function Create(EC\MSPK $abf, $table_name, $table_info) {
         self::Init($abf);
 
         $table = self::ParseInfo($table_info);
@@ -19,8 +18,7 @@ class HSPKTables {
         );
     }
 
-    static public function Init(EC\MELibs $eLibs)
-    {
+    static public function Init(EC\MELibs $eLibs) {
         if (self::$Initialized)
             return;
         self::$Initialized = true;
@@ -36,8 +34,7 @@ SCRIPT;
     }
 
     static public function GetQueryExtensions(EC\Database\TTable $t_table,
-            $spk_table, $table_args, $where = '')
-    {
+            $spk_table, $table_args, $where = '') {
         $spk_table = self::ParseInfo($spk_table);
 
         $query_info = self::GetQueryInfo($t_table, $spk_table, $table_args);
@@ -65,8 +62,7 @@ SCRIPT;
     }
 
     static public function GetQueryInfo(EC\Database\TTable $t_table,
-            $spk_table, $table_args)
-    {
+            $spk_table, $table_args) {
         $spk_table = self::ParseInfo($spk_table);
 
         return [
@@ -107,8 +103,7 @@ SCRIPT;
     //     return $query;
     // }
 
-    static public function ParseInfo($table_info)
-    {
+    static public function ParseInfo($table_info) {
         $table = [
             'columns' => [],
             'apiUri' => null,
@@ -170,8 +165,7 @@ SCRIPT;
         return $table;
     }
 
-    static public function ParseRows($table_info, $rows)
-    {
+    static public function ParseRows($table_info, $rows) {
         $spk_table = self::ParseInfo($table_info);
 
         $parsed_rows = [];
@@ -203,8 +197,7 @@ SCRIPT;
     }
 
     static public function Select(EC\Database\TTable $t_table,
-            $spk_table_info, $table_args, $where = '')
-    {
+            $spk_table_info, $table_args, $where = '') {
         $spk_table = self::ParseInfo($spk_table_info);
 
         $query_extensions = EC\HSPKTables::GetQueryExtensions(
@@ -217,8 +210,7 @@ SCRIPT;
     }
 
     static private function GetQueryInfo_Filter(EC\Database\TTable $t_table,
-            $spk_table, $table_args)
-    {
+            $spk_table, $table_args) {
         $spk_table = self::ParseInfo($spk_table);
 
         if (!isset($table_args['filter']))
@@ -257,8 +249,7 @@ SCRIPT;
     }
 
     static private function GetQueryInfo_OrderBy(EC\Database\TTable $t_table,
-            $spk_table, $table_args)
-    {
+            $spk_table, $table_args) {
         $spk_table = self::ParseInfo($spk_table);
 
         $first_order_column_name = null;
@@ -316,8 +307,7 @@ SCRIPT;
     }
 
     static private function GetQueryInfo_Limit(EC\Database\TTable $t_table,
-            $spk_table, $table_args, $maxLimit = null)
-    {
+            $spk_table, $table_args, $maxLimit = null) {
         $spk_table = self::ParseInfo($spk_table);
 
         $offset = '0';

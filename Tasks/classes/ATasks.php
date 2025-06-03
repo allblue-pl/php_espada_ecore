@@ -9,8 +9,7 @@ class ATasks extends EC\Api\ABasic {
     private $db = null;
     private $user = null;
 
-    public function __construct(EC\SApi $site, $args)
-    {
+    public function __construct(EC\SApi $site, $args) {
         parent::__construct($site);
 
         /* Modules */
@@ -27,8 +26,7 @@ class ATasks extends EC\Api\ABasic {
         ]);
     }
 
-    public function action_Start(CArgs $args)
-    {
+    public function action_Start(CArgs $args) {
         if (!$this->user->isLoggedIn())
             return CResult::Failure('Permission denied.');
 
@@ -44,8 +42,7 @@ class ATasks extends EC\Api\ABasic {
             ->add('task', $task_hash);
     }
 
-    public function action_Status(CArgs $args)
-    {
+    public function action_Status(CArgs $args) {
         if (!$this->user->isLoggedIn())
             return CResult::Failure('Permission denied.');
 

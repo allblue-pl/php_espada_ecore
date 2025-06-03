@@ -18,8 +18,7 @@ class CTask {
     private $requiresUpdate = false;
 
     public function __construct($hash, $user_id, $finished, array $info,
-            array $data)
-    {
+            array $data) {
         $this->hash = $hash === null ? EC\HHash::Generate(128) : $hash;
         $this->userId = $user_id;
 
@@ -31,16 +30,14 @@ class CTask {
         $this->data = $data;
     }
 
-    public function destroy()
-    {
+    public function destroy() {
         if (!$this->destroyed)
             $this->requiresUpdate = true;
 
         $this->destroyed = true;
     }
 
-    public function finish($destroy = false)
-    {
+    public function finish($destroy = false) {
         if (!$this->finished)
             $this->requiresUpdate = true;
 
@@ -50,27 +47,23 @@ class CTask {
             $this->destroy();
     }
 
-    public function &getData()
-    {
+    public function &getData() {
         $this->requiresUpdate = true;
 
         return $this->data;
     }
 
-    public function getHash()
-    {
+    public function getHash() {
         return $this->hash;
     }
 
-    public function &getInfo()
-    {
+    public function &getInfo() {
         $this->requiresUpdate = true;
 
         return $this->info;
     }
 
-    public function getJSON()
-    {
+    public function getJSON() {
         return [
             'hash' => $this->hash,
             'finished' => $this->finished,
@@ -78,35 +71,29 @@ class CTask {
         ];
     }
 
-    public function isDestroyed()
-    {
+    public function isDestroyed() {
         return $this->destroyed;
     }
 
-    public function isFinished()
-    {
+    public function isFinished() {
         return $this->finished;
     }
 
-    public function isNew()
-    {
+    public function isNew() {
         return $this->new;
     }
 
-    public function setData(array $data)
-    {
+    public function setData(array $data) {
         $this->data = $data;
         $this->requiresUpdate = true;
     }
 
-    public function setInfo(array $info)
-    {
+    public function setInfo(array $info) {
         $this->info = $info;
         $this->requiresUpdate = true;
     }
 
-    public function update(EC\MDatabase $db)
-    {
+    public function update(EC\MDatabase $db) {
         if (!$this->requiresUpdate && !$this->isNew())
             return true;
 

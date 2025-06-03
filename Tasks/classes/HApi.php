@@ -6,8 +6,7 @@ use E, EC;
 class HApi {
 
     static public function Parse(EC\MDatabase $db, $user_id = null, $task_arg = [],
-            &$error = null)
-    {
+            &$error = null) {
         if (!self::ValidateArg($task_arg, $error))
             return null;
 
@@ -28,8 +27,7 @@ class HApi {
         return $task;
     }
 
-    static public function Update(EC\MDatabase $db, CTask $task, $task_arg)
-    {
+    static public function Update(EC\MDatabase $db, CTask $task, $task_arg) {
         if (!self::ValidateArg($task_arg, $error))
             return null;
 
@@ -42,8 +40,7 @@ class HApi {
     }
 
 
-    static private function ValidateArg($task_arg, &$error)
-    {
+    static private function ValidateArg($task_arg, &$error) {
         if (!is_array($task_arg)) {
             $error = 'Arg `task`must be an object.';
             return false;

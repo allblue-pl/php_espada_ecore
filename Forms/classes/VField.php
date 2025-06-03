@@ -11,8 +11,7 @@ abstract class VField {
     private $name = null;
 
     
-    public function __construct($args, $default_args)
-    {
+    public function __construct($args, $default_args) {
         $default_args['notNull'] = true;
 
         foreach ($args as $a_name => $a) {
@@ -25,28 +24,23 @@ abstract class VField {
         $this->args = $default_args;
     }
 
-    public function error($message = null)
-    {
+    public function error($message = null) {
         $this->validator->fieldError($this->name, $message);
     }
 
-    public function getArgs()
-    {
+    public function getArgs() {
         return $this->args;
     }
 
-    public function getInfo()
-    {
+    public function getInfo() {
         return $this->info;
     }
 
-    public function success($message = null)
-    {
+    public function success($message = null) {
         $this->validator->fieldSuccess($this->name, $message);
     }
 
-    public function validate(CValidator $validator, $name, $value)
-    {
+    public function validate(CValidator $validator, $name, $value) {
         $this->validator = $validator;
         $this->name = $name;
 
@@ -66,8 +60,7 @@ abstract class VField {
         $this->validator = null;
     }
 
-    public function warning($message = null)
-    {
+    public function warning($message = null) {
         $this->validator->fieldWarning($this->name, $message);
     }
 

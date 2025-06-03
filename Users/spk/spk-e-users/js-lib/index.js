@@ -11,13 +11,11 @@ class eUsers_Class {
     }
 
 
-    constructor()
-    {
+    constructor() {
         this.eFields = null;
     }
 
-    init()
-    {
+    init() {
         if (!eLibs.eFields.exists('eUsers'))
             throw new Error(`'HUsers::InitSPK' not called.`);
 

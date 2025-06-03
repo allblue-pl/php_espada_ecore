@@ -5,13 +5,11 @@ use E, EC;
 
 class HHtml {
 
-    static public function A($content, $href)
-    {
+    static public function A($content, $href) {
         return "<a href=\"{$href}\">{$content}</a>";
     }
 
-    static public function Elem($name, $content = "", $attrs = [])
-    {
+    static public function Elem($name, $content = "", $attrs = []) {
         $html = "<{$name}";
         foreach ($attrs as $attr_name => $attr_val)
             $html .= " {$attr_val}";
@@ -20,8 +18,7 @@ class HHtml {
         return $html;
     }
 
-    static public function Img($src, $alt)
-    {
+    static public function Img($src, $alt) {
         return "<img src=\"{$src}\" alt=\"{$alt}\" />";
     }
 

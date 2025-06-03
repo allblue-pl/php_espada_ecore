@@ -5,8 +5,7 @@ use E, EC;
 
 class HSitemap {
 
-    static public function Update($sitemap_item_infos)
-    {
+    static public function Update($sitemap_item_infos) {
         
     }
 

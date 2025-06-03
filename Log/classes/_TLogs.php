@@ -6,8 +6,7 @@ use E, EC,
 
 class _TLogs extends Database\TTable {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix = 't')
-    {
+    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Log_Logs', $tablePrefix);
 
         $this->setColumns([

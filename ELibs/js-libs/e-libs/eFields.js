@@ -3,19 +3,16 @@
 
 class eFields_Class {
 
-    constructor()
-    {
+    constructor() {
         this._fields = {};
     }
 
-    add(fields)
-    {
+    add(fields) {
         for (let fieldName in fields)
             this.set(fieldName, fields[fieldName]);
     }
 
-    get(fieldName)
-    {
+    get(fieldName) {
         if (!(fieldName in this._fields)) {
             throw new Error('Field `' + fieldName +
                     '` does not exist.');
@@ -24,13 +21,11 @@ class eFields_Class {
         return this._fields[fieldName];
     }
 
-    exists(fieldName)
-    {
+    exists(fieldName) {
         return fieldName in this._fields;
     }
 
-    set(fieldName, fieldValue)
-    {
+    set(fieldName, fieldValue) {
         this._fields[fieldName] = fieldValue;
     }
 

@@ -5,8 +5,7 @@ use E, EC;
 
 class LScript extends E\Layout {
 
-    public function __construct($script, ?string $cspHash = null)
-    {
+    public function __construct($script, ?string $cspHash = null) {
         parent::__construct('Basic:raw', is_callable($script) ? 
                 function() use ($script, $cspHash) {
             $script_Raw = $script();

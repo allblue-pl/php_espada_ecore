@@ -6,8 +6,7 @@ use E, EC,
 
 class TSettings extends _TSettings {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 's');
 
         /* Column Parsers */

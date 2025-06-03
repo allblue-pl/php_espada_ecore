@@ -6,8 +6,7 @@ use E, EC;
 class RTable_DBSync extends RRequest {
 
     static public function Table_Select(EC\Database\TTable $table, array $args, 
-            ?string &$error) : ?array
-    {
+            ?string &$error) : ?array {
         if (!array_key_exists('columnNames', $args))
             $args['columnNames'] = null;
         if (!array_key_exists('groupBy', $args))
@@ -80,8 +79,7 @@ class RTable_DBSync extends RRequest {
 
 
     /* RRequest */
-    public function getDeviceRowIds(EC\ABData\CDevice $device) : array
-    {
+    public function getDeviceRowIds(EC\ABData\CDevice $device) : array {
         $rows = (new TDeviceRows($this->db))->select_Where([
             [ 'DeviceId', '=', $device->getId() ],
             [ 'TableId', '=', EC\HABData::GetTableId($this->table) ],

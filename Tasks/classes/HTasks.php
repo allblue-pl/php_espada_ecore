@@ -5,13 +5,11 @@ use E, EC;
 
 class HTasks {
 
-    static public function Create(EC\MDatabase $db, $user_id = null)
-    {
+    static public function Create(EC\MDatabase $db, $user_id = null) {
         return new CTask(null, $user_id, false, [], []);
     }
 
-    static public function Get(EC\MDatabase $db, $task_hash, $user_id = null)
-    {
+    static public function Get(EC\MDatabase $db, $task_hash, $user_id = null) {
         $where_conditions = [
             [ 'Hash', '=', $task_hash ]
         ];

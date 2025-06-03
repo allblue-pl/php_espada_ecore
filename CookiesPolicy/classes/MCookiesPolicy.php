@@ -10,21 +10,18 @@ class MCookiesPolicy extends E\Module {
     private $body = null;
     private $scriptCSPHash = null;
 
-    public function __construct(EC\Basic\MHead $head)
-    {
+    public function __construct(EC\Basic\MHead $head) {
         $this->head = $head;
     }
 
-    public function setContent($title, $body)
-    {
+    public function setContent($title, $body) {
         $this->title = $title;
         $this->body = $body;
         $this->scriptCSPHash = $this->head->generateScriptCSPHash();
     }
 
 
-    protected function _preDisplay(E\Site $site)
-    {
+    protected function _preDisplay(E\Site $site) {
         parent::_preDisplay($site);
 
         if ($this->title === null || $this->body === null) {

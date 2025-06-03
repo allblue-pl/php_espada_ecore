@@ -6,8 +6,7 @@ use E, EC,
 
 class TDeletedRows extends _TDeletedRows {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'abd_dlr');
     }
 

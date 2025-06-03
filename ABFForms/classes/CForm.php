@@ -10,8 +10,7 @@ class CForm {
     private $fields = [];
     private $object = null;
 
-    public function __construct($name)
-    {
+    public function __construct($name) {
         $this->name = $name;
 
         $this->object = new EC\SPK\CObject();
@@ -26,18 +25,15 @@ class CForm {
         $this->object->validator->fields = new EC\SPK\CObject();
     }
 
-    public function add(CField $field)
-    {
+    public function add(CField $field) {
         $this->object->fields[$field->getName()] = $field->getObject();
     }
 
-    public function getObject()
-    {
+    public function getObject() {
         return $this->object;
     }
 
-    public function initialize(AngularJSEModule $angular_js)
-    {
+    public function initialize(AngularJSEModule $angular_js) {
         foreach ($this->fields as $field) {
             $field->initialize($angular_js, $field_id);
 
@@ -49,8 +45,7 @@ class CForm {
         }
     }
 
-    private function add_AddValidator($name)
-    {
+    private function add_AddValidator($name) {
         $field_validator =
             $this->object->validator->fields->set($name, new EC\SPK\CObject());
 

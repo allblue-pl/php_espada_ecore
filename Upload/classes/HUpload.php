@@ -5,8 +5,7 @@ use E, EC;
 
 class HUpload {
 
-    static public function Validate($file, $info = [], &$error = null)
-    {
+    static public function Validate($file, $info = [], &$error = null) {
         if ($file['error'] !== UPLOAD_ERR_OK) {
             if ($file['error'] === UPLOAD_ERR_INI_SIZE ||
                     $file['error'] === UPLOAD_ERR_FORM_SIZE) {

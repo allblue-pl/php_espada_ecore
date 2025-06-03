@@ -12,13 +12,11 @@ class CValidator {
         'errors' => [],
     ];
 
-    public function __construct()
-    {
+    public function __construct() {
 
     }
 
-    public function add($name, $value, $Validator_fields = [])
-    {
+    public function add($name, $value, $Validator_fields = []) {
         if ($this->field_Exists($name))
             throw new \Exception("Field `{$name}` already exists.");
 
@@ -28,8 +26,7 @@ class CValidator {
             $this->addValidatorField($name, $v_field);
     }
 
-    public function addValidatorField($name, VField $Validator_field)
-    {
+    public function addValidatorField($name, VField $Validator_field) {
         $field = $this->field_Get($name);
 
         $str_value = $field['value'] === null ? '' : strval($field['value']);
@@ -38,20 +35,17 @@ class CValidator {
         $fields['value'] = $str_value;
     }
 
-    public function getInfo()
-    {
+    public function getInfo() {
         return $this->info;
     }
 
-    public function error($message)
-    {
+    public function error($message) {
         $this->info['valid'] = false;
 
         $this->info['errors'][] = $message;
     }   
 
-    public function fieldError($field_name, $message = null)
-    {
+    public function fieldError($field_name, $message = null) {
         $this->info['valid'] = false;
 
         $field = &$this->field_Get($field_name);
@@ -70,8 +64,7 @@ class CValidator {
         }
     }
 
-    public function fieldSuccess($field_name, $message = null)
-    {
+    public function fieldSuccess($field_name, $message = null) {
         $field = &$this->field_Get($field_name);
 
         $field['valid'] = false;
@@ -87,8 +80,7 @@ class CValidator {
         }
     }
 
-    public function fieldWarning($field_name, $message = null)
-    {
+    public function fieldWarning($field_name, $message = null) {
         $field = &$this->field_Get($field_name);
 
         $field['valid'] = false;
@@ -104,14 +96,12 @@ class CValidator {
         }
     }
 
-    public function isValid()
-    {
+    public function isValid() {
         return $this->info['valid'];
     }
 
 
-    private function field_Add($field_name, &$field_value)
-    {
+    private function field_Add($field_name, &$field_value) {
         $this->info['fields'][$field_name] = [
             'valid' => true,
             'value' => &$field_value,
@@ -124,18 +114,15 @@ class CValidator {
         return $this->info['fields'][$field_name];
     }
 
-    private function field_Exists($field_name)
-    {
+    private function field_Exists($field_name) {
         return array_key_exists($field_name, $this->info['fields']);
     }
 
-    private function field_Message($type, $prioroty, $message = null)
-    {
+    private function field_Message($type, $prioroty, $message = null) {
 
     }
 
-    private function &field_Get($field_name)
-    {
+    private function &field_Get($field_name) {
         if (!isset($this->info['fields'][$field_name]))
             throw new \Exception("Field `{$field_name}` does not exist.");
 

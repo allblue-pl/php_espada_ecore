@@ -8,15 +8,13 @@ class MABWeb extends E\Module {
     private EC\Basic\MHead $_header;
     private string $_dirPath;
 
-    public function __construct(EC\Basic\MHead $header, $dirPath)
-    {
+    public function __construct(EC\Basic\MHead $header, $dirPath) {
         $this->_header = $header;
         $this->_dirPath = $dirPath;
     }
 
     
-    protected function _preInitialize(E\Site $site)
-    {
+    protected function _preInitialize(E\Site $site) {
         if (!file_exists($this->_dirPath))
             throw new \Exception("'abWeb' path does not exist.");
 

@@ -9,8 +9,7 @@ class AFilesUpload extends EC\Api\ABasic {
     private $config = null;
 
 
-    public function __construct(EC\SApi $site, array $apiArgs)
-    {
+    public function __construct(EC\SApi $site, array $apiArgs) {
         parent::__construct($site, $apiArgs['userType'], $apiArgs['requiredPermissions']);
 
         $this->user = $site->m->user;
@@ -38,8 +37,7 @@ class AFilesUpload extends EC\Api\ABasic {
         $this->categories = EC\HConfig::GetRequired('FilesUpload', 'categories');
     }
 
-    public function action_Delete(CArgs $args)
-    {
+    public function action_Delete(CArgs $args) {
         try {
             HFilesUpload::DeleteFile($args->categoryName, $args->id, 
                     $args->fileName);
@@ -73,8 +71,7 @@ class AFilesUpload extends EC\Api\ABasic {
     //     }
     // }
 
-    public function action_List(CArgs $args)
-    {
+    public function action_List(CArgs $args) {
         if (!array_key_exists($args->categoryName, $this->categories))
             return CResult::Failure("Upload category '{$args->categoryName}' does not exist.");
 
@@ -84,8 +81,7 @@ class AFilesUpload extends EC\Api\ABasic {
             ->add('files', $files);
     }
 
-    public function action_Upload(CArgs $args)
-    {
+    public function action_Upload(CArgs $args) {
         try {
             HFilesUpload::Upload($args->categoryName, $args->id, $args->file);
         } catch (\Exception $e) {

@@ -7,8 +7,7 @@ use E, EC,
 
 class TCategories extends _TCategories {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'a_c');
     }
 

@@ -5,8 +5,7 @@ use E, EC;
 
 class TInfos extends _TInfos {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'a_i');
 
         $this->addColumns_Ref(new EC\TUsers($db), [

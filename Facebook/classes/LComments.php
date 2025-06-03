@@ -5,8 +5,7 @@ use E, EC;
 
 class LComments extends E\Layout {
 
-    public function __construct($href)
-    {
+    public function __construct($href) {
         parent::__construct('Facebook:comments', [ 'href' => $href ]);
     }
 

@@ -6,8 +6,7 @@ use E, EC;
 class LLogInForm extends EC\LSPK {
 
     public function __construct(EC\MSPK $abf,
-            $api_page_uri, $redirect_page_uri)
-    {
+            $api_page_uri, $redirect_page_uri) {
         parent::__construct('eUsers_LogIn');
 
         $abf->addScript('Users:LogIn');

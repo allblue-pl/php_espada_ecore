@@ -41,8 +41,7 @@ class eLibs_Class {
     }
 
 
-    _getField(fieldName)
-    {
+    _getField(fieldName) {
         let fieldName_Parts = fieldName.split('.');
 
         if (!this.eFields.exists(fieldName_Parts[0]))

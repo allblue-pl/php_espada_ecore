@@ -7,8 +7,7 @@ $: {
 
     timeout: 1000,
 
-    start: function(api_uri, api_args, destroy_on_finish, fn)
-    { var $this = this;
+    start: function(api_uri, api_args, destroy_on_finish, fn) { var $this = this;
         var task_hash = null;
 
         var refresh = function(api_args) {
@@ -35,8 +34,7 @@ $: {
         refresh(api_args);
     },
 
-    refresh: function(api_uri, task_hash, destroy_on_finish, fn)
-    { var $this = this;
+    refresh: function(api_uri, task_hash, destroy_on_finish, fn) { var $this = this;
 
         var check_task = function() {
             SPK.$abApi.json(api_uri, {

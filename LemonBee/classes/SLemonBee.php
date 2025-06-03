@@ -11,8 +11,7 @@ class SLemonBee extends EC\SBasic {
     private $setup = [];
 
     public function __construct(string $abWebBuildPath, string $modulePath,
-            string $userType = 'LemonBee')
-    {
+            string $userType = 'LemonBee') {
         parent::__construct();
 
         $this->modulePath = $modulePath;
@@ -78,15 +77,13 @@ class SLemonBee extends EC\SBasic {
         
     }
 
-    public function lbSetup(array $setup)
-    {
+    public function lbSetup(array $setup) {
         $this->setup = array_replace_recursive($this->setup, $setup);
     }
 
 
     /* E\Site */
-    protected function _postInitialize()
-    {
+    protected function _postInitialize() {
         parent::_postInitialize();
 
         $setup = array_replace_recursive($this->defaultSetup, $this->setup);

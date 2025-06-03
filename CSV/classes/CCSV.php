@@ -20,8 +20,7 @@ class CCSV {
     private $line0 = null;
     private $line1 = null;
 
-    public function __construct(array $options = [])
-    {
+    public function __construct(array $options = []) {
         if (array_key_exists('separators', $options)) {
             $this->separators = $options['separators'];
         }
@@ -33,8 +32,7 @@ class CCSV {
         }
     }
 
-    public function close()
-    {
+    public function close() {
         if ($this->file !== null)
             fclose($this->file);
         $this->file = null;
@@ -43,13 +41,11 @@ class CCSV {
         $this->line1 = null;
     }
 
-    public function setCharset($charset)
-    {
+    public function setCharset($charset) {
         $this->charset = $charset;
     }
 
-    public function open($file_path)
-    {
+    public function open($file_path) {
         if ($this->file !== null)
             throw new \Exception('Close `CSV` before opening.');
 
@@ -76,8 +72,7 @@ class CCSV {
         return true;
     }
 
-    public function openText($text)
-    {
+    public function openText($text) {
         $text = str_replace("\r\n", "\n", $text);
         $this->textArr = explode("\n", $text);
 
@@ -89,8 +84,7 @@ class CCSV {
         $this->determineSeparator();
     }
 
-    public function nextRow()
-    {
+    public function nextRow() {
         $line = $this->getNextLine();
         if ($line === null)
             return null;
@@ -177,8 +171,7 @@ class CCSV {
     }
 
 
-    private function determineSeparator()
-    {
+    private function determineSeparator() {
         if (count($this->separators) === 1) {
             $this->separator = $this->separators[0];
             return;
@@ -211,8 +204,7 @@ class CCSV {
             throw new \Exception('Cannot determine separator.');
     }
 
-    private function getNextLine()
-    {
+    private function getNextLine() {
         $this->line_Index++;
 
         if ($this->line_Index === 0)
@@ -223,8 +215,7 @@ class CCSV {
         return $this->getNextLine_Helper();
     }
 
-    private function getNextLine_Helper()
-    {
+    private function getNextLine_Helper() {
         $line = null;
 
         if ($this->file !== null) {

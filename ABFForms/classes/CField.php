@@ -8,8 +8,7 @@ abstract class CField {
     private $name = '';
     private $object = null;
 
-    public function __construct($type, $name, $label)
-    {
+    public function __construct($type, $name, $label) {
         $this->name = $name;
         $this->object = new EC\SPK\CObject();
 
@@ -19,13 +18,11 @@ abstract class CField {
         $this->object->label = $label;
     }
 
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
-    public function &getObject()
-    {
+    public function &getObject() {
         return $this->object;
     }
 

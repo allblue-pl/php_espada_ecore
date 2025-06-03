@@ -12,8 +12,7 @@ class CFile {
     private $hash = null;
 
 
-    public function __construct(MCache $cache, $id, $user_id, $hash)
-    {
+    public function __construct(MCache $cache, $id, $user_id, $hash) {
         $this->cache = $cache;
 
         $this->id = $id;
@@ -21,18 +20,15 @@ class CFile {
         $this->hash = $hash;
     }
 
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
-    public function getFilePath()
-    {
+    public function getFilePath() {
         return $this->cache->getFilePath($this->id, $this->hash);
     }
 
-    public function release()
-    {
+    public function release() {
         $this->cache->releaseFile($this->id, $this->userId, $this->hash);
     }
 

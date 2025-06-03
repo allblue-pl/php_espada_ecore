@@ -7,8 +7,7 @@ class CDate extends SPKForms\VField {
 
     private $locale = '';
 
-    public function __construct($name, $placeholder = '', $label = '')
-    {
+    public function __construct($name, $placeholder = '', $label = '') {
         parent::__construct('date', $name, $label);
 
         $this->locale = E\Langs::Get()['code'];

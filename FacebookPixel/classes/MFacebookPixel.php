@@ -8,22 +8,19 @@ class MFacebookPixel extends E\Module {
     private $trackingCode = null;
 
 
-    public function __construct(EC\Basic\MHead $header, $trackingCode = '')
-    {
+    public function __construct(EC\Basic\MHead $header, $trackingCode = '') {
         parent::__construct();
 
         $this->header = $header;
         $this->trackingCode = $trackingCode;        
     }
 
-    public function setTrackingCode($trackingCode)
-    {
+    public function setTrackingCode($trackingCode) {
         $this->trackingCode = $trackingCode;
     }
 
 
-    protected function _preDisplay(E\Site $site)
-    {
+    protected function _preDisplay(E\Site $site) {
         if ($this->trackingCode === '')
             return;
 

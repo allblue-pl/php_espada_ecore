@@ -7,8 +7,7 @@ use E, EC,
 
 class TArticles extends _TArticles {
 
-    static public function GetNew(EC\MDatabase $db, $userId)
-    {
+    static public function GetNew(EC\MDatabase $db, $userId) {
         $table = new TArticles($db);
 
         $row = $table->row_Where([
@@ -36,8 +35,7 @@ class TArticles extends _TArticles {
         return $table->row_ById($table->getLastInsertedId());
     }
 
-    static public function GetWhereConditions_Published()
-    {
+    static public function GetWhereConditions_Published() {
         $whereConditions = [
             [ 'Publish', '<=', time() ],
             [ 'Published', '=', true ],
@@ -47,8 +45,7 @@ class TArticles extends _TArticles {
     }
 
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'a_a');
 
         $time = $db->escapeTime_DateTime(EC\HDate::GetTime());

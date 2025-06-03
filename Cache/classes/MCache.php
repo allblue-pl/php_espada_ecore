@@ -11,8 +11,7 @@ class MCache extends E\Module {
     private $db = null;
     private $filesTable = null;
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct();
 
         $this->db = $db;
@@ -21,13 +20,11 @@ class MCache extends E\Module {
             mkdir(self::Dir, 0755, true);
     }
 
-    public function getDir()
-    {
+    public function getDir() {
         return $this->dir;
     }
 
-    public function newFile($user_id = null, $expires = 60 * 60)
-    {
+    public function newFile($user_id = null, $expires = 60 * 60) {
         $this->requirePreInitialize();
 
         $file_hash = EC\HHash::Generate(128);
@@ -44,8 +41,7 @@ class MCache extends E\Module {
         return new CFile($this, $file_id, $user_id, $file_hash);
     }
 
-    public function getFile($file_id, $user_id = null)
-    {
+    public function getFile($file_id, $user_id = null) {
         $this->requirePreInitialize();
 
         $where_conditions = [
@@ -61,13 +57,11 @@ class MCache extends E\Module {
         return new CFile($this, $file_id, $file_row['User_Id'], $file_row['Hash']);
     }
 
-    public function getFilePath($file_id, $file_hash)
-    {
+    public function getFilePath($file_id, $file_hash) {
         return self::Dir . "/{$file_id}-{$file_hash}.cache";
     }
 
-    public function releaseFile($file_id, $user_id, $file_hash)
-    {
+    public function releaseFile($file_id, $user_id, $file_hash) {
         $this->requirePreInitialize();
 
         if (file_exists($this->getFilePath($file_id, $file_hash)))
@@ -82,8 +76,7 @@ class MCache extends E\Module {
         $this->filesTable->delete_Where($where_conditions);
     }
 
-    protected function _preInitialize(E\Site $site)
-    {
+    protected function _preInitialize(E\Site $site) {
         parent::_preInitialize($site);
 
         $this->filesTable = new TFiles($this->db);
@@ -103,8 +96,7 @@ class MCache extends E\Module {
         ]);
     }
 
-    protected function _deinitialize()
-    {
+    protected function _deinitialize() {
 
     }
 

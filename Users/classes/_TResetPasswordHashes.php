@@ -6,8 +6,7 @@ use E, EC,
 
 class _TResetPasswordHashes extends Database\TTable {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix)
-    {
+    public function __construct(EC\MDatabase $db, $tablePrefix) {
         parent::__construct($db, 'Users_ResetPasswordHashes', $tablePrefix);
 
         $this->setColumns([

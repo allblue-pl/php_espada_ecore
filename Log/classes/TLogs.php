@@ -6,8 +6,7 @@ use E, EC,
 
 class TLogs extends _TLogs {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'Log_Logs', 'l');
 
         $this->setColumnParser('Data', [

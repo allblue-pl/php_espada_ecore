@@ -10,8 +10,7 @@ class ABasic extends AApi {
     private $requiredPermissions = null;
 
     public function __construct(EC\SApi $site, $userType = 'Default', 
-            $requiredPermissions = [])
-    {
+            $requiredPermissions = []) {
         parent::__construct($site);
 
         $this->requiredPermissions = $requiredPermissions;
@@ -23,21 +22,18 @@ class ABasic extends AApi {
     }
 
     public function actionR(string $action_name, string $fn, $arg_infos = [],
-            $requiredPermissions = [])
-    {
+            $requiredPermissions = []) {
         $this->actionRequiredPermissions[$action_name] = $requiredPermissions;
         $this->action($action_name, $fn, $arg_infos);
     }
 
     public function actionR_Bytes($action_name, $fn, $arg_infos = [],
-            $required_permissions = [])
-    {
+            $required_permissions = []) {
         $this->actionRequiredPermissions[$action_name] = $required_permissions;
         $this->action_Bytes($action_name, $fn, $arg_infos);
     }
 
-    public function getResult($action_name, $args)
-    {
+    public function getResult($action_name, $args) {
         $user = $this->getSite()->m->user;
 
         if (array_key_exists($action_name, $this->actionRequiredPermissions)) {

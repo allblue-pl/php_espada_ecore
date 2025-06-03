@@ -5,8 +5,7 @@ use E, EC;
 
 class HTablesIds {
 
-    static public function GetNext(EC\MDatabase $db, EC\Database\TTable $table)
-    {
+    static public function GetNext(EC\MDatabase $db, EC\Database\TTable $table) {
         $db->requireTransaction();
 
         $next_id = null;
@@ -40,8 +39,7 @@ class HTablesIds {
         return $next_id;
     }
 
-    static public function GetNexts(EC\MDatabase $db, array $tables)
-    {
+    static public function GetNexts(EC\MDatabase $db, array $tables) {
         $db->requireTransaction();
 
         $next_id = 0;
@@ -72,8 +70,7 @@ class HTablesIds {
         return $nexts;
     }
 
-    static public function ParseAliases($tables, $tables_ids)
-    {
+    static public function ParseAliases($tables, $tables_ids) {
         $ids = [];
         foreach ($tables as $table_alias => $table) {
             /* To work with `TableIds_UpdateInfos` $tables format. */

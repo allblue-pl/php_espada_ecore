@@ -6,8 +6,7 @@ use E, EC, EC\SPKForms;
 class CInput extends SPKForms\VField {
 
     public function __construct($name, $type, $placeholder = '', $label = '',
-            $default_value = '')
-    {
+            $default_value = '') {
         parent::__construct('input', $name, $label);
 
         $abf_object = $this->getObject();

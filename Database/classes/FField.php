@@ -7,28 +7,23 @@ abstract class FField {
 
     private $notNull = false;
 
-    public function __construct($not_null = false)
-    {
+    public function __construct($not_null = false) {
         $this->notNull = $not_null;
     }
 
-    public function escape(EC\MDatabase $db, $value)
-    {
+    public function escape(EC\MDatabase $db, $value) {
         return $this->_escape($db, $value);
     }
 
-    public function isNotNull()
-    {
+    public function isNotNull() {
         return $this->notNull;
     }
 
-    public function parse($value)
-    {
+    public function parse($value) {
         return $this->_parse($value);
     }
 
-    public function unescape(EC\MDatabase $db, $value)
-    {
+    public function unescape(EC\MDatabase $db, $value) {
         return $this->_unescape($db, $value);
     }
 

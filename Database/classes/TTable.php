@@ -26,8 +26,7 @@ class TTable {
     private $lastInsertedId = null;
 
     public function __construct(EC\MDatabase $db, $table_name,
-            $table_alias = null)
-    {
+            $table_alias = null) {
         $this->db = $db;
 
         $this->name = $table_name;
@@ -40,8 +39,7 @@ class TTable {
         ]);
     }
 
-    public function addColumnParser($columnName, array $parser)
-    {
+    public function addColumnParser($columnName, array $parser) {
         $column = &$this->getColumnRef($columnName);
 
         foreach ($parser as $parser_type => $parser_info) {
@@ -55,15 +53,13 @@ class TTable {
         ];
     }
 
-    public function addColumnVFields($columnName, array $vFields)
-    {
+    public function addColumnVFields($columnName, array $vFields) {
         $column = &$this->getColumnRef($columnName);
         foreach ($vFields as $vField)
             $column['vFields'][] = $vField;
     }
 
-    public function addColumns($column_infos, $extra = false, $optional = false)
-    {
+    public function addColumns($column_infos, $extra = false, $optional = false) {
         foreach ($column_infos as $columnName => $column_info) {
             if (array_key_exists($columnName, $this->columns))
                 throw new \Exception("Column `{$columnName}` already exists.");
@@ -80,13 +76,11 @@ class TTable {
         }
     }
 
-    public function addColumns_Extra($columns)
-    {
+    public function addColumns_Extra($columns) {
         $this->addColumns($columns, true);
     }
 
-    public function addColumns_Ref(TTable $table, $refColumnInfos, $extra = true)
-    {
+    public function addColumns_Ref(TTable $table, $refColumnInfos, $extra = true) {
         foreach ($refColumnInfos as $columnName => $ref_column_info) {
             $column_expr = $ref_column_info[0];
             $ref_column = $table->getColumn($ref_column_info[1]);
@@ -114,36 +108,30 @@ class TTable {
     }
 
     public function addColumns_Ref_All(TTable $table, $fieldPrefix = '',
-            $excludedColumns = [], $includedColumns = null)
-    {
+            $excludedColumns = [], $includedColumns = null) {
         $this->addColumns_Ref($table, $table->getColumnTableRefs( 
                 $fieldPrefix, $excludedColumns, $includedColumns));
     }
 
-    public function addColumns_Optional($columns, $extra = true)
-    {
+    public function addColumns_Optional($columns, $extra = true) {
         $this->addColumns($columns, $extra, true);
     }
 
-    public function addJoin(string $join)
-    {
+    public function addJoin(string $join) {
         $this->join .= ($join[0] !== ' ' ? ' ' : '') . $join;
     }
 
-    public function addRowParser($parser)
-    {
+    public function addRowParser($parser) {
         $this->rowParsers[] = $parser;
     }
 
-    public function clearColumnParsers($columnName)
-    {
+    public function clearColumnParsers($columnName) {
         $column = &$this->getColumnRef($columnName);
 
         $column['parsers'] = [];
     }
 
-    public function checkColumns()
-    {
+    public function checkColumns() {
         if (count($this->columns_Table) > 0)
             return;
 
@@ -152,16 +140,14 @@ class TTable {
         throw new \Exception("Table columns not set in `{$class_name}.");
     }
 
-    public function columnExists($columnName, $is_table_column = false)
-    {
+    public function columnExists($columnName, $is_table_column = false) {
         if ($is_table_column)
             return array_key_exists($columnName, $this->columns_Table);
         else
             return array_key_exists($columnName, $this->columns);
     }
 
-    public function count($group_extension = '')
-    {
+    public function count($group_extension = '') {
         $query = "SELECT COUNT(DISTINCT {$this->prefix}Id) as count" .
                 ' FROM ' . $this->getQuery_From();
 
@@ -177,8 +163,7 @@ class TTable {
         return $this->db->unescapeInt($rows[0]['count']);
     }
 
-    public function count_Where($where_conditions, $group_extension = '')
-    {
+    public function count_Where($where_conditions, $group_extension = '') {
         $where = $this->getQuery_Conditions($where_conditions);
         if ($where !== '')
             $group_extension = 'WHERE ' . $where . ' ' . $group_extension;
@@ -186,8 +171,7 @@ class TTable {
         return $this->count($group_extension);
     }
 
-    public function delete($query_extension = '')
-    {
+    public function delete($query_extension = '') {
         $query = 'DELETE ' . $this->db->quote($this->alias) . ' FROM ' .
                 $this->getQuery_From();
 
@@ -197,30 +181,26 @@ class TTable {
         return $this->db->query_Execute($query);
     }
 
-    public function delete_ByColumn($colName, $colValue)
-    {
+    public function delete_ByColumn($colName, $colValue) {
         return $this->delete_Where([
             [ $colName, '=', $colValue ]
         ]);
     }
 
-    public function delete_ById($id)
-    {
+    public function delete_ById($id) {
         return $this->delete_Where([
             [ 'Id', '=', $id ]
         ]);
     }
 
-    public function delete_Where($conditions)
-    {
+    public function delete_Where($conditions) {
         if (count($conditions) === 0)
             return true;
 
         return $this->delete('WHERE ' . $this->getQuery_Conditions($conditions));
     }
 
-    public function escapeColumnValue(string $columnName, $value)
-    {
+    public function escapeColumnValue(string $columnName, $value) {
         $column = $this->getColumn($columnName);
 
         if ($value instanceof CRawValue)
@@ -229,18 +209,15 @@ class TTable {
         return $column['field']->escape($this->db, $value);
     }
 
-    public function getAlias()
-    {
+    public function getAlias() {
         return $this->alias;
     }
 
-    public function getColumn($columnName, $tableOnly = false)
-    {
+    public function getColumn($columnName, $tableOnly = false) {
         return $this->getColumnRef($columnName, $tableOnly);
     }
 
-    public function &getColumnRef($columnName, $tableOnly = false)
-    {
+    public function &getColumnRef($columnName, $tableOnly = false) {
         // if ($columnName === 'Cow_Nr') {
         //     echo $columnName . '#' . $tableOnly . "\r\n";
         //     print_r($this->columns_Table);
@@ -262,8 +239,7 @@ class TTable {
         return $this->columns[$columnName];
     }
 
-    public function getColumnNames($tableOnly = false, $prefix = null)
-    {
+    public function getColumnNames($tableOnly = false, $prefix = null) {
         $columnNames = null;
 
         if ($tableOnly)
@@ -284,15 +260,13 @@ class TTable {
         return $columnNames;
     }
 
-    public function getColumnNames_Select()
-    {
+    public function getColumnNames_Select() {
         return $this->selectColumnNames;
     }
 
     public function getColumnTableRefs($fieldPrefix = '',
             $excludedColumns = [ 'Id' ], $includedColumns = null, 
-            $tableOnly = false)
-    {
+            $tableOnly = false) {
         $columns = $tableOnly ? $this->columns_Table : $this->columns;
 
         $columnRefs = [];
@@ -317,50 +291,41 @@ class TTable {
     }
 
     public function getColumnTableRefs_TableOnly($fieldPrefix = '',
-            $excludedColumns = [ 'Id' ], $includedColumns = null)
-    {
+            $excludedColumns = [ 'Id' ], $includedColumns = null) {
         return $this->getColumnTableRefs($fieldPrefix, $excludedColumns, 
                 $includedColumns, true);
     }
 
-    public function getDB()
-    {
+    public function getDB() {
         return $this->db;
     }
 
-    public function getLastInsertedId()
-    {
+    public function getLastInsertedId() {
         return $this->lastInsertedId;
     }
 
-    public function getJoin()
-    {
+    public function getJoin() {
         return $this->join;
     }
 
-    public function getPKs()
-    {
+    public function getPKs() {
         return $this->primaryKeys;
     }
 
-    public function getTableName()
-    {
+    public function getTableName() {
         return $this->name;
     }
 
-    public function getTableName_Quoted()
-    {
+    public function getTableName_Quoted() {
         return $this->db->quote($this->name);
     }
 
-    public function getQuery_Conditions($column_values, $tableOnly = false)
-    {
+    public function getQuery_Conditions($column_values, $tableOnly = false) {
         return $this->getQuery_Conditions_Helper($column_values, 'AND', 
                 $tableOnly);
     }
 
-    public function getQuery_From()
-    {
+    public function getQuery_From() {
         $query = $this->getTableName_Quoted();
         if ($this->alias !== null)
             $query .= " AS {$this->alias}";
@@ -371,8 +336,7 @@ class TTable {
         return $query;
     }
 
-    public function getQuery_Select($columnNames = null)
-    {
+    public function getQuery_Select($columnNames = null) {
         if ($columnNames === null)
             $columnNames = $this->selectColumnNames;
 
@@ -392,8 +356,7 @@ class TTable {
     }
 
 
-    public function getQuery_SelectColumn($columnName)
-    {
+    public function getQuery_SelectColumn($columnName) {
         $column = $this->getColumn($columnName);
 
         $db_column_name = $this->db->quote($columnName);
@@ -405,13 +368,11 @@ class TTable {
         return "{$db_column_expr} AS {$db_column_name}";
     }
 
-    public function hasColumn($columnName)
-    {
+    public function hasColumn($columnName) {
         return array_key_exists($columnName, $this->columns);
     }
 
-    public function insert(array $rows, bool $updateColumns = true)
-    {
+    public function insert(array $rows, bool $updateColumns = true) {
         $this->checkColumns();
 
         if (count($rows) === 0)
@@ -456,16 +417,14 @@ class TTable {
         return $this->db->query_Execute($query);
     }
 
-    public function parseColumnValue($columnName, $value)
-    {
+    public function parseColumnValue($columnName, $value) {
         $column = $this->getColumn($columnName);
 
         return $column['field']->unescape($this->db, 
                 $column['field']->escape($this->db, $value));
     }
 
-    public function parseRow($row, $columnNames = null)
-    {
+    public function parseRow($row, $columnNames = null) {
         $this->checkColumns();
 
         $unescaped_row = [];
@@ -553,8 +512,7 @@ class TTable {
         // return $this->_parseRow($row);
     }
 
-    public function parseRows($rows, $columns = null)
-    {
+    public function parseRows($rows, $columns = null) {
         $parsed_rows = [];
         for ($i = 0; $i < count($rows); $i++) {
             $row = $rows[$i];
@@ -569,8 +527,7 @@ class TTable {
     }
 
     public function row($query_extension = '', $group_extension = '',
-            $for_update = false)
-    {
+            $for_update = false) {
         if ($group_extension !== '')
             $group_extension .= ' ';
         $group_extension .= 'LIMIT 1';
@@ -586,23 +543,20 @@ class TTable {
         return $rows[0];
     }
 
-    public function row_ByColumn($colName, $colValue, $group_extension = '', $for_update = false)
-    {
+    public function row_ByColumn($colName, $colValue, $group_extension = '', $for_update = false) {
         return $this->row_Where([
             [ $colName, '=', $colValue ]
         ], $group_extension, $for_update);
     }
 
-    public function row_ById($id, $group_extension = '', $for_update = false)
-    {
+    public function row_ById($id, $group_extension = '', $for_update = false) {
         return $this->row_Where([
             [ 'Id', '=', $id ]
         ], $group_extension, $for_update);
     }
 
     public function row_ByPKs(array $keys, $groupExtension = '', 
-            $forUpdate = false)
-    {
+            $forUpdate = false) {
         $where = [];
         if (count($keys) !== count($this->primaryKeys)) {
             throw new \Exception('Keys do not match primary keys: ' . 
@@ -618,8 +572,7 @@ class TTable {
         return $this->row_Where($where, $groupExtension, $forUpdate);
     }
 
-    public function row_ByPK(array $keys, $group_extension = '', $for_update = false)
-    {
+    public function row_ByPK(array $keys, $group_extension = '', $for_update = false) {
         if (count($keys) !== count($this->primaryKeys)) {
             throw new \Exception('Keys do not match primary keys: ' . 
                     join(',', $this->primaryKeys));
@@ -633,8 +586,7 @@ class TTable {
     }
 
     public function row_Columns($columnNames, $query_extension = '',
-            $group_extension = '', $for_update = false)
-    {
+            $group_extension = '', $for_update = false) {
         $select = $this->getQuery_Select($columnNames);
 
         if ($group_extension !== '')
@@ -654,16 +606,14 @@ class TTable {
     }
 
     public function row_Columns_ById($columnNames, $id, $group_extension = '', 
-            $for_update = false)
-    {
+            $for_update = false) {
         return $this->row_Columns_Where($columnNames, [
             [ 'Id', '=', $id ]
         ], $group_extension, $for_update);
     }
 
     public function row_Columns_Where($columnNames, $where_conditions,
-            $group_extension = '', $for_update = false)
-    {
+            $group_extension = '', $for_update = false) {
         $query_extension = '';
 
         $where = $this->getQuery_Conditions($where_conditions);
@@ -674,8 +624,7 @@ class TTable {
     }
 
     public function row_Where($args = [], $group_extension = '',
-            $for_update = false)
-    {
+            $for_update = false) {
         $where = '';
 
         $conditions = $this->getQuery_Conditions($args);
@@ -685,16 +634,14 @@ class TTable {
         return $this->row($where, $group_extension, $for_update);
     }
 
-    public function select($query_extension = '', $group_extension = '')
-    {
+    public function select($query_extension = '', $group_extension = '') {
         $selectColumnNames = $this->selectColumnNames;
 
         return $this->select_Columns($selectColumnNames, $query_extension,
                 $group_extension);
     }
 
-    public function select_ByPKs(array $pks, string $groupExtension = '')
-    {
+    public function select_ByPKs(array $pks, string $groupExtension = '') {
         if (count($pks) === 0)
             return [];
 
@@ -768,8 +715,7 @@ class TTable {
     }
 
     public function select_Columns($columnNames, $query_extension = '',
-            $group_extension = '')
-    {
+            $group_extension = '') {
         $select = $this->getQuery_Select($columnNames);
 
         return $this->select_Custom($select, $this->getQuery_From(),
@@ -777,8 +723,7 @@ class TTable {
     }
 
     public function select_Columns_Where($columns, $where_conditions = [],
-            $group_extension = '')
-    {
+            $group_extension = '') {
         $select = $this->getQuery_Select($columns);
 
         $query_extension = '';
@@ -793,8 +738,7 @@ class TTable {
     }
 
     public function select_Custom($select, $from, $query_extension = '',
-            $group_extension = '')
-    {
+            $group_extension = '') {
         $rows = $this->select_Raw($select, $from, $query_extension,
                 $group_extension);
 
@@ -802,8 +746,7 @@ class TTable {
     }
 
     public function select_Raw($select, $from, $query_extension,
-            $group_extension)
-    {
+            $group_extension) {
         $query = 'SELECT ' . $select .
                 ' FROM ' . $from;
 
@@ -820,8 +763,7 @@ class TTable {
     }
 
     public function select_Where($conditions = [], $group_extension = '',
-            $tableOnly = false)
-    {
+            $tableOnly = false) {
         $where = '';
 
         $conditions = $this->getQuery_Conditions($conditions, $tableOnly);
@@ -831,14 +773,12 @@ class TTable {
         return $this->select($where, $group_extension);
     }
 
-    public function setColumnParser($columnName, array $parser)
-    {
+    public function setColumnParser($columnName, array $parser) {
         $this->clearColumnParsers($columnName);
         $this->addColumnParser($columnName, $parser);
     }
 
-    public function setColumns($columns)
-    {
+    public function setColumns($columns) {
         $column_infos = [];
         foreach ($columns as $columnName => $column) {
             $column_infos[$columnName] = [
@@ -850,8 +790,7 @@ class TTable {
         $this->addColumns($column_infos);
     }
 
-    public function setColumns_Optional(array $columnNames)
-    {
+    public function setColumns_Optional(array $columnNames) {
         foreach ($columnNames as $columnName) { 
             $column = $this->getColumnRef($columnName);
             $selectColumnNames_Index = array_search($columnName, 
@@ -863,8 +802,7 @@ class TTable {
         }
     }
 
-    public function setColumns_Ref(TTable $table, $refColumnNames)
-    {
+    public function setColumns_Ref(TTable $table, $refColumnNames) {
         $refColumnInfos = [];
         foreach ($refColumnNames as $columnName => $ref_column_name) {
             $refColumnInfos[$columnName] = [ $this->prefix . $this->db->quote($columnName),
@@ -873,23 +811,19 @@ class TTable {
         $this->addColumns_Ref($table, $refColumnInfos, false);
     }
 
-    public function setGroupBy($group_by)
-    {
+    public function setGroupBy($group_by) {
         $this->groupBy = $group_by;
     }
 
-    public function setJoin($join)
-    {
+    public function setJoin($join) {
         $this->join = $join;
     }
 
-    public function setPKs(array $primaryKeys)
-    {
+    public function setPKs(array $primaryKeys) {
         $this->primaryKeys = $primaryKeys;
     }
 
-    public function setSelectColumns($select_column_names)
-    {
+    public function setSelectColumns($select_column_names) {
         $this->selectColumns = $select_column_names;
     }
 
@@ -912,8 +846,7 @@ class TTable {
     // }
 
     public function setColumnVFields($columnName, $default_v_field_info,
-            $vFields = [])
-    {
+            $vFields = []) {
         $column = &$this->getColumnRef($columnName);
         $column['vFields'] = [];
         if ($default_v_field_info !== null) {
@@ -929,8 +862,7 @@ class TTable {
         $this->addColumnVFields($columnName, $vFields);
     }
 
-    public function stripRow($row, $table_columns_only = true)
-    {
+    public function stripRow($row, $table_columns_only = true) {
         foreach ($row as $columnName => $column_value) {
             if (!$this->columnExists($columnName, $table_columns_only))
                 unset($row[$columnName]);
@@ -939,8 +871,7 @@ class TTable {
         return $row;
     }
 
-    public function update(array $rows, bool $ignoreNotExistingColumns = false)
-    {
+    public function update(array $rows, bool $ignoreNotExistingColumns = false) {
         $this->checkColumns();
 
         if (count($rows) === 0)
@@ -1188,8 +1119,7 @@ class TTable {
         return true;
     }
 
-    public function update_ByColumns($rows, $whenColumns)
-    {
+    public function update_ByColumns($rows, $whenColumns) {
         $existing_Conditions = [];
         for ($i = 0; $i < count($rows); $i++) {
             $row = $rows[$i];
@@ -1235,8 +1165,7 @@ class TTable {
         return $this->update($update_Rows);
     }
 
-    public function update_Where($values, $where_conditions = [])
-    {
+    public function update_Where($values, $where_conditions = []) {
         $this->checkColumns();
 
         $db_sets = [];
@@ -1257,8 +1186,7 @@ class TTable {
         return $this->db->query_Execute($query);
     }
 
-    public function validate(EC\Forms\CValidator $validator, $fieldInfos)
-    {
+    public function validate(EC\Forms\CValidator $validator, $fieldInfos) {
         foreach ($fieldInfos as $field_name => $field_info) {
             $validator->add($field_name, $field_info[1],
                     $this->getColumn($field_info[0])['vFields']);
@@ -1266,8 +1194,7 @@ class TTable {
     }
 
     public function validateDefault(EC\Forms\CValidator $validator, $values,
-            $ignoreColumns = [])
-    {
+            $ignoreColumns = []) {
         $fieldInfos = [];
         foreach ($values as $columnName => $value) {
             if (in_array($columnName, $ignoreColumns))
@@ -1280,8 +1207,7 @@ class TTable {
     }
 
     public function validateDefault_All(EC\Forms\CValidator $validator, $values,
-            $ignoreColumns = [])
-    {
+            $ignoreColumns = []) {
         $fieldInfos = [];
         $columnNames = $this->getColumnNames(true);
         foreach ($columnNames as $columnName) {
@@ -1297,14 +1223,12 @@ class TTable {
         return $this->validate($validator, $fieldInfos);
     }
 
-    public function validateRow($row)
-    {
+    // public function validateRow($row) {
     
-    }
+    // }
 
 
-    private function escapeArray(FField $column, $values)
-    {
+    private function escapeArray(FField $column, $values) {
         $db_values = [];
         foreach ($values as $value)
             $db_values[] = $column->escape($this->db, $value);
@@ -1312,8 +1236,7 @@ class TTable {
         return '(' . implode(',', $db_values) . ')';
     }
 
-    private function escapeColumn(array $row, array $column, $value)
-    {
+    private function escapeColumn(array $row, array $column, $value) {
         if ($value instanceof CRawValue)
             return $value->getValue();
 
@@ -1326,8 +1249,7 @@ class TTable {
     }
 
     private function getQuery_Conditions_Helper($column_values, $logic_operator,
-            $tableOnly = false)
-    {
+            $tableOnly = false) {
         if (!is_array($column_values))
             throw new \Exception('`column_values` must be an array.');
 
@@ -1447,8 +1369,7 @@ class TTable {
         return implode(" {$logic_operator} ", $args);
     }
 
-    private function &parseColumnInfo($columnName, $column_info, $extra, $optional)
-    {
+    private function &parseColumnInfo($columnName, $column_info, $extra, $optional) {
         $column_optional = false;
 
         if (!is_array($column_info)) {

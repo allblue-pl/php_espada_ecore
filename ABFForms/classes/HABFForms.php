@@ -7,8 +7,7 @@ class CCForms {
 
     static private $Initialized = false;
 
-    static public function Create(EC\MSPK $abf, $form_name, $form_info)
-    {
+    static public function Create(EC\MSPK $abf, $form_name, $form_info) {
         self::Init($abf);
 
         $form = self::ParseInfo($form_info);
@@ -19,8 +18,7 @@ class CCForms {
         );
     }
 
-    static public function Init(EC\MSPK $abf)
-    {
+    static public function Init(EC\MSPK $abf) {
         if (self::$Initialized)
             return;
         self::$Initialized = true;
@@ -28,8 +26,7 @@ class CCForms {
         $abf->addTexts('SPKTables');
     }
 
-    static public function ParseInfo($form_info)
-    {
+    static public function ParseInfo($form_info) {
         $form = [
             'apiUri' => [
                 'submit' => null,

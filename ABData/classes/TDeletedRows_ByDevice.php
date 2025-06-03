@@ -6,8 +6,7 @@ use E, EC,
 
 class TDeletedRows_ByDevice extends TDeletedRows {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db);
 
         $this->addColumns_Ref(new TDeviceRows($db), [

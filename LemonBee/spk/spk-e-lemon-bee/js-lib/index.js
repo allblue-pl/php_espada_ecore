@@ -123,8 +123,7 @@ export class Site extends spocky.Module {
         this.$view = this.l;
     }
 
-    createPanels()
-    {
+    createPanels() {
         return [];
     }
 

@@ -12,23 +12,20 @@ class MMeta extends E\Module {
     public $type = 'article';
     public $imageUris = [];
 
-    public function __construct(EC\Basic\MHead $header, EC\Facebook\MOpenGraph $og)
-    {
+    public function __construct(EC\Basic\MHead $header, EC\Facebook\MOpenGraph $og) {
         parent::__construct();
 
         $this->header = $header;
     }
 
-    public function addImage($imageUri)
-    {
+    public function addImage($imageUri) {
         if (in_array($imageUri, $this->imageUris))
             return;
 
         array_unshift($this->imageUris, $imageUri);
     }
 
-    public function setDescription($description)
-    {
+    public function setDescription($description) {
         $description = strip_tags($description);
         $description = EC\HStrings::RemoveCharacters($description, 
                 EC\HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
@@ -39,13 +36,11 @@ class MMeta extends E\Module {
         $this->description = $description;
     }
 
-    public function setKeywords($keywords)
-    {
+    public function setKeywords($keywords) {
         $this->keywords = $keywords;
     }
 
-    public function setTitle($title)
-    {
+    public function setTitle($title) {
         $title = strip_tags($title);
         $title = EC\HStrings::RemoveCharacters($title, 
                 EC\HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
@@ -55,8 +50,7 @@ class MMeta extends E\Module {
     }
 
 
-    protected function _preDisplay(E\Site $site)
-    {
+    protected function _preDisplay(E\Site $site) {
         $this->header->setTitle($this->title);
         $this->header->setDescription($this->description);
         $this->header->setKeywords($this->keywords);

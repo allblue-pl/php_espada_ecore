@@ -6,8 +6,7 @@ use E, EC,
 
 class TTasks extends _TTasks {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 'r');
 
         $this->setColumnParser('Info', [

@@ -9,8 +9,7 @@ class HStrings {
 
 
     static public function GetCharsRegexp($types = [], $extra = '',
-            $langs = null)
-    {
+            $langs = null) {
         foreach ($types as $type) {
             if (!in_array($type, $types))
                 throw new Exception("Unknown chars type `{$type}`.");
@@ -32,13 +31,11 @@ class HStrings {
         return $chars . self::EscapeRegexpChars($extra);
     }
 
-    static public function GetCharsRegexp_Basic($extra = '')
-    {
+    static public function GetCharsRegexp_Basic($extra = '') {
         return self::GetCharsRegexp([ 'digits', 'letters', 'special' ], $extra);
     }
 
-    static public function GetLangsSpecialCharacters($langs = null)
-    {
+    static public function GetLangsSpecialCharacters($langs = null) {
         if ($langs === null)
             $langs = [ 'pl' ];
 
@@ -49,8 +46,7 @@ class HStrings {
         return $chars;
     }
 
-    static public function EscapeLangCharacters($string, $langs = [])
-    {
+    static public function EscapeLangCharacters($string, $langs = []) {
         $replace_from   = ['ą', 'ć', 'ę', 'ł', 'ń', 'ó', 'ś', 'ź', 'ż',
                            'Ą', 'Ć', 'Ę', 'Ł', 'Ń', 'Ó', 'Ś', 'Ź', 'Ż'];
         $replace_to     = ['a', 'c', 'e', 'l', 'n', 'o', 's', 'z', 'z',
@@ -59,8 +55,7 @@ class HStrings {
         return str_replace($replace_from, $replace_to, $string);
     }
 
-    static public function EscapeRegexpLangCharacters($string, $langs =[])
-    {
+    static public function EscapeRegexpLangCharacters($string, $langs =[]) {
         $replace_regexp_from = [ 'a', 'c', 'e', 'l', 'n', 'o', 's', 'z',
                            'A', 'C', 'E', 'L', 'N', 'O', 'S', 'Z' ];
         $replace_regexp_to = [ '(a|ą)', '(c|ć)', '(e|ę)', '(l|ł)', '(n|ń)', '(o|ó)', '(s|ś)', '(z|ź|ż)',
@@ -82,8 +77,7 @@ class HStrings {
         return str_replace($replace_regexp_from, $replace_regexp_to, $string);
     }
 
-    static public function EscapeRegexpChars($string)
-    {
+    static public function EscapeRegexpChars($string) {
         $replace_from = [ '\\', '^', '$', '.', '[' .']', '|', '(' .
                 ')', '?', '*', '+', '{', '}', '-', '#' ];
         $replace_to = [ '\\\\', '\\^', '\\$', '\\.', '\\[' .'\\]', '\\|', '\\(' .
@@ -103,8 +97,7 @@ class HStrings {
     //     return $new_str;
     // }
 
-    static public function RemoveCharacters($string, $allowedRegexp)
-    {
+    static public function RemoveCharacters($string, $allowedRegexp) {
         $allowedRegexp = str_replace('#', '\\#', $allowedRegexp);
 
         $new_str = '';
@@ -117,8 +110,7 @@ class HStrings {
         return $new_str;
     }
 
-    static public function RemoveDoubles($string, $char)
-    {
+    static public function RemoveDoubles($string, $char) {
         while (true) {
             $string = str_replace($char.$char, $char, $string, $count);
             if ($count === 0)
@@ -126,8 +118,7 @@ class HStrings {
         }
     }
 
-    static public function ValidateChars($string, $validChars, &$invalidChars)
-    {
+    static public function ValidateChars($string, $validChars, &$invalidChars) {
         $regexp = '[^' . $validChars . ']';
 
         $invalidChars = [];

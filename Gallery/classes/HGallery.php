@@ -6,8 +6,7 @@ use E, EC;
 class HGallery {
 
     static public function GetGallery($categoryName, $id, $hasThumbs = true,
-            $hasFull = true)
-    {
+            $hasFull = true) {
         $category = EC\HFilesUpload::GetCategory($categoryName);
         $fileUris = EC\HFilesUpload::GetFileUris($categoryName, $id);
         // $fileUris = [];
@@ -31,8 +30,7 @@ class HGallery {
         return $gallery;
     }
 
-    static public function Init(E\Site $site, $cspHash = null)
-    {
+    static public function Init(E\Site $site, $cspHash = null) {
         $site->addL('postBody', E\Layout::_('Gallery:gallery'));
         $site->addL('postBodyInit', new EC\Basic\LScript("
             new EGallery.Class();

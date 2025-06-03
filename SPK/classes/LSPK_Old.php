@@ -5,8 +5,7 @@ use E, EC;
 
 class LSPK extends E\Layout {
 
-    public function __construct($elem_id)
-    {
+    public function __construct($elem_id) {
         parent::__construct('SPK:module', [ 'elemId' => $elem_id ]);
     }
 

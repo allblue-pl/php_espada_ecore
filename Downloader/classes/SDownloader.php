@@ -9,8 +9,7 @@ class SDownloader extends E\Site {
     private $downloader = null;
     private $downloadName = null;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
 
         $this->setRootL(E\Layout::_('Basic:raw', [ 'raw' => '' ]));
@@ -22,13 +21,11 @@ class SDownloader extends E\Site {
         $this->downloadName = $uri_args[0];
     }
 
-    public function setDownloader(DDownloader $downloader)
-    {
+    public function setDownloader(DDownloader $downloader) {
         $this->downloader = $downloader;
     }
 
-    private function outputDownload()
-    {
+    private function outputDownload() {
         if ($this->downloader === null)
             return CResult::Failure('Downloader not set.');
 
@@ -36,8 +33,7 @@ class SDownloader extends E\Site {
     }
 
     /* E\Site Overrides */
-    protected function _preDisplay()
-    {
+    protected function _preDisplay() {
         parent::_preDisplay();
 
         $this->outputDownload();

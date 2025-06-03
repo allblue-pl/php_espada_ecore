@@ -5,21 +5,18 @@ use E, EC;
 
 class SBasic extends E\Site {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
 
         $this->addM('head', new \EC\Basic\MHead());
     }
 
     
-    protected function _initialize()
-    {
+    protected function _initialize() {
         parent::_initialize();
     }
 
-    protected function _preDisplay()
-    {
+    protected function _preDisplay() {
         if (EDEBUG) {
             $this->addL('debug', E\Layout::_('Basic:raw', [
                 'raw' => $this->getDebugJS(),
@@ -30,8 +27,7 @@ class SBasic extends E\Site {
     }
 
 
-    private function getDebugJS()
-    {
+    private function getDebugJS() {
         $js = '';
 
         $notices = E\Notice::GetAll();

@@ -7,13 +7,11 @@ const
 
 class eTasks_Class {
 
-    constructor()
-    {
+    constructor() {
         this.timeout = 1000;
     }
 
-    start(api_uri, api_args, destroy_on_finish, fn)
-    {
+    start(api_uri, api_args, destroy_on_finish, fn) {
         let task_hash = null;
 
         let refresh = function(api_args) {

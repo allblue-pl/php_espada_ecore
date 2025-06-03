@@ -37,8 +37,7 @@ class MUser extends E\Module {
         $this->session_Name = "User_User_{$type}";
     }
     
-    public function getType()
-    {
+    public function getType() {
         return $this->type;
     }
 
@@ -133,8 +132,7 @@ class MUser extends E\Module {
         $this->initUser_SetId($user['id'], $user['login']);
     }
     
-    public function initUser_SetId($user_id, $user_login)
-    {
+    public function initUser_SetId($user_id, $user_login) {
         $userInfo = HUsers::Get($this->db, $user_id);
 
         if ($userInfo === null || !$userInfo['Active']) {

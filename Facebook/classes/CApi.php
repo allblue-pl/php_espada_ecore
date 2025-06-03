@@ -8,8 +8,7 @@ class CApi extends EC\Api\CBasicApi {
 
     private $facebook = null;
 
-    public function __construct($site, $args)
-    {
+    public function __construct($site, $args) {
         parent::__construct($site);
 
         $this->facebook = new CFacebook($site->modules->config);
@@ -23,8 +22,7 @@ class CApi extends EC\Api\CBasicApi {
         ], 'action_Comment');
     }
 
-    protected function action_Comment($args)
-    {
+    protected function action_Comment($args) {
         if ($args['hash'] !== $this->facebook->getCommentHash($args['href']))
             return Api\CResult::Failure('Wrong hash.');
 

@@ -8,20 +8,17 @@ const
 
 class eCookiesPolicy_Class {
 
-    constructor()
-    {
+    constructor() {
         this._listeners_OnClose = [];
     }
 
-    addListener_OnClose(listenerFn)
-    {
+    addListener_OnClose(listenerFn) {
         js0.args(arguments, 'function');
 
         this._listeners_OnClose.push(listenerFn);
     }
 
-    init()
-    {
+    init() {
         if (abCookies.get('eCookiesPolicy_Displayed') || 
                 abCookies.get('eCookiesPolicy_Accepted')) {
             for (let listenerFn of this._listeners_OnClose)

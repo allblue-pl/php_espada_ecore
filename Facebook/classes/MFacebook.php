@@ -8,16 +8,14 @@ class MFacebook extends E\Module {
     private $header = null;
     private $version = null;
 
-    public function __construct(EC\Basic\MHead $header, $version = 'v3.2')
-    {
+    public function __construct(EC\Basic\MHead $header, $version = 'v3.2') {
         parent::__construct();
 
         $this->header = $header;
         $this->version = $version;
     }
 
-    public function og_AddTag($name, $value)
-    {
+    public function og_AddTag($name, $value) {
         $this->header->addTag('meta', [
             'property' => $name,
             'content' => $value
@@ -25,8 +23,7 @@ class MFacebook extends E\Module {
     }
 
 
-    protected function _postInitialize(E\Site $site)
-    {
+    protected function _postInitialize(E\Site $site) {
         $appId = EC\HConfig::GetRequired('Facebook', 'appId');
 
         $this->og_AddTag('og:app_id', $appId);

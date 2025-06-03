@@ -6,8 +6,7 @@ use E, EC;
 class CRequestInfo {
 
     public static function Create(int $deviceId, $deviceHash,
-            int $lastUpdate)
-    {
+            int $lastUpdate) {
         return new RequestInfo($deviceId, $lastUpdate);
     }
 
@@ -16,24 +15,20 @@ class CRequestInfo {
     private $lastUpdate = null;
 
 
-    public function getDeviceId()
-    {
+    public function getDeviceId() {
         return $this->deviceId;
     }
 
-    public function getLastUpdate()
-    {
+    public function getLastUpdate() {
         return $this->lastUpdate;
     }
 
-    public function isDBSync()
-    {
+    public function isDBSync() {
         
     }
 
 
-    private function __construct(int $deviceId, int $lastUpdate)
-    {
+    private function __construct(int $deviceId, int $lastUpdate) {
         $this->deviceId = $deviceId;
         $this->lastUpdate = $lastUpdate;
     }

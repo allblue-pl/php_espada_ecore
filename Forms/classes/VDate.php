@@ -7,8 +7,7 @@ class VDate extends Forms\VField {
 
     private $texts = null;
 
-    public function __construct($args = [])
-    {
+    public function __construct($args = []) {
         parent::__construct($args, [
             'required' => true,
             'minDate' => null,
@@ -18,8 +17,7 @@ class VDate extends Forms\VField {
         $this->texts = EC\HText::GetTranslations('Forms:fields');
     }
 
-    protected function _validate(&$value)
-    {
+    protected function _validate(&$value) {
         $args = $this->getArgs();
 
         if ($value === null) {

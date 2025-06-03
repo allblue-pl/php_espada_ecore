@@ -13,8 +13,7 @@ class AUser extends EC\Api\ABasic {
     private $db = null;
     private $user = null;
 
-    public function __construct(EC\SApi $site, $args)
-    {
+    public function __construct(EC\SApi $site, $args) {
         parent::__construct($site, array_key_exists('userType', $args) ? 
                 $args['userType'] : 'Default');
 
@@ -56,8 +55,7 @@ class AUser extends EC\Api\ABasic {
         }
     }
 
-    protected function action_ChangePassword(CArgs $args)
-    {
+    protected function action_ChangePassword(CArgs $args) {
         $db = $this->db;
         $user = $this->user;
 
@@ -91,14 +89,12 @@ class AUser extends EC\Api\ABasic {
         return CResult::Success(EC\HText::_('Users:Successes_PasswordChanged'));
     }
 
-    protected function action_Check()
-    {
+    protected function action_Check() {
         return CResult::Success()
             ->add('isLoggedIn', $this->user->isLoggedIn());
     }
 
-    protected function action_Hash(CArgs $args)
-    {
+    protected function action_Hash(CArgs $args) {
         $hash = null;
         if (isset($args->hashRounds))
             $hash = EC\HHash::GetPassword($args->password, $args->hashRounds);
@@ -109,8 +105,7 @@ class AUser extends EC\Api\ABasic {
             ->add('hash', $hash);
     }
 
-    protected function action_LogIn(CArgs $args)
-    {
+    protected function action_LogIn(CArgs $args) {
         $login = $args->login;
         $password = $args->password;
 
@@ -170,8 +165,7 @@ class AUser extends EC\Api\ABasic {
             ]);
     }
 
-    protected function action_LogOut()
-    {
+    protected function action_LogOut() {
         $user = $this->user;
 
         if ($user->isLoggedIn()) {
@@ -183,8 +177,7 @@ class AUser extends EC\Api\ABasic {
 		return CResult::Failure('Not logged in.');
     }
 
-    protected function action_RemindPassword(CArgs $args)
-    {
+    protected function action_RemindPassword(CArgs $args) {
         $args->email = trim(mb_strtolower($args->email));
 
         if ($args->login === '')
@@ -243,8 +236,7 @@ class AUser extends EC\Api\ABasic {
             ->debug($hash);
     }
 
-    protected function action_ResetPassword(CArgs $args)
-    {
+    protected function action_ResetPassword(CArgs $args) {
         $rResetPasswordHash = (new TResetPasswordHashes($this->db))
                 ->row_Where([
             [ 'Hash', '=', $args->resetPasswordHash ],

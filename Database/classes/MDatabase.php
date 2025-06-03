@@ -10,8 +10,7 @@ class MDatabase extends E\Module {
     // static public $MaxInsertRows_InTransaction = 100000;
 
 
-    static public function SetMinLogTimeSpan(float $minLogTimeSpan) : void
-    {
+    static public function SetMinLogTimeSpan(float $minLogTimeSpan) : void {
         self::$MinLogTimeSpan = $minLogTimeSpan;
     }
 
@@ -101,8 +100,7 @@ class MDatabase extends E\Module {
         return (string)((int)$value);
     }
     
-    public function escapeLong($value)
-    {
+    public function escapeLong($value) {
         if ($value === null)
 			return 'NULL';
 
@@ -143,8 +141,7 @@ class MDatabase extends E\Module {
 		return $this->lastQuery;
     }
     
-    public function isConnected()
-    {
+    public function isConnected() {
         return $this->mysqli !== null;
     }
 

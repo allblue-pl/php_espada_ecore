@@ -7,13 +7,11 @@ class CRawValue {
 
     private $value = null;
 
-    public function __construct(string $value)
-    {
+    public function __construct(string $value) {
         $this->value = $value;
     }   
 
-    public function getValue()
-    {
+    public function getValue() {
         return $this->value;
     }
 

@@ -9,8 +9,7 @@ class RTableRequest extends RRequest {
 
 
     static public function Table_Select(EC\Database\TTable $table, array $args, 
-            ?string &$error) : ?array
-    {
+            ?string &$error) : ?array {
         // foreach ($args as $argName => $arg) {
         //     if (!in_array($argName, self::$ArgNames)) {
         //         $error = "Unknown arg '{$argName}'.";
@@ -86,8 +85,7 @@ class RTableRequest extends RRequest {
         return $rows;
     }
 
-    static public function ParseRequest(array $request)
-    {
+    static public function ParseRequest(array $request) {
         
     }
 
@@ -96,8 +94,7 @@ class RTableRequest extends RRequest {
     private $dataStore = null;
     private $table = null;
 
-    public function __construct(CDataStore $dataStore, EC\Database\TTable $table)
-    {
+    public function __construct(CDataStore $dataStore, EC\Database\TTable $table) {
         parent::__construct($dataStore);
 
         $this->dataStore = $dataStore;
@@ -126,8 +123,7 @@ class RTableRequest extends RRequest {
         });
     }
 
-    public function action_Delete(CDevice $device, array $args, ?int $schemeVersion)
-    {
+    public function action_Delete(CDevice $device, array $args, ?int $schemeVersion) {
         $rows = $this->table->select_Where($args['where']);
 
         if (!HABData::Delete_Where($device, $this->tablem, $args['where'])) {
@@ -162,8 +158,7 @@ class RTableRequest extends RRequest {
         ];
     }
 
-    public function action_Row(CDevice $device, array $args, ?int $schemeVersion)
-    {
+    public function action_Row(CDevice $device, array $args, ?int $schemeVersion) {
         return [
             'success' => true,
             'row' => $this->table->row_Where($args['where']),
@@ -171,8 +166,7 @@ class RTableRequest extends RRequest {
         ];
     }
 
-    public function action_Select(CDevice $device, array $args, ?int $schemeVersion)
-    {
+    public function action_Select(CDevice $device, array $args, ?int $schemeVersion) {
         if (!$args['permitted'])
             return [];
 
@@ -191,8 +185,7 @@ class RTableRequest extends RRequest {
         ];
     }
 
-    public function action_Update(CDevice $device, array $args, ?int $schemeVersion)
-    {
+    public function action_Update(CDevice $device, array $args, ?int $schemeVersion) {
         if (count($args['rows']) === 0) {
             return [
                 'success' => true,
@@ -232,19 +225,16 @@ class RTableRequest extends RRequest {
         return $result;
     }
 
-    public function getDB()
-    {
+    public function getDB() {
         return $this->db;
     }
 
-    public function getTable()
-    {
+    public function getTable() {
         return $this->table;
     }
 
 
-    private function join(CDevice $device, array $rows, array $args)
-    {
+    private function join(CDevice $device, array $rows, array $args) {
         foreach ($args['join'] as $join) {
             $tableRequest = $this->dataStore->getRequest($join['table']);
 
@@ -354,8 +344,7 @@ class RTableRequest extends RRequest {
 
 
     /* RRequest */
-    public function getDeviceRowIds(CDevice $device) : array
-    {
+    public function getDeviceRowIds(CDevice $device) : array {
         $rows = (new TDeviceRows($this->db))->select_Where([
             [ 'DeviceId', '=', $device->getId() ],
             [ 'TableId', '=', HABData::GetTableId($this->table->getTableName()) ],

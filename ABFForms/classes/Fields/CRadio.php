@@ -5,8 +5,7 @@ use E, EC, EC\SPKForms;
 
 class CRadio extends SPKForms\VField {
 
-    public function __construct($name, $label = '')
-    {
+    public function __construct($name, $label = '') {
         parent::__construct('radio', $name, $label);
 
         $abf_object = $this->getObject();
@@ -14,8 +13,7 @@ class CRadio extends SPKForms\VField {
         $abf_object->options = [];
     }
 
-    public function addOption($text, $value)
-    {
+    public function addOption($text, $value) {
         $abf_object = $this->getObject();
 
         $option = new EC\SPK\CObject();

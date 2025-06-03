@@ -9,8 +9,7 @@ class HConfig {
     static private $DBCache = [];
 
     static public function DB_Get(EC\MDatabase $db, $name, $defaultValue = null,
-            $forUpdate = false)
-    {
+            $forUpdate = false) {
         if (array_key_exists($name, HConfig::$DBCache))
             return HConfig::$DBCache[$name];
 
@@ -34,8 +33,7 @@ class HConfig {
         return $row['Value'];
     }
 
-    static public function DB_Set(EC\MDatabase $db, $name, $value)
-    {
+    static public function DB_Set(EC\MDatabase $db, $name, $value) {
         $table = new TSettings($db);
 
         if (!$table->update([[
@@ -48,8 +46,7 @@ class HConfig {
         return true;
     }
 
-    static public function Get($packageName, $propertyName, $default_value = null)
-    {
+    static public function Get($packageName, $propertyName, $default_value = null) {
         self::Initialize();
 
         if (!isset(self::$Properties[$packageName]))
@@ -60,13 +57,11 @@ class HConfig {
         return self::$Properties[$packageName][$propertyName];
     }
 
-    static public function GetR($packageName, $propertyName)
-    {
+    static public function GetR($packageName, $propertyName) {
         return self::GetRequired($packageName, $propertyName);
     }
 
-    static public function GetRequired($packageName, $propertyName)
-    {
+    static public function GetRequired($packageName, $propertyName) {
         self::Initialize();
 
         if (!isset(self::$Properties[$packageName]))
@@ -79,8 +74,7 @@ class HConfig {
         return self::$Properties[$packageName][$propertyName];
     }
 
-    static public function Initialize()
-    {
+    static public function Initialize() {
         if (self::$Properties !== null)
             return;
 

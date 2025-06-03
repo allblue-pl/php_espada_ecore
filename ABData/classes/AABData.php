@@ -7,13 +7,11 @@ class AABData {
 
     private $requests = null;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->requests = [];
     }
 
-    public function setAction(string $actionName, callable $actionFn)
-    {
+    public function setAction(string $actionName, callable $actionFn) {
         if (array_key_exists($actionName, $this->actions))
             throw new \Exception("Action '{$actionName}' already exists.");
 

@@ -6,8 +6,7 @@ use E, EC,
 
 class TSessions extends _TSessions {
 
-    public function __construct(EC\MDatabase $db)
-    {
+    public function __construct(EC\MDatabase $db) {
         parent::__construct($db, 's_s');
     }
 

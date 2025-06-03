@@ -5,8 +5,7 @@ use E, EC;
 
 class HPermissions {
 
-    static public function Get_FromGroups($groups)
-    {
+    static public function Get_FromGroups($groups) {
         $permissions = [];
         $config_groups = EC\HConfig::Get('Users', 'groups', []);
 

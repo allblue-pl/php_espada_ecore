@@ -8,8 +8,7 @@ class MRss extends E\Module {
     private $header = null;
     private $info = null;
 
-    public function __construct(EC\Basic\MHead $header, $isHome = true)
-    {
+    public function __construct(EC\Basic\MHead $header, $isHome = true) {
         parent::__construct();
 
         $this->header = $header;
@@ -21,19 +20,16 @@ class MRss extends E\Module {
         ];
     }
 
-    public function getInfo()
-    {
+    public function getInfo() {
         return $this->info;
     }
 
-    public function setHome($isHome)
-    {   
+    public function setHome($isHome) {   
         $this->info['rel'] = $isHome ? 'alternate' : 'home';
     }
 
 
-    protected function _postInitialize(E\Site $site)
-    {
+    protected function _postInitialize(E\Site $site) {
         $feed_file_path = HRss::GetFilePath();
 
         if (file_exists($feed_file_path))

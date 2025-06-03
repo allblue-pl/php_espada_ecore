@@ -7,21 +7,18 @@ class CSitemapIndex {
 
     private $sitemaps = null;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->sitemaps = [];
     }
 
-    public function addSitemap($loc, $lastMod = null)
-    {
+    public function addSitemap($loc, $lastMod = null) {
         $this->sitemaps[] = [
             'loc' => $loc,
             'lastMod' => $lastMod,
         ];
     }
 
-    public function getXML()
-    {
+    public function getXML() {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\r\n";
         $xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\r\n";
         

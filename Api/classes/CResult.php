@@ -5,18 +5,15 @@ use E, EC;
 
 class CResult extends CResult_Base {
 
-    static public function Success($message = '')
-    {
+    static public function Success($message = '') {
         return new CResult(self::SUCCESS, $message);
     }
 
-    static public function Failure($message = '')
-    {
+    static public function Failure($message = '') {
         return new CResult(self::FAILURE, $message);
     }
 
-    static public function Error($message = '')
-    {
+    static public function Error($message = '') {
         return new CResult(self::ERROR, $message);
     }
 
@@ -24,13 +21,11 @@ class CResult extends CResult_Base {
     private $outputs = [];
 
     
-    public function __construct($result, $message)
-    {
+    public function __construct($result, $message) {
         parent::__construct($result, $message);
     }
 
-    public function add($name, $value)
-    {
+    public function add($name, $value) {
         if ($name === 'result' || $name == 'message' || $name === 'debug' ||
                 array_key_exists($name, $this->outputs))
             throw new \Exception("Output '{$name}' already exists.");
@@ -40,21 +35,18 @@ class CResult extends CResult_Base {
         return $this;
     }
 
-    public function exists($name)
-    {
+    public function exists($name) {
         return array_key_exists($name, $this->outputs);
     }
 
-    public function get($name)
-    {
+    public function get($name) {
         if (!$this->exists($name))
             throw new \Exception("Output '{$name}' does not exist.");
 
         return $this->outputs[$name];
     }
 
-    public function getJSON()
-    {
+    public function getJSON() {
         // $json = mb_convert_encoding($this->outputs, 'UTF-8', 'UTF-8');
 
         $this->escapeNonUTF($this->outputs);
@@ -77,14 +69,12 @@ class CResult extends CResult_Base {
         return $json_string;
     }
 
-    public function isset($name)
-    {
+    public function isset($name) {
         return array_key_exists($name, $this->outputs);
     }
 
 
-    private function escapeNonUTF(array &$json)
-    {   
+    private function escapeNonUTF(array &$json) {   
         array_walk_recursive($json, function(&$item) {
             if (is_string($item))
                 $item = mb_convert_encoding($item, 'UTF-8', 'UTF-8');

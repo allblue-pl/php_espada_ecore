@@ -76,8 +76,7 @@ class CMail {
 		$this->attachments[] = array($file_path, $file_name);
     }
     
-    public function addImage($filePath, $fileName = null)
-    {
+    public function addImage($filePath, $fileName = null) {
         if ($fileName === null)
             $fileName = basename($filePath);
             
@@ -93,8 +92,7 @@ class CMail {
 		// $this->mail->addAddress($mail, $name);
     }
     
-    public function setReplyTo($mail, $name = null)
-    {
+    public function setReplyTo($mail, $name = null) {
         if ($name === null)
 			$name = $mail;
 
