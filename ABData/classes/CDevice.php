@@ -66,7 +66,11 @@ class CDevice {
 
     static public function CreateNewDevice(EC\MDatabase $db, &$hash = null, 
             $fixed = false) {
-        $db->requireTransaction();
+        $localTransaction = false;
+        if ($db->transaction_IsAutocommit()) {
+            $db->transaction_Start();
+            $localTransaction = true;
+        }
 
         $table = new EC\ABData\TDevices($db);
         $hash = EC\HHash::Generate(64);
@@ -138,7 +142,18 @@ class CDevice {
             if (!$table->update([ $row_Update ])) {
                 if (EDEBUG)
                     throw new Exception('Cannot update Device row.');
+
+                if ($localTransaction)
+                    $db->transaction_Finish(false);
+
                 return null;
+            }
+        }
+
+        if ($localTransaction) {
+            if (!$db->transaction_Finish(true)) {
+                throw new \Exception("Cannot commit 'Device::CreateNewDevice'" . 
+                        " transaction.");
             }
         }
 

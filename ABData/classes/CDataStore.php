@@ -13,7 +13,8 @@ class CDataStore {
     const Response_Types_ActionError = 3;
     const Response_Types_Error = 4;
 
-    const MaxRowsInData = 5000;
+    const MaxRowsInData = 100000;
+    // const MaxRowsInData = 5000;
     // const MaxRowsInData = 4;
 
 
