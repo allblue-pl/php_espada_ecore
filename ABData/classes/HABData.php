@@ -38,15 +38,17 @@ class HABData {
 
         $deviceIds = array_column($rDevices, 'Id');
 
-        (new TDeviceRows($db))->delete_Where([
-            [ 'DeviceId', 'IN', $deviceIds ],
-        ]);
+        if (count($deviceIds) > 0) {
+            (new TDeviceRows($db))->delete_Where([
+                [ 'DeviceId', 'IN', $deviceIds ],
+            ]);
 
-        (new TDevices($db))->update_Where([
-            'LastSync' => null,
-        ],[
-            [ 'Id', 'IN', $deviceIds ],
-        ]);
+            (new TDevices($db))->update_Where([
+                'LastSync' => null,
+            ],[
+                [ 'Id', 'IN', $deviceIds ],
+            ]);
+        }
 
         if ($localTransaction) {
             if (!$db->transaction_Finish(true))

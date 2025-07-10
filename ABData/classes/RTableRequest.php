@@ -74,7 +74,7 @@ class RTableRequest extends RRequest {
             $offset = $args['limit'][0] === null ? 
                     0 : floor((float)$args['limit'][0]);
             $limit = $args['limit'][1] === null ? 
-                    '18446744073709551615' : floor((float)$args['limit'][1]);
+                    '2147483647' : floor((float)$args['limit'][1]);
 
             $queryExtension .= " LIMIT {$offset}, {$limit}";
         }

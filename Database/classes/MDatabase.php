@@ -148,13 +148,13 @@ class MDatabase extends E\Module {
 	public function requireNoTransaction()
 	{
 		if (!$this->transaction_IsAutocommit())
-			throw new \Exception('Transaction detected.');
+			throw new \Exception('Transaction detected. Required no transaction.');
 	}
 
 	public function requireTransaction()
 	{
 		if ($this->transaction_IsAutocommit())
-			throw new \Exception('No transaction detected.');
+			throw new \Exception('No transaction detected. Required transaction.');
 	}
 
 	/* Transaction */

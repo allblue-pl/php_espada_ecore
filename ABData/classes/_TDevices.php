@@ -16,6 +16,7 @@ class _TDevices extends Database\TTable {
             'Hash' => new Database\FString(true, 64),
             'Expires' => new Database\FTime(false),
             'LastSync' => new Database\FTime(false),
+            'DBSync' => new Database\FTime(false),
         ]);
         $this->setPKs([ 'Id' ]);
     }

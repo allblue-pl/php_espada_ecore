@@ -78,9 +78,9 @@ class HStrings {
     }
 
     static public function EscapeRegexpChars($string) {
-        $replace_from = [ '\\', '^', '$', '.', '[' .']', '|', '(' .
+        $replace_from = [ '\\', '^', '$', '.', '[' .']', '|', '(' ,
                 ')', '?', '*', '+', '{', '}', '-', '#' ];
-        $replace_to = [ '\\\\', '\\^', '\\$', '\\.', '\\[' .'\\]', '\\|', '\\(' .
+        $replace_to = [ '\\\\', '\\^', '\\$', '\\.', '\\[' .'\\]', '\\|', '\\(' ,
                 '\\)', '\\?', '\\*', '\\+', '\\{', '\\}', '\\-', '\\#' ];
 
         return str_replace($replace_from, $replace_to, $string);

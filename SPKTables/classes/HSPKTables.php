@@ -235,9 +235,6 @@ SCRIPT;
                 $filter_Str = EC\HStrings::EscapeRegexpLangCharacters($filter_Str);
                 $db_filter = $t_table->getDB()->escapeString($filter_Str);
 
-                // echo $db_filter;
-                // die;
-
                 $conditions[] = "LOWER(CAST({$db_column_name} AS CHAR))" .
                         " REGEXP {$db_filter}";
             }
@@ -311,7 +308,7 @@ SCRIPT;
         $spk_table = self::ParseInfo($spk_table);
 
         $offset = '0';
-        $limit = '18446744073709551615';
+        $limit = '2147483647';
 
         if (isset($table_args['offset']))
             $offset = intval($table_args['offset']);

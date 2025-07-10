@@ -4,16 +4,16 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 class CDevice {
+    static public $ExpirationTime       = 15 * EC\HDate::Span_Minute;
+    static public $MaxDBSyncTime        = 1 * EC\HDate::Span_Minute;
 
-    static public $ExpirationTime =     15 * EC\HDate::Span_Minute;
+    static public $Devices_Offset       = 100000000;
 
-    static public $Devices_Offset =     100000000;
+    static public $TempDevices_Start    = 10001;
+    static public $TempDevices_End      = 11000;
 
-    static public $TempDevices_Start =   10001;
-    static public $TempDevices_End =     11000;
-
-    static public $FixedDevices_Start = 20001;
-    static public $FixedDevices_End =   30000;
+    static public $FixedDevices_Start   = 20001;
+    static public $FixedDevices_End     = 30000;
 
     static public $SystemDevice_Id = 1;
 
@@ -66,11 +66,8 @@ class CDevice {
 
     static public function CreateNewDevice(EC\MDatabase $db, &$hash = null, 
             $fixed = false) {
-        $localTransaction = false;
-        if ($db->transaction_IsAutocommit()) {
-            $db->transaction_Start();
-            $localTransaction = true;
-        }
+        $db->requireNoTransaction();
+        $db->transaction_Start();
 
         $table = new EC\ABData\TDevices($db);
         $hash = EC\HHash::Generate(64);
@@ -143,18 +140,15 @@ class CDevice {
                 if (EDEBUG)
                     throw new Exception('Cannot update Device row.');
 
-                if ($localTransaction)
-                    $db->transaction_Finish(false);
+                $db->transaction_Finish(false);
 
                 return null;
             }
         }
 
-        if ($localTransaction) {
-            if (!$db->transaction_Finish(true)) {
-                throw new \Exception("Cannot commit 'Device::CreateNewDevice'" . 
-                        " transaction.");
-            }
+        if (!$db->transaction_Finish(true)) {
+            throw new \Exception("Cannot commit 'Device::CreateNewDevice'" . 
+                    " transaction.");
         }
 
         return new CDevice($db, $row_Update['Id'], null, [], 
@@ -300,6 +294,43 @@ class CDevice {
 
     private $rowUpdates = null;
 
+
+    public function dbSync_Finish() {
+        if (!(new TDevices($this->db))->update([[
+            'Id' => $this->id,
+            'DBSync' => null,
+                ]]))
+            throw new \Exception("Cannot update devices 'DBSync'.");
+    }
+
+    public function dbSync_Start() {
+        $this->db->requireNoTransaction();
+        $this->db->transaction_Start();
+
+        $table = new TDevices($this->db);
+
+         $rDevice = $table->row_Where([
+            [ 'Id', '=', $this->id ],
+        ], '', true);
+        if ($rDevice === null)
+             throw new \Exception("Device '{$this->id}' does not exist.");
+
+        if ($rDevice['DBSync'] !== null) {
+            if ($rDevice['DBSync'] >= time())
+                return false;
+        }
+
+        if (!$table->update([[
+            'Id' => $this->id,
+            'DBSync' => time() + self::$MaxDBSyncTime,
+                ]]))
+            throw new \Exception("Cannot update devices 'DBSync'.");
+
+        if (!$this->db->transaction_Finish(true))
+            throw new \Exception("Cannot finish update devices 'DBSync' transaction.");
+
+        return true;
+    }
 
     public function getCreateTime() {
         return $this->createTime;
