@@ -294,8 +294,13 @@ class CDevice {
 
     private $rowUpdates = null;
 
+    private $dbSync = null;
+
 
     public function dbSync_Finish() {
+        if ($this->dbSync === null)
+            throw new \Exception('No DB Sync in progress.');
+
         if (!(new TDevices($this->db))->update([[
             'Id' => $this->id,
             'DBSync' => null,
@@ -303,7 +308,14 @@ class CDevice {
             throw new \Exception("Cannot update devices 'DBSync'.");
     }
 
+    public function dbSync_InProgress() {
+        return $this->dbSync !== null;
+    }
+
     public function dbSync_Start() {
+        if ($this->dbSync !== null)
+            throw new \Exception('DB Sync already in progress.');
+
         $this->db->requireNoTransaction();
         $this->db->transaction_Start();
 
@@ -320,14 +332,17 @@ class CDevice {
                 return false;
         }
 
+        $dbSync = time() + self::$MaxDBSyncTime;
         if (!$table->update([[
             'Id' => $this->id,
-            'DBSync' => time() + self::$MaxDBSyncTime,
+            'DBSync' => $dbSync,
                 ]]))
             throw new \Exception("Cannot update devices 'DBSync'.");
 
         if (!$this->db->transaction_Finish(true))
             throw new \Exception("Cannot finish update devices 'DBSync' transaction.");
+
+        $this->dbSync = time() + self::$MaxDBSyncTime;
 
         return true;
     }

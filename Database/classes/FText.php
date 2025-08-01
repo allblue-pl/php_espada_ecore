@@ -13,6 +13,7 @@ class FText extends FField {
 
     private $type = null;
 
+    
     public function __construct($is_null, $type = 'regular') {
         parent::__construct($is_null);
 
