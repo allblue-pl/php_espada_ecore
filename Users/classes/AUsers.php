@@ -47,7 +47,7 @@ class AUsers extends EC\Api\ABasic {
 
             return CResult::Failure($args->active ?
                     EC\HText::_('Users:Errors_CannotActivateUser') :
-                    EC\HText::_('Users:Errors_CannotDeactiveUser'));
+                    EC\HText::_('Users:Errors_CannotDeactivateUser'));
         }
 
         return CResult::Success();

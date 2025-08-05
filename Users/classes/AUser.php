@@ -204,7 +204,7 @@ class AUser extends EC\Api\ABasic {
 
         $hash = '';
         if (!EC\HUsers::ResetPassword_CreateHash($this->db, $row['Id'], $hash))
-            return CResult::Failure(EC\HText::_('Users:Errors_CannontCreateResetPasswordHash'));
+            return CResult::Failure(EC\HText::_('Users:Errors_CannotCreateResetPasswordHash'));
 
         $link = EC\HConfig::GetRequired('Users', 'uris')['resetPassword'] . 
                 $hash;
@@ -246,7 +246,7 @@ class AUser extends EC\Api\ABasic {
             return CResult::Failure(EC\HText::_('Users:Errors_RecoveryHashDoesNotExist'));
 
         if ($rResetPasswordHash['DateTime'] < time() - EC\HDate::Span_Day)
-            return CResult::Failure(EC\HText::_('User:Errors_RecoveryHashExpired'));
+            return CResult::Failure(EC\HText::_('Users:Errors_RecoveryHashExpired'));
 
         if (!HUsers::CheckPasswordStrength($args->newPassword))
             return CResult::Failure(EC\HText::_('Users:Errors_WrongPasswordFormat'));

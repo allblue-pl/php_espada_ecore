@@ -63,6 +63,9 @@ class CTranslations {
             $translation .= ')';
         }
 
+        if (HText::$Listeners_OnTextNotFound !== null)
+            (HText::$Listeners_OnTextNotFound)($translation);
+
 		return '#' . $translation . '#';
 	}
 

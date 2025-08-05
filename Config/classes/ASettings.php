@@ -64,7 +64,7 @@ class ASettings extends EC\Api\ABasic {
         if (!$this->db->transaction_Finish($this->db))
             return CResult::Failure('Cannot commit.');
 
-        return CResult::Success(EC\HText::_('Adm:Successes_Updated'));
+        return CResult::Success(EC\HText::_('Config:Successes_UpdatedSetting'));
     }
 
 }
