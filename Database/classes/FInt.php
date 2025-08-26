@@ -5,7 +5,7 @@ use E, EC;
 
 class FInt extends FField {
 
-    public function __construct($is_null, $bytes = 11) {
+    public function __construct($is_null, bool $unsigned = false) {
         parent::__construct($is_null);
     }
 

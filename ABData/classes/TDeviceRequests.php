@@ -7,7 +7,7 @@ use E, EC,
 class TDeviceRequests extends _TDeviceRequests {
 
     public function __construct(EC\MDatabase $db) {
-        parent::__construct($db, 'abd_dr');
+        parent::__construct($db, 'abd_drq');
     }
 
 }

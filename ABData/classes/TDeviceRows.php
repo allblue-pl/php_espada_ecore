@@ -7,7 +7,7 @@ use E, EC,
 class TDeviceRows extends _TDeviceRows {
 
     public function __construct(EC\MDatabase $db) {
-        parent::__construct($db, 'abd_dr');
+        parent::__construct($db, 'abd_drw');
     }
 
 }

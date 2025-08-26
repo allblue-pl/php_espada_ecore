@@ -14,7 +14,7 @@ class TDeletedRows_ByDevice extends TDeletedRows {
         ]);
 
         $this->setJoin(
-            ' INNER JOIN _ABData_DeviceRows AS abd_dr' .
+            ' INNER JOIN ABData_DeviceRows AS abd_dr' .
             ' ON abd_dr.TableId = abd_dlr.TableId AND abd_dr.RowId = abd_dlr.RowId'
         );
     }

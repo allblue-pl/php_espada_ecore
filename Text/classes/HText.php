@@ -5,6 +5,7 @@ use E, EC;
 
 class HText {
 
+    static public $Listeners_OnTextNotFound = null;
 	static private $Translations = [];
 
 	static public function _($text, $args = [])
@@ -26,6 +27,9 @@ class HText {
                 }
                 $translation .= ')';
             }
+
+            if (self::$Listeners_OnTextNotFound !== null)
+                (self::$Listeners_OnTextNotFound)($translation);
 
             return '#' . $translation . '#';
         }
@@ -67,6 +71,11 @@ class HText {
 				new CTranslations($package, $path);
 	}
 
+    static public function SetListener_OnTextNotFound(callable $onTextNotFoundFn) {
+        self::$Listeners_OnTextNotFound = $onTextNotFoundFn;
+    }
+
+
 	static private function ParseText($text)
 	{
 		$pos = mb_strrpos($text, ':');
@@ -100,5 +109,4 @@ class HText {
 			);
 		}
 	}
-
 }

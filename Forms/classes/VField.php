@@ -4,7 +4,6 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 abstract class VField {
-
     private $args = null;
 
     private $validator = null;
@@ -13,10 +12,10 @@ abstract class VField {
     
     public function __construct($args, $default_args) {
         $default_args['notNull'] = true;
-
+        
         foreach ($args as $a_name => $a) {
             if (!array_key_exists($a_name, $default_args))
-                throw new \Exception("Arg `{$a_name}` does not exist.");
+                throw new \Exception("Arg '{$a_name}' does not exist.");
 
             $default_args[$a_name] = $args[$a_name];
         }
@@ -30,10 +29,6 @@ abstract class VField {
 
     public function getArgs() {
         return $this->args;
-    }
-
-    public function getInfo() {
-        return $this->info;
     }
 
     public function success($message = null) {

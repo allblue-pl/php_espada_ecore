@@ -5,19 +5,16 @@ use E, EC,
     EC\Database;
 
 class _TLogs extends Database\TTable {
-
     public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Log_Logs', $tablePrefix);
 
         $this->setColumns([
-            'Id'                => new Database\FId(false, 11),
-            'User_Id'           => new Database\FLong(false, 11),
-
-            'DateTime'          => new Database\FLong(false),
-            'Message'           => new Database\FString(true, 256),
-            'Data'              => new Database\FText(true, 'medium')
+            'Id' => new Database\FInt(true, true), 
+            'User_Id' => new Database\FLong(false), 
+            'DateTime' => new Database\FLong(false), 
+            'Message' => new Database\FString(false, 256), 
+            'Data' => new Database\FText(false, 'medium'), 
         ]);
         $this->setPKs([ 'Id' ]);
     }
-
 }

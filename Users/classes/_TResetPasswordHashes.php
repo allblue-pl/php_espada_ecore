@@ -5,16 +5,15 @@ use E, EC,
     EC\Database;
 
 class _TResetPasswordHashes extends Database\TTable {
-
-    public function __construct(EC\MDatabase $db, $tablePrefix) {
+    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Users_ResetPasswordHashes', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FLong(true),
-            'User_Id' => new Database\FLong(true),
-            'DateTime' => new Database\FDateTime(true),
-            'Hash' => new Database\FString(true, 128),
+            'Id' => new Database\FInt(true, true), 
+            'User_Id' => new Database\FLong(true), 
+            'DateTime' => new Database\FDateTime(true), 
+            'Hash' => new Database\FString(true, 128), 
         ]);
+        $this->setPKs([ 'Id' ]);
     }
-
 }
