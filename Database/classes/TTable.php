@@ -839,7 +839,7 @@ class TTable {
         $this->primaryKeys = $primaryKeys;
     }
 
-    public function setSelectColumns($select_column_names) {
+    public function setSelectColumnNames($select_column_names) {
         $this->selectColumnNames = $select_column_names;
     }
 
