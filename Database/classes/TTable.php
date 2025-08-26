@@ -193,6 +193,22 @@ class TTable {
         ]);
     }
 
+    public function delete_ByPKs(array $keys) {
+        $where = [];
+        if (count($keys) !== count($this->primaryKeys)) {
+            throw new \Exception('Keys do not match primary keys: ' . 
+                    join(',', $this->primaryKeys));
+        }
+
+        $keys_Where = [ 'AND', [] ];
+        for ($i = 0; $i < count($keys); $i++)
+            $keys_Where[1][] = [ $this->primaryKeys[$i], '=', $keys[$i] ];
+            
+        $where[] = $keys_Where;
+
+        return $this->delete_Where($where);
+    }
+
     public function delete_Where($conditions) {
         if (count($conditions) === 0)
             return true;
@@ -824,7 +840,7 @@ class TTable {
     }
 
     public function setSelectColumns($select_column_names) {
-        $this->selectColumns = $select_column_names;
+        $this->selectColumnNames = $select_column_names;
     }
 
     // public function setValidator(VField $Validator_field)

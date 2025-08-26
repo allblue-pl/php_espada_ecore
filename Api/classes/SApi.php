@@ -3,9 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-
 class SApi extends E\Site {
-
     private $actionName = '';
 
     private $api = null;
@@ -130,5 +128,4 @@ class SApi extends E\Site {
 
         return $result;
     }
-
 }
