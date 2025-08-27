@@ -5,8 +5,8 @@ use E, EC;
 
 class FInt extends FField {
 
-    public function __construct($is_null, bool $unsigned = false) {
-        parent::__construct($is_null);
+    public function __construct($not_null, bool $unsigned = false) {
+        parent::__construct($not_null);
     }
 
     public function getVField($info = []) {
