@@ -14,8 +14,7 @@ class CTranslations {
 	 *
 	 * @param string $package
 	 */
-	public function __construct($package, $path = '')
-	{
+	public function __construct($package, $path = '') {
 		$lang_name = \E\Langs::Get()['name'];
 
 		$this->package = $package;
@@ -35,8 +34,7 @@ class CTranslations {
 	 * @param string $text
 	 * @return string
 	 */
-	public function get($text, $args = [])
-	{
+	public function get($text, $args = []) {
 		$args_length = count($args);
 
 		if (isset($this->translations[$text])) {
@@ -74,13 +72,11 @@ class CTranslations {
 	 * @param string $name
 	 * @return string
 	 */
-	public function __get($name)
-	{
+	public function __get($name) {
 		return $this->get($name);
 	}
 
-	public function getArray()
-	{
+	public function getArray() {
 		return $this->translations;
 	}
 

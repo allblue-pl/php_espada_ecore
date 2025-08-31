@@ -62,8 +62,7 @@ class HPermissions {
 	// 	return $permissions;
 	// }
 
-    static public function Parse($permissions_string)
-	{
+    static public function Parse($permissions_string) {
 		$t_permissions = explode(',', str_replace(' ', '',
 				$permissions_string));
 

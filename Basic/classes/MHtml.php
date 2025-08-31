@@ -10,8 +10,7 @@ class MHtml extends E\Module {
     private $name = null;
 	private $fields = null;
 
-	public function __construct($name = null)
-	{
+	public function __construct($name = null) {
         parent::__construct();
 
 		$this->name = $name;
@@ -22,8 +21,7 @@ class MHtml extends E\Module {
         $this->fields[$name] = $value;
     }
 
-	protected function output_Default(E\Fields &$fields)
-	{
+	protected function output_Default(E\Fields &$fields) {
 		foreach ($this->fields as $name => $value)
             $fields->set($name, $value);
 

@@ -32,8 +32,7 @@ class CMail {
 	private $error = null;
 
 	public function __construct($from_mail, $from_name,
-			$to_mail, $to_name = '')
-	{
+			$to_mail, $to_name = '') {
 		$this->from_Mail = $from_mail;
 		$this->from_Name = $from_name === '' ? $from_mail : $from_name;
 
@@ -44,8 +43,7 @@ class CMail {
 		$this->mail->CharSet = 'UTF-8';
 	}
 
-	public function setSmtp($host, $auth, $username, $password, $secure, $port)
-	{
+	public function setSmtp($host, $auth, $username, $password, $secure, $port) {
 		$this->mail->isSMTP();
 		$this->mail->Host = $host;
 		$this->mail->SMTPAuth = $auth;
@@ -63,13 +61,11 @@ class CMail {
 		];
 	}
 
-	public function setSubject($subject)
-	{
+	public function setSubject($subject) {
 		$this->subject = $subject;
 	}
 
-	public function addAttachment($file_path, $file_name = '')
-	{
+	public function addAttachment($file_path, $file_name = '') {
 		if ($file_name === '')
 			$file_name = basename($file_path);
 
@@ -83,8 +79,7 @@ class CMail {
         $this->images[] = [ $filePath, $fileName ];
     }
 
-	public function addTo($mail, $name = null)
-	{
+	public function addTo($mail, $name = null) {
 		if ($name === null)
 			$name = $mail;
 
@@ -100,8 +95,7 @@ class CMail {
         $this->replyTos[] = [ $mail, $name ];
     }
 
-	public function setTo($mail, $name = '')
-	{
+	public function setTo($mail, $name = '') {
 		$this->tos = [];
 		$this->addTo($mail, $name);
 	}
@@ -124,18 +118,15 @@ class CMail {
 	// 	//$this->mail->addBCC($mail, $name);
 	// }
 
-	public function setText($text)
-	{
+	public function setText($text) {
 		$this->text = $text;
 	}
 
-	public function setHtml($html)
-	{
+	public function setHtml($html) {
 		$this->html = $html;
 	}
 
-	public function send()
-	{
+	public function send() {
 		try {
 			if (E\Config::IsType('no-mails'))
 				return true;
@@ -181,8 +172,7 @@ class CMail {
 		return false;
 	}
 
-	public function getError()
-	{
+	public function getError() {
 		return $this->error;
 	}
 

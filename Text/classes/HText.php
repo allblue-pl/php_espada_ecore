@@ -8,8 +8,7 @@ class HText {
     static public $Listeners_OnTextNotFound = null;
 	static private $Translations = [];
 
-	static public function _($text, $args = [])
-	{
+	static public function _($text, $args = []) {
 		$text_array = self::ParseText($text);
 
 		if ($text_array[0] === '' || $text_array[2] === '') {
@@ -42,8 +41,7 @@ class HText {
 			    ->get($text_array[2], $args);
 	}
 
-	static public function GetTranslations($path)
-	{
+	static public function GetTranslations($path) {
 		$path_array = self::ParsePath($path);
 
 		$translations_key = self::GetTranslationsKey($path_array[0],
@@ -53,8 +51,7 @@ class HText {
 		return self::$Translations[$translations_key];
 	}
 
-	static public function GetTranslationsKey($package, $file = '')
-	{
+	static public function GetTranslationsKey($package, $file = '') {
 		$key = $package;
 		if ($file !== null)
 			$key .= ':' . $file;
@@ -62,8 +59,7 @@ class HText {
 		return $key;
 	}
 
-	static public function Load($translations_key, $package, $path = '')
-	{
+	static public function Load($translations_key, $package, $path = '') {
 		if (isset(self::$Translations[$translations_key]))
 			return;
 
@@ -76,8 +72,7 @@ class HText {
     }
 
 
-	static private function ParseText($text)
-	{
+	static private function ParseText($text) {
 		$pos = mb_strrpos($text, ':');
 		if ($pos === false)
 			return ['', '', ''];
@@ -97,8 +92,7 @@ class HText {
 		}
 	}
 
-	static private function ParsePath($lang_path)
-	{
+	static private function ParsePath($lang_path) {
 		$pos = mb_strpos($lang_path, ':');
 		if ($pos === false)
 			return array($lang_path, '');

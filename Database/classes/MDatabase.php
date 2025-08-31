@@ -25,32 +25,28 @@ class MDatabase extends E\Module {
 
 	private $lastQuery = null;
 
-	public function __construct($prefix = 'default')
-	{
+	public function __construct($prefix = 'default') {
 		parent::__construct();
 
 		$this->prefix = $prefix;
 	}
 
 	/* Escapes */
-	public function escapeArray_Int($array)
-	{
+	public function escapeArray_Int($array) {
 		$database_arr_vals = [];
 		foreach ($array as $arr_val)
 			$database_arr_vals[] = $this->escapeInt($arr_val);
 		return '(' . implode(',', $database_arr_vals) . ')';
 	}
 
-	public function escapeArray_String($array)
-	{
+	public function escapeArray_String($array) {
 		$database_arr_vals = [];
 		foreach ($array as $arr_val)
 			$database_arr_vals[] = $this->escapeString($arr_val);
 		return '(' . implode(',', $database_arr_vals) . ')';
 	}
 
-	public function escapeBool($value)
-	{
+	public function escapeBool($value) {
 		if ($value === null)
 			return 'NULL';
 
@@ -60,8 +56,7 @@ class MDatabase extends E\Module {
 		return '0';
 	}
 
-	public function escapeTime_Date($time)
-	{
+	public function escapeTime_Date($time) {
 		if ($time === null)
 			return 'NULL';
 
@@ -76,24 +71,21 @@ class MDatabase extends E\Module {
 	// 	return '\'' . gmdate('Y-m-d', $time / 1000) . '\'';
 	// }
 
-	public function escapeTime_DateTime($time)
-	{
+	public function escapeTime_DateTime($time) {
 		if ($time === null)
 			return 'NULL';
 
 		return '\'' . gmdate('Y-m-d H:i:s', (0 + (int)$time)) . '\'';
 	}
 
-	public function escapeFloat($value)
-	{
+	public function escapeFloat($value) {
 		if ($value === null)
 			return 'NULL';
 
 		return (string)((float)$value);
 	}
 
-	public function escapeInt($value)
-	{
+	public function escapeInt($value) {
 		if ($value === null)
 			return 'NULL';
 
@@ -107,8 +99,7 @@ class MDatabase extends E\Module {
         return (string)(round((float)$value));
     }
 
-	public function escapeString($value)
-	{
+	public function escapeString($value) {
 		if ($value === null)
 			return 'NULL';
 
@@ -116,28 +107,23 @@ class MDatabase extends E\Module {
 	}
 
 	/* Gets */
-	public function getAffectedRows()
-	{
+	public function getAffectedRows() {
 		return $this->mysqli->affected_rows;
 	}
 
-	public function getError()
-	{
+	public function getError() {
 		return $this->mysqli->error;
 	}
 
-	public function getErrorNumber()
-	{
+	public function getErrorNumber() {
 		return $this->mysqli->errno;
 	}
 
-	public function getLastInsertedId()
-	{
+	public function getLastInsertedId() {
 		return $this->mysqli->insert_id;
 	}
 
-	public function getLastQuery()
-	{
+	public function getLastQuery() {
 		return $this->lastQuery;
     }
     
@@ -145,32 +131,27 @@ class MDatabase extends E\Module {
         return $this->mysqli !== null;
     }
 
-	public function requireNoTransaction()
-	{
+	public function requireNoTransaction() {
 		if (!$this->transaction_IsAutocommit())
 			throw new \Exception('Transaction detected. Required no transaction.');
 	}
 
-	public function requireTransaction()
-	{
+	public function requireTransaction() {
 		if ($this->transaction_IsAutocommit())
 			throw new \Exception('No transaction detected. Required transaction.');
 	}
 
 	/* Transaction */
-	public function transaction_IsAutocommit()
-	{
+	public function transaction_IsAutocommit() {
 		return $this->transaction_Autocommit;
 	}
 
-	public function transaction_Commit()
-	{
+	public function transaction_Commit() {
 		$this->transaction_InProgress = false;
 		return $this->mysqli->commit();
 	}
 
-	public function transaction_Finish($commit = null)
-	{
+	public function transaction_Finish($commit = null) {
 		$result = true;
 
 		if ($commit === null && $this->transaction_InProgress)
@@ -186,14 +167,12 @@ class MDatabase extends E\Module {
 		return $result;
 	}
 
-	public function transaction_Rollback()
-	{
+	public function transaction_Rollback() {
 		$this->transaction_InProgress = false;
 		return $this->mysqli->rollback();
 	}
 
-	public function transaction_Start()
-	{
+	public function transaction_Start() {
 		if (!$this->useTransactions)
 			throw new \Exception('Transactions not supported.');
 
@@ -204,24 +183,21 @@ class MDatabase extends E\Module {
 	}
 
 	/* Unescapes */
-	public function unescapeBool($bool)
-	{
+	public function unescapeBool($bool) {
 		if ($bool === null)
 			return null;
 
 		return $bool == 0 ? false : true;
 	}
 
-	public function unescapeFloat($value)
-	{
+	public function unescapeFloat($value) {
 		if ($value === null)
 			return null;
 
 		return (float)$value;
 	}
 
-	public function unescapeTime_Date($date)
-	{
+	public function unescapeTime_Date($date) {
 		if ($date === null)
 			return null;
 
@@ -236,8 +212,7 @@ class MDatabase extends E\Module {
 	// 	return strtotime($date . ' UTC') * 1000;
 	// }
 
-	public function unescapeTime_DateTime($date_time)
-	{
+	public function unescapeTime_DateTime($date_time) {
 		if ($date_time === null)
             return null;
 
@@ -252,24 +227,21 @@ class MDatabase extends E\Module {
         }
 	}
 
-	public function unescapeInt($value)
-	{
+	public function unescapeInt($value) {
 		if ($value === null)
 			return null;
 
 		return (int)$value;
     }
     
-    public function unescapeLong($value)
-	{
+    public function unescapeLong($value) {
 		if ($value === null)
 			return null;
 
 		return (float)$value;
 	}
 
-	public function unescapeString($value)
-	{
+	public function unescapeString($value) {
 		if ($value === null)
 			return null;
 
@@ -277,8 +249,7 @@ class MDatabase extends E\Module {
 	}
 
 	/* Query */
-	public function query_Select($query, $noAssoc = false)
-	{
+	public function query_Select($query, $noAssoc = false) {
 		$this->requirePreInitialize();
 
 		$this->lastQuery = $query;
@@ -327,8 +298,7 @@ class MDatabase extends E\Module {
 		return null;
 	}
 
-	public function query_Execute($query)
-	{
+	public function query_Execute($query) {
 		$this->requirePreInitialize();
 
 		$this->lastQuery = $query;
@@ -363,8 +333,7 @@ class MDatabase extends E\Module {
 		// return false;
 	}
 
-	public function quote($name)
-	{
+	public function quote($name) {
 		$this->requirePreInitialize();
 
 		$name_array = explode('.', $name);
@@ -383,18 +352,15 @@ class MDatabase extends E\Module {
 	}
 
 	/* Initialization */
-	protected function _preInitialize(\E\Site $site)
-	{
+	protected function _preInitialize(\E\Site $site) {
 		$this->connect();
 	}
 
-	protected function _deinitialize()
-	{
+	protected function _deinitialize() {
 		$this->disconnect();
 	}
 
-	public function connect()
-	{
+	public function connect() {
 		if ($this->mysqli !== null)
 			throw new \Exception('`disconnect` from database before calling `connect`.');
 
@@ -418,8 +384,7 @@ class MDatabase extends E\Module {
 		$this->mysqli->query('SET NAMES ' . str_replace('-', '', $charset_encoding));
 	}
 
-	public function disconnect()
-	{
+	public function disconnect() {
 		$this->transaction_Finish(false);
 		$this->mysqli->close();
 		$this->mysqli = null;

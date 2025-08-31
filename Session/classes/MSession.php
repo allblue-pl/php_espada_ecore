@@ -7,8 +7,7 @@ class MSession extends E\Module {
 
     private $db = null;
 
-	public function __construct(EC\MDatabase $db, $expirationTime = 0, $base = '/')
-	{
+	public function __construct(EC\MDatabase $db, $expirationTime = 0, $base = '/') {
         $this->db = $db;
 
         ini_set('session.cookie_lifetime', $expirationTime);
@@ -24,18 +23,15 @@ class MSession extends E\Module {
         );
 	}
 
-	protected function _preInitialize(E\Site $site)
-	{
+	protected function _preInitialize(E\Site $site) {
 		session_start();
 	}
 
-	protected function _postInitialize(E\Site $site)
-	{
+	protected function _postInitialize(E\Site $site) {
 		session_write_close();
 	}
 
-	protected function _deinitialize()
-	{
+	protected function _deinitialize() {
 		// $cookie_params = session_get_cookie_params();
 		//
 		// $cookie_expire = $cookie_params['lifetime'] === 0 ?
@@ -47,8 +43,7 @@ class MSession extends E\Module {
 		// 		$cookie_params['secure'], $cookie_params['httponly']);
 	}
 
-	public function &get($name)
-	{
+	public function &get($name) {
 		$this->requirePreInitialize();
 
 		if (isset($_SESSION[$name]))
@@ -58,8 +53,7 @@ class MSession extends E\Module {
 		return $null;
 	}
 
-	public function set($name, $value)
-	{
+	public function set($name, $value) {
 		$this->requirePreInitialize();
 		$this->requireBeforePostInitialize();
 
@@ -72,8 +66,7 @@ class MSession extends E\Module {
 		// print_r($_SESSION);
 	}
 
-	public function delete($name)
-	{
+	public function delete($name) {
 		$this->requirePreInitialize();
 		$this->requireBeforePostInitialize();
 
@@ -81,8 +74,7 @@ class MSession extends E\Module {
 			unset($_SESSION[$name]);
 	}
 
-	public function destroy()
-	{
+	public function destroy() {
 		$this->requirePreInitialize();
 		$this->requireBeforePostInitialize();
 
@@ -91,8 +83,7 @@ class MSession extends E\Module {
 		session_destroy();
 	}
 
-	public function &__get($name)
-	{
+	public function &__get($name) {
 		return $this->get($name);
     }
     
@@ -100,13 +91,11 @@ class MSession extends E\Module {
         return isset($_SESSION[$name]);
     }
 
-	public function __set($name, $value)
-	{
+	public function __set($name, $value) {
 		$this->set($name, $value);
 	}
 
-	public function getToken()
-	{
+	public function getToken() {
 		return session_id();
     }
     

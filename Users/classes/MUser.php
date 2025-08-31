@@ -26,8 +26,7 @@ class MUser extends E\Module {
 	private $salt = '';
 
     public function __construct(?EC\MSession $session, EC\MDatabase $database,
-            $type = 'Default')
-	{
+            $type = 'Default') {
 		parent::__construct();
 
 		$this->session = $session;
@@ -42,13 +41,11 @@ class MUser extends E\Module {
     }
 
 	/* Permissions */
-	public function getPermissions()
-	{
+	public function getPermissions() {
 		return $this->permissions;
 	}
 
-	public function getPermissions_Default()
-	{
+	public function getPermissions_Default() {
 		$groups = EC\HConfig::GetRequired('Users', 'groups');
 		if (array_key_exists('_default', $groups))
 			return $groups['_default'];
@@ -56,13 +53,11 @@ class MUser extends E\Module {
 		return [];
 	}
 
-	public function hasPermission($permission)
-	{
+	public function hasPermission($permission) {
 		return in_array($permission, $this->permissions);
     }
     
-    public function hasPermissions(array $permissions)
-	{
+    public function hasPermissions(array $permissions) {
         foreach ($permissions as $permission) {
             if (!$this->hasPermission($permission))
                 return false;
@@ -71,57 +66,48 @@ class MUser extends E\Module {
 		return true;
 	}
 
-	public function isInGroup($group_name)
-	{
+	public function isInGroup($group_name) {
 		return in_array($group_name, $this->groups);
 	}
 
 	/* Pages */
-	public function setPage_LogIn($page_path)
-	{
+	public function setPage_LogIn($page_path) {
 		$this->uris_LogIn = EUri::GetPage($page_path);
 		if ($this->uris_LogIn === null)
 			throw new \Exception("Page `$page_path` does not exist.");
 	}
 
-	public function getUri_LogIn()
-	{
+	public function getUri_LogIn() {
 		return $this->uris_LogIn;
 	}
 
-	public function setPage_LogOut($page_path)
-	{
+	public function setPage_LogOut($page_path) {
 		$this->uris_LogOut = EUri::GetPage($page_path);
 		if ($this->uris_LogOut === null)
 			throw new \Exception("Page `$page_path` does not exist.");
 	}
 
-	public function getUri_LogOut()
-	{
+	public function getUri_LogOut() {
 		return $this->uris_LogOut;
 	}
 
 	/* User */
-	public function isLoggedIn()
-	{
+	public function isLoggedIn() {
 		if ($this->id === -1)
             return false;
 
 		return true;
 	}
 
-	public function getId()
-	{
+	public function getId() {
 		return $this->id;
 	}
 
-	public function getLogin()
-	{
+	public function getLogin() {
 		return $this->login;
     }
     
-    public function initUser()
-	{
+    public function initUser() {
 		$user = $this->session->get($this->session_Name);
 
         if ($user === null) {
@@ -148,8 +134,7 @@ class MUser extends E\Module {
     }
 
 	/* Session */
-	public function startSession($user_id, $user_login)
-	{
+	public function startSession($user_id, $user_login) {
 		$this->session->delete($this->session_Name);
 
 		$user = [];
@@ -161,8 +146,7 @@ class MUser extends E\Module {
         $this->initUser();
 	}
 
-	public function destroy()
-	{
+	public function destroy() {
 		$this->session->delete($this->session_Name);
 
 		$this->id = -1;
@@ -172,21 +156,18 @@ class MUser extends E\Module {
 	}
 
 	/* Config */
-	public function getTestUsers()
-	{
+	public function getTestUsers() {
 		return $this->testUsers;
 	}
 
 	/* Initialization */
-	protected function _preInitialize(E\Site $site)
-	{
+	protected function _preInitialize(E\Site $site) {
 		$this->_preInitialize_Config();
 		$this->initUser();
 		// $this->_preInitialize_Permissions();
 	}
 
-	private function _preInitialize_Config()
-	{
+	private function _preInitialize_Config() {
 		$this->testUsers = HUsers::GetTestUsers();
 		$this->salt = EC\HConfig::GetRequired('Hash', 'salt');
 	}

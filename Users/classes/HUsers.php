@@ -19,8 +19,7 @@ class HUsers {
 
 
 	static public function Activate(EC\MDatabase $db, $userId, bool $active,
-            &$existingActiveUserId = null)
-	{
+            &$existingActiveUserId = null) {
         $rUser = (new TUsers($db))->row_ById($userId);
         if ($rUser === null)    
             throw new \Exception('User does not exist.');
@@ -39,8 +38,7 @@ class HUsers {
 	}
 
 	static public function ChangePassword(EC\MDatabase $db, $userId,
-			$newPassword)
-	{
+			$newPassword) {
 		$newPassword_Hash = self::GetPasswordHash($newPassword);
 
 		return (new TUsers($db))->update_Where(
@@ -48,14 +46,12 @@ class HUsers {
 			[[ 'Id', '=', $userId ]]);
 	}
 
-    static public function CheckEmailHash($email, $emailHash)
-	{
+    static public function CheckEmailHash($email, $emailHash) {
 		return EC\HHash::CheckPassword($email, $emailHash);
 	}
 
     static public function CheckLoginAndPassword(EC\MDatabase $db, string $type, 
-            string $login, string $password, ?int &$errorCode)
-	{
+            string $login, string $password, ?int &$errorCode) {
         $login = trim(mb_strtolower($login));
 
         $testUsers = self::GetTestUsers();
@@ -125,13 +121,11 @@ class HUsers {
 		];
 	}
 
-	static public function CheckPasswordHash($password, $password_hash)
-	{
+	static public function CheckPasswordHash($password, $password_hash) {
 		return EC\HHash::CheckPassword($password, $password_hash);
 	}
 
-	static public function CheckPasswordStrength($password)
-	{
+	static public function CheckPasswordStrength($password) {
 		if(strlen($password) < self::Password_MinCharacters)
 			return false;
 		if (!preg_match('#[A-Z]#', $password))
@@ -200,13 +194,11 @@ class HUsers {
         return;
     }
 
-	static public function Get(EC\MDatabase $db, $userId)
-	{
+	static public function Get(EC\MDatabase $db, $userId) {
 		return (new TUsers($db))->row_ById($userId);
 	}
 
-	static public function GetTestUsers()
-	{
+	static public function GetTestUsers() {
 		return EC\HConfig::Get('Users', 'testUsers', []);
 	}
 
@@ -261,8 +253,7 @@ class HUsers {
 	// 		return $id;
     // }
 
-	static public function GetLoginHash($login, $hashRounds = null)
-	{
+	static public function GetLoginHash($login, $hashRounds = null) {
         $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
 
 		return EC\HHash::Get(EC\HHash::Salt(), mb_strtolower($login),
@@ -310,8 +301,7 @@ class HUsers {
     }
 
     static public function Update(EC\MDatabase $db, string $type, $id, $login = null, 
-            $email = null, $password = null, $groups = null, $active = null)
-	{
+            $email = null, $password = null, $groups = null, $active = null) {
         $row = [
             'Id' => $id,
             'Type' => $type,

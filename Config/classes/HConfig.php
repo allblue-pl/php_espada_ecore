@@ -103,8 +103,7 @@ class HConfig {
     //     return $value;
     // }
 
-    static private function RequireConfigFile()
-	{
+    static private function RequireConfigFile() {
         $file_path = PATH_PRESETS . '/Config/config.php';
 
 		if (!file_exists($file_path))
