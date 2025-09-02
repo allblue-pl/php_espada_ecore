@@ -1349,6 +1349,7 @@ class TTable {
             $db_column_name = $tableOnly ? $this->db->quote($columnName) :
                     $this->getColumn($columnName)['expr'];
 
+            $prefix = '';
             if ($sign === null) {
                 $db_value = $value;
                 $sign = '';
@@ -1374,12 +1375,18 @@ class TTable {
                             }
                         } else
                             $db_value = ' ' . $this->escapeArray($column['field'], $value);
-                    } else
+                    } else {
+                        if (is_string($value) && $sign === '==') {
+                            $prefix = 'BINARY ';
+                            $sign = '=';
+                        }
+
                         $db_value = ' ' . $column['field']->escape($this->db, $value);
+                    }
                 }
             }
 
-            $args[] = "{$db_column_name} {$sign}{$db_value}";
+            $args[] = "{$prefix}{$db_column_name} {$sign}{$db_value}";
         }
 
         return implode(" {$logic_operator} ", $args);
