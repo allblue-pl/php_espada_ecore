@@ -33,8 +33,8 @@ export class Site extends spocky.Module {
         let lbSetup = eLibs.eFields.get('lbSetup');
         let base = '/';
         if ('uris' in lbSetup) {
-        if ('base' in lbSetup.uris)
-                base = lbSetup.uris.base;
+            if ('base' in lbSetup.uris)
+                    base = lbSetup.uris.base;
         }
 
         this.pager = new abPager.Pager(base);
