@@ -35,7 +35,7 @@ class VTime extends Forms\VField {
             if ($args['minTime'] !== null) {
                 if ($value < $args['minTime']) {
                     $this->error($this->texts->get('date_BelowMinDate',
-                            array(date(EC\HText::_('Date:format_Date'),
+                            array(date(EC\HText::_('Date:Format_Date'),
                             $args['minTime']))));
                 }
             }
@@ -43,7 +43,7 @@ class VTime extends Forms\VField {
             if ($args['maxTime'] !== null) {
                 if ($value > $args['maxTime']) {
                     $this->error($this->texts->get('date_AboveMaxDate',
-                            array(date(EC\HText::_('Date:format_Date'),
+                            array(date(EC\HText::_('Date:Format_Date'),
                             $args['maxTime']))));
                 }
             }

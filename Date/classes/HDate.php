@@ -71,21 +71,21 @@ class HDate {
 
         $time += self::GetUTCOffset_Time($time);
 
-        return gmdate(EC\HText::_('Date:format_Date'), $time);
+        return gmdate(EC\HText::_('Date:Format_Date'), $time);
     }
 
     static public function Format_Date_UTC($time) {
         if ($time === null)
             return '-';
 
-        return gmdate(EC\HText::_('Date:format_Date'), $time);
+        return gmdate(EC\HText::_('Date:Format_Date'), $time);
     }
 
     static public function Format_Date_Rel($time) {
         if ($time === null)
             return '-';
 
-        return gmdate(EC\HText::_('Date:format_Date'), $time);
+        return gmdate(EC\HText::_('Date:Format_Date'), $time);
     }
 
     static public function Format_DateTime($time) {
@@ -94,28 +94,28 @@ class HDate {
 
         $time += self::GetUTCOffset_Time($time);
 
-        return gmdate(EC\HText::_('Date:format_DateTime'), $time);
+        return gmdate(EC\HText::_('Date:Format_DateTime'), $time);
     }
 
     static public function Format_DateTime_UTC($time) {
         if ($time === null)
             return '-';
 
-        return gmdate(EC\HText::_('Date:format_DateTime'), $time);
+        return gmdate(EC\HText::_('Date:Format_DateTime'), $time);
     }
 
     static public function Format_Time($time) {
         if ($time === null)
             return '-';
 
-        return gmdate(EC\HText::_('Date:format_Time'), $time);
+        return gmdate(EC\HText::_('Date:Format_Time'), $time);
     }
 
     static public function Format_Time_Rel($time) {
         if ($time === null)
             return '-';
 
-        return gmdate(EC\HText::_('Date:format_Time'), $time);
+        return gmdate(EC\HText::_('Date:Format_Time'), $time);
     }
 
     static public function Format_DayOfWeek($time) {
@@ -123,7 +123,7 @@ class HDate {
             return '-';
 
         $day_of_week = gmdate('l', $time);
-        return EC\HText::_("Date:format_DayOfWeek_{$day_of_week}");
+        return EC\HText::_("Date:Format_DayOfWeek_{$day_of_week}");
     }
 
     static public function GetTime(): ?float {

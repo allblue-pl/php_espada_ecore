@@ -34,7 +34,7 @@ class VDate extends Forms\VField {
             if ($args['minDate'] !== null) {
                 if ($value < $args['minDate']) {
                     $this->error($this->texts->get('date_BelowMinDate',
-                            array(date(EC\HText::_('Date:format_Date'),
+                            array(date(EC\HText::_('Date:Format_Date'),
                             $args['minDate']))));
                 }
             }
@@ -42,7 +42,7 @@ class VDate extends Forms\VField {
             if ($args['maxDate'] !== null) {
                 if ($value > $args['maxDate']) {
                     $this->error($this->texts->get('date_AboveMaxDate',
-                            array(date(EC\HText::_('Date:format_Date'),
+                            array(date(EC\HText::_('Date:Format_Date'),
                             $args['maxDate']))));
                 }
             }
