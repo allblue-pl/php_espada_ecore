@@ -1,9 +1,11 @@
 <?php namespace EC\ABData;
 defined('_ESPADA') or die(NO_ACCESS);
 
+use Closure;
 use E, EC,
     EC\Sys,
     EC\Api\CArgs, EC\Api\CResult;
+use EC\Database\MDatabase;
 
 class CDataStore {
 
@@ -44,21 +46,21 @@ class CDataStore {
     }
 
     
-    private $db = null;
-    private $requests = null;
-    private $maxRowsInData = null;
+    private MDatabase $db;
+    private array $requestFns;
+    private int $maxRowsInData;
     
-    private $tableRequests = null;
+    private array $dbSyncRequestFns;
 
 
-    public function __construct(EC\MDatabase $db, array $tableRequests, 
+    public function __construct(MDatabase $db, array $dbSyncRequestFns, 
             ?int $maxRowsInData = null) {
         $this->db = $db;
-        $this->requests = [];
+        $this->requestFns = [];
         $this->maxRowsInData = $maxRowsInData === null ? 
                 self::MaxRowsInData : $maxRowsInData;
 
-        $this->tableRequests = $tableRequests;
+        $this->dbSyncRequestFns = $dbSyncRequestFns;
 
         // $ds->addRequest('Sys_TestUsers', TTestUsers);
         // $ds->addRequest('Sys_TestItems', TTestItems);
@@ -91,17 +93,22 @@ class CDataStore {
                 null : $device->getLastUpdate();
         $rDeviceRows_New = [];
 
-        foreach ($this->tableRequests as $tableRequestName => $tableRequestInfo) {
-            if (!is_array($tableRequestInfo))
+        foreach ($this->dbSyncRequestFns as $dbSyncRequestName => $dbSyncRequestFn) {
+            if (!($dbSyncRequestFn instanceof Closure))
+                throw new \Exception("'dbSyncRequestFn' must be a closure.");
+
+            $dbSyncRequestInfo = $dbSyncRequestFn();
+
+            if (!is_array($dbSyncRequestInfo))
                 throw new \Exception('Table request info must be an array.');
-            if (count($tableRequestInfo) !== 2)
+            if (count($dbSyncRequestInfo) !== 2)
                 throw new \Exception('Table request info must be in [ string, RRequest ] format.');
-            if (!is_string($tableRequestInfo[0]))
+            if (!is_string($dbSyncRequestInfo[0]))
                 throw new \Exception('Table name is not a string.');
-            $tableName = $tableRequestInfo[0];
-            if (!($tableRequestInfo[1] instanceof RRequest))
+            $tableName = $dbSyncRequestInfo[0];
+            if (!($dbSyncRequestInfo[1] instanceof RDBSyncRequest))
                 throw new \Exception("Table request '{$tableName}' is not an instance of 'RRequest'.");
-            $tableRequest = $tableRequestInfo[1];
+            $tableRequest = $dbSyncRequestInfo[1];
             if (!($tableRequest->hasAction('select')))
                 throw new \Exception("Table request '{$tableName}' does not have action 'select'.");
 
@@ -112,7 +119,7 @@ class CDataStore {
             if ($rowsLimit > 0) {
                 $rows = $this->_getUpdateData($device, $schemeVersion, 
                         $rDeviceRows_New, $updateData['delete'],
-                        $tableRequestName, $tableName, $tableRequest, 
+                        $dbSyncRequestName, $tableName, $tableRequest, 
                         $lastUpdate, $rowsOffset, $rowsLimit, false, $error);
 
                 if (count($rows) > 0) {
@@ -148,11 +155,11 @@ class CDataStore {
 
             $rows = $this->_getUpdateData($device, $schemeVersion,
                     $rDeviceRows_New, $updateData['delete'],
-                    $tableRequestName, $tableName, $tableRequest, $lastUpdate, 
+                    $dbSyncRequestName, $tableName, $tableRequest, $lastUpdate, 
                     $rowsOffset, null, true, $error);
             if (count($rows) > 0) {
                 $dataInfos[] = [
-                    'tableRequestName' => $tableRequestName,
+                    'tableRequestName' => $dbSyncRequestName,
                     'ids' => array_column($rows, '_Id'),
                 ];
                 $rowsCount += count($rows);
@@ -198,21 +205,21 @@ class CDataStore {
                 throw new \Exception("No 'tableName' in 'dataInfo.");
             if (!array_key_exists('ids', $dataInfos[$i]))
                 throw new \Exception("No 'ids' in 'dataInfo.");
-            $tableRequestName = $dataInfos[$i]['tableRequestName'];
+            $dbSyncRequestName = $dataInfos[$i]['tableRequestName'];
 
-            if (!array_key_exists($tableRequestName, $this->tableRequests)) {
-                throw new \Exception("Table request '{$tableRequestName}'" .
+            if (!array_key_exists($dbSyncRequestName, $this->dbSyncRequestFns)) {
+                throw new \Exception("Table request '{$dbSyncRequestName}'" .
                         " does not exist.");
             }
 
             [ $tableName, $tableRequest ] = 
-                    $this->tableRequests[$tableRequestName];
+                    $this->dbSyncRequestFns[$dbSyncRequestName]();
 
             if (!($tableRequest instanceof RRequest))
-                throw new \Exception("Table request '{$tableRequestName}' is not an instance of 'RRequest'.");
+                throw new \Exception("Table request '{$dbSyncRequestName}' is not an instance of 'RRequest'.");
 
             if (!($tableRequest->hasAction('select')))
-                throw new \Exception("Table request '{$tableRequestName}' does not have action 'select'.");
+                throw new \Exception("Table request '{$dbSyncRequestName}' does not have action 'select'.");
 
             $limit = null;
             if ($rowsCount + count($dataInfos[$i]['ids']) > 
@@ -233,20 +240,20 @@ class CDataStore {
 
             if (!array_key_exists('_type', $actionResult))
                 throw new \Exception("Wrong request action result format (no '_type'): " . 
-                    "{$tableRequestName} -> select");
+                    "{$dbSyncRequestName} -> select");
 
             if (!array_key_exists('_message', $actionResult))
                 throw new \Exception("Wrong request action result format (no '_message'): " . 
-                    "{$tableRequestName} -> select");
+                    "{$dbSyncRequestName} -> select");
 
             if ($actionResult['_type'] !== 0) {
-                $error = "Cannot execute table request '{$tableRequestName}' action '': " . 
+                $error = "Cannot execute table request '{$dbSyncRequestName}' action '': " . 
                         $actionResult['_message'];
                 return null;
             }
 
             if (!array_key_exists('rows', $actionResult)) {
-                throw new \Exception("No 'rows' in table request '{$tableRequestName}'" .
+                throw new \Exception("No 'rows' in table request '{$dbSyncRequestName}'" .
                         " action 'select'.");
             }
 
@@ -467,25 +474,29 @@ class CDataStore {
         if (!$this->hasRequest($requestName))
             throw new \Exception("Request '{$requestName}' does not exist.");
 
-        return $this->requests[$requestName];
+        $request = $this->requestFns[$requestName]();
+        if (!($request instanceof RRequest))
+            throw new \Exception("'requestFn' '{$requestName}' does not return 'RRequest.");
+
+        return $request;
     }
 
     public function hasRequest(string $requestName) {
-        return array_key_exists($requestName, $this->requests);
+        return array_key_exists($requestName, $this->requestFns);
     }
 
-    public function setR(string $requestName, RRequest $request) {
-        $this->setRequest($requestName, $request);
+    public function setR(string $requestName, \Closure $requestFn) {
+        $this->setRequest($requestName, $requestFn);
     }
 
-    public function setRequest(string $requestName, RRequest $request) {
-        if (array_key_exists($requestName, $this->requests))
+    public function setRequest(string $requestName, \Closure $requestFn) {
+        if ($this->hasRequest($requestName))
             throw new \Exception("Request '{$requestName}' already exists.");
 
-        $this->requests[$requestName] = $request;
+        $this->requestFns[$requestName] = $requestFn;
     }
 
-    public function processRequests(CDevice $device, array $requests) {
+    public function processRequests(?CDevice $device, array $requests) {
         $response = [
             'actionErrors' => [ '_stdObj' => '' ],
             'type' => self::Response_Types_Success,
@@ -577,11 +588,13 @@ class CDataStore {
         }
 
         if ($success) {
-            if (!$device->update($this->db)) {
-                $success = false;
+            if ($device !== null) {
+                if (!$device->update($this->db)) {
+                    $success = false;
 
-                $response['type'] = self::Response_Types_Error;
-                $response['errorMessage'] = "Cannot update device.";
+                    $response['type'] = self::Response_Types_Error;
+                    $response['errorMessage'] = "Cannot update device.";
+                }
             }
         }
 
@@ -598,7 +611,7 @@ class CDataStore {
 
     private function _getUpdateData(CDevice $device, int $schemeVersion, 
             array &$rDeviceRows_New, array &$updateData_Delete, 
-            string $tableRequestName, string $tableName, RRequest $tableRequest, 
+            string $dbSyncRequestName, string $tableName, RDBSyncRequest $tableRequest, 
             ?float $lastUpdate, int $rowsOffset, ?int $rowsLimit, bool $onlyIds, 
             ?string &$error) : ?array {
         // $deviceRowIds = [];
@@ -622,7 +635,7 @@ class CDataStore {
             'where' => $where,
         ], $schemeVersion, $lastUpdate);
 
-        self::ValidateActionResult_Select($actionResult, $tableRequestName, $error);
+        self::ValidateActionResult_Select($actionResult, $dbSyncRequestName, $error);
         if ($error !== null)
             return null;
 

@@ -1,12 +1,12 @@
 <?php namespace EC\ABData;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database;
+use E;
+use EC\Database\MDatabase;
 
 class TDevices extends _TDevices {
 
-    public function __construct(EC\MDatabase $db) {
+    public function __construct(MDatabase $db) {
         parent::__construct($db, 'abd_d');
 
         // $this->setColumnParser('ItemIds_Used', [

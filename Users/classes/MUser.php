@@ -36,6 +36,10 @@ class MUser extends E\Module {
         $this->session_Name = "User_User_{$type}";
     }
     
+    public function getGroups(): array {
+        return $this->groups;
+    }
+
     public function getType() {
         return $this->type;
     }

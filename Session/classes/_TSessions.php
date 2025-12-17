@@ -1,11 +1,13 @@
 <?php namespace EC\Session;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database;
+use E, EC;
+use EC\Database;
+use EC\Database\MDatabase;
+use EC\Database\TTable;
 
-class _TSessions extends Database\TTable {
-    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
+class _TSessions extends TTable {
+    public function __construct(MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Session_Sessions', $tablePrefix);
 
         $this->setColumns([

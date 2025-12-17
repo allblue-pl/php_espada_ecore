@@ -6,11 +6,12 @@ use E, EC;
 
 class AApi {
 
-    private $site = null;
-    private $actions = [];
+    private SApi $site;
+    private array $actions;
 
-    public function __construct(EC\SApi $site) {
+    public function __construct(SApi $site) {
         $this->site = $site;
+        $this->actions = [];
     }
 
     public function getAction($actionName) {

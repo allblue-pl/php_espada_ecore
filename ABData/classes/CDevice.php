@@ -2,6 +2,9 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
+use EC\Hash\HHash;
+use EC\Text\HText;
 
 class CDevice {
     static public $ExpirationTime       = 15 * EC\HDate::Span_Minute;
@@ -25,7 +28,7 @@ class CDevice {
     static private $SystemItemIds_Used = [];
 
 
-    static public function Create(EC\MDatabase $db, $deviceId, 
+    static public function Create(MDatabase $db, $deviceId, 
             $deviceHash, $lastUpdate, $declaredItemIds = [],
             &$error = null) {
         $rDevice = (new TDevices($db))->row_Where([
@@ -38,23 +41,23 @@ class CDevice {
         ]);
 
         if ($rDevice === null) {
-            $error = EC\HText::_('ABData:Errors_InvalidDeviceInfo');
+            $error = HText::_('ABData:Errors_InvalidDeviceInfo');
             return null;
         }
 
         if ($rDevice['Id'] <= 99999) {
-            $rDevice['Hash'] = EC\HHash::GetPassword($deviceHash);
+            $rDevice['Hash'] = HHash::GetPassword($deviceHash);
             (new TDevices($db))->update([ $rDevice ]);
         }   
         
-        if (!EC\HHash::CheckPassword($deviceHash, $rDevice['Hash'])) {
-            $error = EC\HText::_('ABData:Errors_InvalidDeviceInfo');
+        if (!HHash::CheckPassword($deviceHash, $rDevice['Hash'])) {
+            $error = HText::_('ABData:Errors_InvalidDeviceInfo');
             return null;
         }
 
         if ($rDevice['Expires'] !== null) {
             if ($rDevice['Expires'] < time()) {
-                $error = EC\HText::_('ABData:Errors_SessionExpired');
+                $error = HText::_('ABData:Errors_SessionExpired');
                 return null;
             }
         }
@@ -64,14 +67,14 @@ class CDevice {
                 $declaredItemIds, $rDevice['Expires'], $rDevice['LastSync']);
     }
 
-    static public function CreateNewDevice(EC\MDatabase $db, &$hash = null, 
+    static public function CreateNewDevice(MDatabase $db, &$hash = null, 
             $fixed = false) {
         $db->requireNoTransaction();
         $db->transaction_Start();
 
         $table = new EC\ABData\TDevices($db);
-        $hash = EC\HHash::Generate(64);
-        $hash_Hashed = EC\HHash::GetPassword($hash);
+        $hash = HHash::Generate(64);
+        $hash_Hashed = HHash::GetPassword($hash);
 
         $row_Update = null;
 
@@ -177,7 +180,7 @@ class CDevice {
         ];
     }
 
-    // static public function GetSystemDeviceRow(EC\MDatabase $db)
+    // static public function GetSystemDeviceRow(MDatabase $db)
     // {
     //     if (self::$SystemDevice_Row !== null)
     //         return self::$SystemDevice_Row;
@@ -211,7 +214,7 @@ class CDevice {
     //     return in_array($idInfo['itemId'], self::$SystemItemIds_Declared);
     // }
 
-    // static public function NextSystemId(EC\MDatabase $db)
+    // static public function NextSystemId(MDatabase $db)
     // {
     //     $db->requireTransaction();
 
@@ -235,7 +238,7 @@ class CDevice {
         return $deviceId * self::$Devices_Offset + $id;
     }
 
-    // static public function UpdateDevice(CDevice $device, EC\MDatabase $db)
+    // static public function UpdateDevice(CDevice $device, MDatabase $db)
     // {
     //     if (count(self::$SystemItemIds_Used) > 0) {
     //         $systemItemIds_LastDeclared = 0;
@@ -457,7 +460,7 @@ class CDevice {
     }
 
 
-    private function __construct(EC\MDatabase $db, $deviceId, $lastUpdate,
+    private function __construct(MDatabase $db, $deviceId, $lastUpdate,
             array $usedItemIds, int $lastItemId, int $lastSystemItemId,
             array $declaredItemIds, $expires, $lastSync) {
         $this->db = $db;

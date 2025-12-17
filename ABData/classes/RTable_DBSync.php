@@ -3,8 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 
-class RTable_DBSync extends RRequest {
-
+class RDBSyncRequest extends RRequest {
     static public function Table_Select(EC\Database\TTable $table, array $args, 
             ?string &$error) : ?array {
         if (!array_key_exists('columnNames', $args))
@@ -88,5 +87,4 @@ class RTable_DBSync extends RRequest {
         return array_column($rows, '_Id');
     }
     /* / RRequest */
-
 }

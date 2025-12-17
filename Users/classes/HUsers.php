@@ -2,7 +2,8 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
-
+use EC\Database\MDatabase;
+use EC\Hash\HHash;
 
 class HUsers {
 
@@ -18,7 +19,7 @@ class HUsers {
     const LogInError_WrongPassword      = 2;
 
 
-	static public function Activate(EC\MDatabase $db, $userId, bool $active,
+	static public function Activate(MDatabase $db, $userId, bool $active,
             &$existingActiveUserId = null) {
         $rUser = (new TUsers($db))->row_ById($userId);
         if ($rUser === null)    
@@ -37,7 +38,7 @@ class HUsers {
         ]);
 	}
 
-	static public function ChangePassword(EC\MDatabase $db, $userId,
+	static public function ChangePassword(MDatabase $db, $userId,
 			$newPassword) {
 		$newPassword_Hash = self::GetPasswordHash($newPassword);
 
@@ -47,10 +48,10 @@ class HUsers {
 	}
 
     static public function CheckEmailHash($email, $emailHash) {
-		return EC\HHash::CheckPassword($email, $emailHash);
+		return HHash::CheckPassword($email, $emailHash);
 	}
 
-    static public function CheckLoginAndPassword(EC\MDatabase $db, string $type, 
+    static public function CheckLoginAndPassword(MDatabase $db, string $type, 
             string $login, string $password, ?int &$errorCode) {
         $login = trim(mb_strtolower($login));
 
@@ -61,7 +62,7 @@ class HUsers {
 
             $authenticated = false;
             if (array_key_exists('passwordHash', $testUser))
-                $authenticated = EC\HHash::CheckPassword($password, $testUser['passwordHash']);
+                $authenticated = HHash::CheckPassword($password, $testUser['passwordHash']);
             else if (array_key_exists('password', $testUser))
                 $authenticated = $testUser['password'] === $password;
 
@@ -90,7 +91,7 @@ class HUsers {
             return $user;
 		}
 
-		$salt = EC\HHash::Salt();
+		$salt = HHash::Salt();
         $loginHash = self::GetLoginHash($login);
 
 		$row = (new TUsers($db))->row_Where([
@@ -122,7 +123,7 @@ class HUsers {
 	}
 
 	static public function CheckPasswordHash($password, $password_hash) {
-		return EC\HHash::CheckPassword($password, $password_hash);
+		return HHash::CheckPassword($password, $password_hash);
 	}
 
 	static public function CheckPasswordStrength($password) {
@@ -140,11 +141,11 @@ class HUsers {
 		return true;
 	}
 
-    static public function Delete(EC\MDatabase $db, $userId) {
+    static public function Delete(MDatabase $db, $userId) {
         return (new TUsers($db))->delete_ById($userId);
     }
 
-    static public function Exists(EC\MDatabase $db, string $type, string $login, 
+    static public function Exists(MDatabase $db, string $type, string $login, 
             array $excludedIds = null, &$existingUserId = null, 
             $onlyActive = false) {
         $loginHash = self::GetLoginHash($login);
@@ -170,7 +171,7 @@ class HUsers {
         return;
     }
 
-    static public function Exists_ByHash(EC\MDatabase $db, string $type, 
+    static public function Exists_ByHash(MDatabase $db, string $type, 
             string $loginHash, array $excludedIds = null, 
             &$existingUserId = null, $onlyActive = false) {
         if ($excludedIds === null)
@@ -194,7 +195,7 @@ class HUsers {
         return;
     }
 
-	static public function Get(EC\MDatabase $db, $userId) {
+	static public function Get(MDatabase $db, $userId) {
 		return (new TUsers($db))->row_ById($userId);
 	}
 
@@ -203,7 +204,7 @@ class HUsers {
 	}
 
 	//
-    // static public function Update(EC\MDatabase $database,
+    // static public function Update(MDatabase $database,
 	// 		$id, $login, $email, $password, $groups, $active)
     // {
 	// 	$loginHash = self::GetLoginHash($login);
@@ -256,14 +257,14 @@ class HUsers {
 	static public function GetLoginHash($login, $hashRounds = null) {
         $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
 
-		return EC\HHash::Get(EC\HHash::Salt(), mb_strtolower($login),
+		return HHash::Get(HHash::Salt(), mb_strtolower($login),
 				self::GetHashRounds());
 	}
 
 	static public function GetEmailHash($email, $hashRounds = null) {
         $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
 
-        return EC\HHash::GetPassword(mb_strtolower($email), self::GetHashRounds());
+        return HHash::GetPassword(mb_strtolower($email), self::GetHashRounds());
     }
 
     static public function GetHashRounds() {
@@ -274,7 +275,7 @@ class HUsers {
     static public function GetPasswordHash($password, $hashRounds = null) {
         $hashRounds = $hashRounds === null ? self::GetHashRounds() : $hashRounds;
 
-        return EC\HHash::GetPassword($password, self::GetHashRounds());
+        return HHash::GetPassword($password, self::GetHashRounds());
     }
 
     static public function InitSPK(EC\MELibs $eLibs, $userApiUri) {
@@ -284,9 +285,9 @@ class HUsers {
         ]);
     }
 
-    static public function ResetPassword_CreateHash(EC\MDatabase $db, 
+    static public function ResetPassword_CreateHash(MDatabase $db, 
             float $userId, string &$hash) {
-        $hash = EC\HHash::Generate(128);
+        $hash = HHash::Generate(128);
 
         (new TResetPasswordHashes($db))->delete_Where([
             [ 'DateTime', '<', time() - EC\HDate::Span_Day ],
@@ -300,7 +301,7 @@ class HUsers {
         ]]);
     }
 
-    static public function Update(EC\MDatabase $db, string $type, $id, $login = null, 
+    static public function Update(MDatabase $db, string $type, $id, $login = null, 
             $email = null, $password = null, $groups = null, $active = null) {
         $row = [
             'Id' => $id,
@@ -329,7 +330,7 @@ class HUsers {
 		return (new TUsers($db))->update([ $row ]);
     }
     
-    static public function ValidateEmail(EC\MDatabase $db, $userType, 
+    static public function ValidateEmail(MDatabase $db, $userType, 
             EC\Forms\CValidator $validator, $fieldName, $login, $userId) {
         $excludedIds = [ -1 ];
         if ($userId !== null)

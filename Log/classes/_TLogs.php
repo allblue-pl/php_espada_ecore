@@ -1,11 +1,13 @@
 <?php namespace EC\Log;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database;
+use E, EC;
+use EC\Database;
+use EC\Database\MDatabase;
+use EC\Database\TTable;
 
-class _TLogs extends Database\TTable {
-    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
+class _TLogs extends TTable {
+    public function __construct(MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Log_Logs', $tablePrefix);
 
         $this->setColumns([

@@ -1,23 +1,25 @@
 <?php namespace EC\Api;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC;
-
+use E;
+use EC\Database\MDatabase;
+use EC\Session\MSession;
+use EC\Users\MUser;
 
 class ABasic extends AApi {
 
     private $actionRequiredPermissions = [];
     private $requiredPermissions = null;
 
-    public function __construct(EC\SApi $site, $userType = 'Default', 
+    public function __construct(SApi $site, $userType = 'Default', 
             $requiredPermissions = []) {
         parent::__construct($site);
 
         $this->requiredPermissions = $requiredPermissions;
 
-        $site->addM('db', new EC\MDatabase());
-        $site->addM('session', new EC\MSession($site->m->db));
-        $site->addM('user', new EC\Users\MUser($site->m->session,
+        $site->addM('db', new MDatabase());
+        $site->addM('session', new MSession($site->m->db));
+        $site->addM('user', new MUser($site->m->session,
                 $site->m->db, $userType));
     }
 
@@ -44,7 +46,7 @@ class ABasic extends AApi {
 
         foreach ($requiredPermissions as $p) {
             if (!$user->hasPermission($p)) {
-                return EC\Api\CResult::Failure('Permission denied.')
+                return CResult::Failure('Permission denied.')
                         ->debug('Required permission: ' . $p);
             }
         }

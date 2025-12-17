@@ -1,11 +1,13 @@
 <?php namespace EC\Tasks;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database;
+use E, EC;
+use EC\Database;
+use EC\Database\MDatabase;
+use EC\Database\TTable;
 
-class _TTasks extends Database\TTable {
-    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
+class _TTasks extends TTable {
+    public function __construct(MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Tasks_Tasks', $tablePrefix);
 
         $this->setColumns([
