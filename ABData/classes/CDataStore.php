@@ -99,16 +99,10 @@ class CDataStore {
 
             $dbSyncRequestInfo = $dbSyncRequestFn();
 
-            if (!is_array($dbSyncRequestInfo))
-                throw new \Exception('Table request info must be an array.');
-            if (count($dbSyncRequestInfo) !== 2)
-                throw new \Exception('Table request info must be in [ string, RRequest ] format.');
-            if (!is_string($dbSyncRequestInfo[0]))
-                throw new \Exception('Table name is not a string.');
-            $tableName = $dbSyncRequestInfo[0];
-            if (!($dbSyncRequestInfo[1] instanceof RDBSyncRequest))
-                throw new \Exception("Table request '{$tableName}' is not an instance of 'RRequest'.");
-            $tableRequest = $dbSyncRequestInfo[1];
+            if (!($dbSyncRequestInfo instanceof CDBSyncRequestInfo))
+                throw new \Exception("Table request info must be of type 'CDBSyncRequestInfo'.");
+            $tableName = $dbSyncRequestInfo->tableName;
+            $tableRequest = $dbSyncRequestInfo->request;
             if (!($tableRequest->hasAction('select')))
                 throw new \Exception("Table request '{$tableName}' does not have action 'select'.");
 
