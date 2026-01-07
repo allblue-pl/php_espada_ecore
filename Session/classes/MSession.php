@@ -2,25 +2,20 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use SessionHandlerInterface;
 
 class MSession extends E\Module {
-
-    private $db = null;
+    private $db;
+    private $sessionHandler;
 
 	public function __construct(EC\MDatabase $db, $expirationTime = 0, $base = '/') {
         $this->db = $db;
+        $this->sessionHandler = new CSessionHandler($this);
 
         ini_set('session.cookie_lifetime', $expirationTime);
         ini_set('session.gc_maxlifetime', $expirationTime);
 
-        session_set_save_handler(  
-            [ $this, "_sessionHandlers_Open" ],  
-            [ $this, "_sessionHandlers_Close" ],  
-            [ $this, "_sessionHandlers_Read" ],  
-            [ $this, "_sessionHandlers_Write" ],  
-            [ $this, "_sessionHandlers_Destroy" ],  
-            [ $this, "_sessionHandlers_GC" ]
-        );
+        session_set_save_handler($this->sessionHandler);
 	}
 
 	protected function _preInitialize(E\Site $site) {
@@ -101,11 +96,11 @@ class MSession extends E\Module {
     
 
     /* Session Handlers */
-    public function _sessionHandlers_Close() {
+    public function sessionHandlers_Close() {
         return true;
     }
 
-    public function _sessionHandlers_Destroy($id) {
+    public function sessionHandlers_Destroy($id) {
         if (!$this->db->isConnected())
             return true;
 
@@ -117,7 +112,7 @@ class MSession extends E\Module {
         return true;
     }
 
-    public function _sessionHandlers_GC($max) {
+    public function sessionHandlers_GC($max) {
         if (!$this->db->isConnected())
             return true;
 
@@ -129,11 +124,11 @@ class MSession extends E\Module {
         return true;
     }
 
-    public function _sessionHandlers_Open() {
+    public function sessionHandlers_Open() {
         return true;
     }
 
-    public function _sessionHandlers_Read($id) {
+    public function sessionHandlers_Read($id) {
         if (!$this->db->isConnected())
             return true;
 
@@ -147,7 +142,7 @@ class MSession extends E\Module {
         return $row['Data'];
     }
 
-    public function _sessionHandlers_Write($id, $data) {
+    public function sessionHandlers_Write($id, $data) {
         if (!$this->db->isConnected())
             return true;
 

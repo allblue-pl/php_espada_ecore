@@ -146,7 +146,7 @@ class HUsers {
     }
 
     static public function Exists(MDatabase $db, string $type, string $login, 
-            array $excludedIds = null, &$existingUserId = null, 
+            ?array $excludedIds = null, &$existingUserId = null, 
             $onlyActive = false) {
         $loginHash = self::GetLoginHash($login);
 
@@ -172,7 +172,7 @@ class HUsers {
     }
 
     static public function Exists_ByHash(MDatabase $db, string $type, 
-            string $loginHash, array $excludedIds = null, 
+            string $loginHash, ?array $excludedIds = null, 
             &$existingUserId = null, $onlyActive = false) {
         if ($excludedIds === null)
             $excludedIds = [ -1 ];
