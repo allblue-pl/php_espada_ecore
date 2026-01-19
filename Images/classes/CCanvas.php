@@ -11,7 +11,7 @@ class CCanvas {
         $this->image = $image;
     }
 
-    public function image($file_path, $coords, array $size = null) {
+    public function image($file_path, $coords, ?array $size = null) {
         $t_image = HImages::Create($file_path);
         if ($t_image === null)
             throw new \Exception('Cannot create image.');

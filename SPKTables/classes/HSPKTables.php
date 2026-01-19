@@ -27,12 +27,12 @@ class HSPKTables {
         
         $eLibs->addTranslations('SPKTables');
 
-        $script = <<<SCRIPT
-jsLibs.require('spk-tables').setTextFn((text) => {
-    return jsLibs.require('e-libs').eText('SPKTables:' + text);
-}); 
-SCRIPT;
-        $eLibs->addScript($script);
+//         $script = <<<SCRIPT
+// jsLibs.require('spk-tables').setTextFn((text) => {
+//     return jsLibs.require('e-libs').eText('SPKTables:' + text);
+// }); 
+// SCRIPT;
+//         $eLibs->addScript($script);
     }
 
     static public function GetQueryExtensions(EC\Database\TTable $t_table,
