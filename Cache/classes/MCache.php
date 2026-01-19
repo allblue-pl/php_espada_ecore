@@ -2,6 +2,8 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
+use EC\Hash\HHash;
 
 class MCache extends E\Module {
 
@@ -11,7 +13,7 @@ class MCache extends E\Module {
     private $db = null;
     private $filesTable = null;
 
-    public function __construct(EC\MDatabase $db) {
+    public function __construct(MDatabase $db) {
         parent::__construct();
 
         $this->db = $db;
@@ -21,13 +23,13 @@ class MCache extends E\Module {
     }
 
     public function getDir() {
-        return $this->dir;
+        return self::Dir;
     }
 
     public function newFile($user_id = null, $expires = 60 * 60) {
         $this->requirePreInitialize();
 
-        $file_hash = EC\HHash::Generate(128);
+        $file_hash = HHash::Generate(128);
 
         if (!$this->filesTable->update([[
             'Id' => null,

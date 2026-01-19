@@ -11,7 +11,7 @@ abstract class FField {
         $this->notNull = $not_null;
     }
 
-    public function escape(EC\MDatabase $db, $value) {
+    public function escape(MDatabase $db, $value) {
         return $this->_escape($db, $value);
     }
 
@@ -23,14 +23,14 @@ abstract class FField {
         return $this->_parse($value);
     }
 
-    public function unescape(EC\MDatabase $db, $value) {
+    public function unescape(MDatabase $db, $value) {
         return $this->_unescape($db, $value);
     }
 
     abstract public function getVField($info = []);
 
-    abstract protected function _escape(EC\MDatabase $db, $value);
+    abstract protected function _escape(MDatabase $db, $value);
     abstract protected function _parse($value);
-    abstract protected function _unescape(EC\MDatabase $db, $value);
+    abstract protected function _unescape(MDatabase $db, $value);
 
 }

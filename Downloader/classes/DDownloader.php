@@ -2,14 +2,14 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
-
+use EC\Api\CResult;
 
 class DDownloader {
 
     private $site = null;
     private $downloads = [];
 
-    public function __construct(EC\SDownloader $site) {
+    public function __construct(SDownloader $site) {
         $this->site = $site;
     }
 

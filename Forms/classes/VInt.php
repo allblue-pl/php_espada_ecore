@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
+use EC\Text\HText;
 
 class VInt extends Forms\VField {
 
@@ -18,7 +19,7 @@ class VInt extends Forms\VField {
 
         if ($value === '') {
             if ($args['required'])
-                $this->error(EC\HText::_('Forms:fields.notSet'));
+                $this->error(HText::_('Forms:fields.notSet'));
 
             return;
         }
@@ -27,22 +28,22 @@ class VInt extends Forms\VField {
             return;
 
         if (!is_numeric($value))
-            $this->error(EC\Text\HText::_('Forms:fields.int_NotANumber'));
+            $this->error(HText::_('Forms:fields.int_NotANumber'));
         else {
             $number = $value + 0;
             if (!is_int($number))
-                $this->error(EC\Text\HText::_('Forms:fields.int_NotAnInt'));
+                $this->error(HText::_('Forms:fields.int_NotAnInt'));
             else {
                 if ($args['minValue'] !== null) {
                     if ($number < $args['minValue']) {
-                        $this->error(EC\Text\HText::_(
+                        $this->error(HText::_(
                                 'Forms:fields.int_BelowMin', [ $args['minValue'] ]));
                     }
                 }
 
                 if ($args['maxValue']) {
                     if ($number > $args['maxValue']) {
-                        $this->error(EC\Text\HText::_(
+                        $this->error(HText::_(
                                 'Forms:fields.int_AboveMax', [ $args['maxValue'] ]));
                     }
                 }

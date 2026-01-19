@@ -2,8 +2,12 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Config\HConfig;
 use EC\Database\MDatabase;
+use EC\Date\HDate;
+use EC\ELibs\MELibs;
 use EC\Hash\HHash;
+use EC\Text\HText;
 
 class HUsers {
 
@@ -200,7 +204,7 @@ class HUsers {
 	}
 
 	static public function GetTestUsers() {
-		return EC\HConfig::Get('Users', 'testUsers', []);
+		return HConfig::Get('Users', 'testUsers', []);
 	}
 
 	//
@@ -268,7 +272,7 @@ class HUsers {
     }
 
     static public function GetHashRounds() {
-        return EC\HConfig::Get('Users', 'hashRounds', 
+        return HConfig::Get('Users', 'hashRounds', 
                 self::HashRounds_Default);
     }
 
@@ -278,7 +282,7 @@ class HUsers {
         return HHash::GetPassword($password, self::GetHashRounds());
     }
 
-    static public function InitSPK(EC\MELibs $eLibs, $userApiUri) {
+    static public function InitSPK(MELibs $eLibs, $userApiUri) {
         $eLibs->addTranslations('Users');
         $eLibs->setField('eUsers', [
             'userApiUri' => $userApiUri,
@@ -290,7 +294,7 @@ class HUsers {
         $hash = HHash::Generate(128);
 
         (new TResetPasswordHashes($db))->delete_Where([
-            [ 'DateTime', '<', time() - EC\HDate::Span_Day ],
+            [ 'DateTime', '<', time() - HDate::Span_Day ],
         ]);
 
         return (new TResetPasswordHashes($db))->update([[
@@ -337,7 +341,7 @@ class HUsers {
             $excludedIds[] = $userId;
 
         if (self::Exists($db, $userType, $login, $excludedIds))
-            $validator->fieldError($fieldName, EC\HText::_('Users:Errors_UserAlreadyExists'));
+            $validator->fieldError($fieldName, HText::_('Users:Errors_UserAlreadyExists'));
     }
 
 }

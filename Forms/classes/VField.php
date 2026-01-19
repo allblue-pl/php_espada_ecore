@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Text\HText;
 
 abstract class VField {
     private $args = null;
@@ -42,9 +43,9 @@ abstract class VField {
         if ($value === null) {
             if ($this->args['notNull']) {
                 if ($this->args['required'])
-                    $this->error(EC\HText::_('Forms:fields.notSet'));
+                    $this->error(HText::_('Forms:fields.notSet'));
                 else
-                    $this->error(EC\HText::_('Forms:fields.notNull'));
+                    $this->error(HText::_('Forms:fields.notNull'));
             }
 
 

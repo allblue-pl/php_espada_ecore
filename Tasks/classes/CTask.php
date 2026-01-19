@@ -2,6 +2,8 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
+use EC\Hash\HHash;
 
 class CTask {
 
@@ -19,7 +21,7 @@ class CTask {
 
     public function __construct($hash, $user_id, $finished, array $info,
             array $data) {
-        $this->hash = $hash === null ? EC\HHash::Generate(128) : $hash;
+        $this->hash = $hash === null ? HHash::Generate(128) : $hash;
         $this->userId = $user_id;
 
         $this->new = $hash === null ? true : false;
@@ -93,7 +95,7 @@ class CTask {
         $this->requiresUpdate = true;
     }
 
-    public function update(EC\MDatabase $db) {
+    public function update(MDatabase $db) {
         if (!$this->requiresUpdate && !$this->isNew())
             return true;
 

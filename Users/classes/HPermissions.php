@@ -2,12 +2,13 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Config\HConfig;
 
 class HPermissions {
 
     static public function Get_FromGroups($groups) {
         $permissions = [];
-        $config_groups = EC\HConfig::Get('Users', 'groups', []);
+        $config_groups = HConfig::Get('Users', 'groups', []);
 
         foreach ($groups as $group_name) {
             if (!array_key_exists($group_name, $config_groups))

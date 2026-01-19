@@ -1,8 +1,11 @@
 <?php namespace EC\Users;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC, EC\Users,
-    EC\Api\CResult, EC\Api\CArgs;
+use E, EC;
+use EC\Api\CArgs;
+use EC\Api\CResult;
+use EC\Api\SApi;
+use EC\Text\HText;
 
 class AUsers extends EC\Api\ABasic {
 
@@ -11,7 +14,7 @@ class AUsers extends EC\Api\ABasic {
     private $db = null;
     private $user = null;
 
-    public function __construct(EC\SApi $site, $args) {
+    public function __construct(SApi $site, $args) {
         parent::__construct($site, $args['userType']);
 
         if (!isset($args['requiredPermissions']))
@@ -38,16 +41,16 @@ class AUsers extends EC\Api\ABasic {
         }
 
         $existingActiveUserId = null;
-        if (!EC\HUsers::Activate($this->db, $args->id, $args->active, 
+        if (!HUsers::Activate($this->db, $args->id, $args->active, 
                 $existingActiveUserId)) {
             if ($existingActiveUserId !== null) {
-                return CResult::Failure(EC\HText::_(
+                return CResult::Failure(HText::_(
                         'Users:Errors_ActiveUserWithLoginAlreadyExists'));
             }
 
             return CResult::Failure($args->active ?
-                    EC\HText::_('Users:Errors_CannotActivateUser') :
-                    EC\HText::_('Users:Errors_CannotDeactivateUser'));
+                    HText::_('Users:Errors_CannotActivateUser') :
+                    HText::_('Users:Errors_CannotDeactivateUser'));
         }
 
         return CResult::Success();

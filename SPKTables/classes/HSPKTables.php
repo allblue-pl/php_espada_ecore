@@ -2,23 +2,25 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\ELibs\MELibs;
+use EC\Strings\HStrings;
 
 class HSPKTables {
 
     static private $Initialized = false;
 
-    static public function Create(EC\MSPK $abf, $table_name, $table_info) {
-        self::Init($abf);
+    // static public function Create(MSPK $abf, $table_name, $table_info) {
+    //     self::Init($abf);
 
-        $table = self::ParseInfo($table_info);
-        $table_json = json_encode($table);
+    //     $table = self::ParseInfo($table_info);
+    //     $table_json = json_encode($table);
 
-        $abf->addAppScript(
-            "SPK.\$eTables.add('{$table_name}', {$table_json})"
-        );
-    }
+    //     $abf->addAppScript(
+    //         "SPK.\$eTables.add('{$table_name}', {$table_json})"
+    //     );
+    // }
 
-    static public function Init(EC\MELibs $eLibs) {
+    static public function Init(MELibs $eLibs) {
         if (self::$Initialized)
             return;
         self::$Initialized = true;
@@ -200,7 +202,7 @@ SCRIPT;
             $spk_table_info, $table_args, $where = '') {
         $spk_table = self::ParseInfo($spk_table_info);
 
-        $query_extensions = EC\HSPKTables::GetQueryExtensions(
+        $query_extensions = HSPKTables::GetQueryExtensions(
                 $t_table, $spk_table, $table_args, $where);
 
         $rows = $t_table->select($query_extensions['query'],
@@ -231,8 +233,8 @@ SCRIPT;
 
                 // $filter_Str = EC\HStrings::EscapeLangCharacters($filter);
                 $filter_Str = mb_strtolower($filter);
-                $filter_Str = EC\HStrings::EscapeRegexpChars($filter_Str);
-                $filter_Str = EC\HStrings::EscapeRegexpLangCharacters($filter_Str);
+                $filter_Str = HStrings::EscapeRegexpChars($filter_Str);
+                $filter_Str = HStrings::EscapeRegexpLangCharacters($filter_Str);
                 $db_filter = $t_table->getDB()->escapeString($filter_Str);
 
                 $conditions[] = "LOWER(CAST({$db_column_name} AS CHAR))" .

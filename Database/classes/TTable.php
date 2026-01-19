@@ -25,7 +25,7 @@ class TTable {
 
     private $lastInsertedId = null;
 
-    public function __construct(EC\MDatabase $db, $table_name,
+    public function __construct(MDatabase $db, $table_name,
             $table_alias = null) {
         $this->db = $db;
 
@@ -596,7 +596,7 @@ class TTable {
 
         $where = [];
         for ($i = 0; $i < count($keys); $i++)
-            $where[] = [ $this->primaryKeys[$i], '=', $keys[i] ];
+            $where[] = [ $this->primaryKeys[$i], '=', $keys[$i] ];
 
         return $this->row_Where($where, $group_extension, $for_update);
     }
@@ -1075,7 +1075,7 @@ class TTable {
         while (count($rows_Insert) > $rowsInserted) {
             $rows_Insert_Part = array_slice($rows_Insert, $rowsInserted, 
                     min(count($rows_Insert) - $rowsInserted, 
-                    EC\MDatabase::$MaxInsertRows));
+                    MDatabase::$MaxInsertRows));
 
             $valuesArr_DB = [];
             foreach ($rows_Insert_Part as $row) {

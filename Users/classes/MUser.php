@@ -2,6 +2,9 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Config\HConfig;
+use EC\Database\MDatabase;
+use EC\Session\MSession;
 
 class MUser extends E\Module {
 
@@ -25,7 +28,7 @@ class MUser extends E\Module {
 
 	private $salt = '';
 
-    public function __construct(?EC\MSession $session, EC\MDatabase $database,
+    public function __construct(?MSession $session, MDatabase $database,
             $type = 'Default') {
 		parent::__construct();
 
@@ -50,7 +53,7 @@ class MUser extends E\Module {
 	}
 
 	public function getPermissions_Default() {
-		$groups = EC\HConfig::GetRequired('Users', 'groups');
+		$groups = HConfig::GetRequired('Users', 'groups');
 		if (array_key_exists('_default', $groups))
 			return $groups['_default'];
 
@@ -74,26 +77,26 @@ class MUser extends E\Module {
 		return in_array($group_name, $this->groups);
 	}
 
-	/* Pages */
-	public function setPage_LogIn($page_path) {
-		$this->uris_LogIn = EUri::GetPage($page_path);
-		if ($this->uris_LogIn === null)
-			throw new \Exception("Page `$page_path` does not exist.");
-	}
+	// /* Pages */
+	// public function setPage_LogIn($page_path) {
+	// 	$this->uris_LogIn = EUri::GetPage($page_path);
+	// 	if ($this->uris_LogIn === null)
+	// 		throw new \Exception("Page `$page_path` does not exist.");
+	// }
 
-	public function getUri_LogIn() {
-		return $this->uris_LogIn;
-	}
+	// public function getUri_LogIn() {
+	// 	return $this->uris_LogIn;
+	// }
 
-	public function setPage_LogOut($page_path) {
-		$this->uris_LogOut = EUri::GetPage($page_path);
-		if ($this->uris_LogOut === null)
-			throw new \Exception("Page `$page_path` does not exist.");
-	}
+	// public function setPage_LogOut($page_path) {
+	// 	$this->uris_LogOut = EUri::GetPage($page_path);
+	// 	if ($this->uris_LogOut === null)
+	// 		throw new \Exception("Page `$page_path` does not exist.");
+	// }
 
-	public function getUri_LogOut() {
-		return $this->uris_LogOut;
-	}
+	// public function getUri_LogOut() {
+	// 	return $this->uris_LogOut;
+	// }
 
 	/* User */
 	public function isLoggedIn() {
@@ -173,7 +176,7 @@ class MUser extends E\Module {
 
 	private function _preInitialize_Config() {
 		$this->testUsers = HUsers::GetTestUsers();
-		$this->salt = EC\HConfig::GetRequired('Hash', 'salt');
+		$this->salt = HConfig::GetRequired('Hash', 'salt');
 	}
 
 	// private function _preInitialize_Permissions()
@@ -182,7 +185,7 @@ class MUser extends E\Module {
 	// 		$this->permissions = [];
 	// 	else {
 	// 		$this->permissions =
-	// 			EC\HUsers::GetPermissions_FromGroups($this->groups);
+	// 			HUsers::GetPermissions_FromGroups($this->groups);
 	// 	}
 	// }
 

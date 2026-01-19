@@ -15,7 +15,7 @@ class FFloat extends FField {
         ], $info));
     }
 
-    protected function _escape(EC\MDatabase $db, $value) {
+    protected function _escape(MDatabase $db, $value) {
         return $db->escapeFloat($value);
     }
 
@@ -26,7 +26,7 @@ class FFloat extends FField {
         return (float)$value;
     }
 
-    protected function _unescape(EC\MDatabase $db, $value) {
+    protected function _unescape(MDatabase $db, $value) {
         return $db->unescapeFloat($value);
     }
 

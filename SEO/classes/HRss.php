@@ -5,6 +5,7 @@ require(__DIR__ . '/../3rdparty/php-publisher/library/Publisher.php');
 
 use E, EC,
     pubsubhubbub\publisher\Publisher;
+use EC\Config\HConfig;
 
 class HRss {
 
@@ -71,11 +72,11 @@ class HRss {
                     '<atom:link href="' . HRss::GetFileUri() . '" rel="self"' .
                             ' type="application/rss+xml" />' .
                     '<title>' .
-                        EC\HConfig::GetRequired('site_Title') .
+                        HConfig::GetRequired('SEO', 'site_Title') .
                     '</title>' .
                     '<link>' . SITE_DOMAIN . '</link>' .
                     '<description>' .
-                        EC\HConfig::GetRequired('site_Description') .
+                        HConfig::GetRequired('SEO', 'site_Description') .
                     '</description>' .
                     $xml_items .
                 '</channel>' .

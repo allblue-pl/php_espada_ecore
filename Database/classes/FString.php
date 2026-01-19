@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Strings\HStrings;
 
 class FString extends FField {
 
@@ -17,11 +18,11 @@ class FString extends FField {
         return new EC\Forms\VText(array_merge([
             'notNull' => $this->isNotNull(),
             'maxLength' => $this->maxLength,
-            'chars' => EC\HStrings::GetCharsRegexp([ 'digits', 'letters', 'special' ])
+            'chars' => HStrings::GetCharsRegexp([ 'digits', 'letters', 'special' ])
         ], $info));
     }
 
-    protected function _escape(EC\MDatabase $db, $value) {
+    protected function _escape(MDatabase $db, $value) {
         return $db->escapeString($value);
     }
 
@@ -32,7 +33,7 @@ class FString extends FField {
         return (string)$value;
     }
 
-    protected function _unescape(EC\MDatabase $db, $value) {
+    protected function _unescape(MDatabase $db, $value) {
         return $db->unescapeString($value);
     }
 

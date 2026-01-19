@@ -126,7 +126,7 @@ class RTableRequest extends RRequest {
     public function action_Delete(CDevice $device, array $args, ?int $schemeVersion) {
         $rows = $this->table->select_Where($args['where']);
 
-        if (!HABData::Delete_Where($device, $this->tablem, $args['where'])) {
+        if (!HABData::Delete_Where($device, $this->table, $args['where'])) {
             return [
                 'success' => false,
                 'error' => EDEBUG ?
@@ -141,7 +141,7 @@ class RTableRequest extends RRequest {
                 'TableName' => $this->table->getTableName(),
                 'Id' => $row['_Id'],
                 'DateTime' => $device->getLastUpdate(),
-                'DeviceId' => $device->getDeviceId(),
+                'DeviceId' => $device->getId(),
             ];
         }
 
@@ -174,7 +174,7 @@ class RTableRequest extends RRequest {
         $rows = self::Table_Select($this->table, $args, $error);
 
         if ($args['join'] !== null) {
-            $result = $this->join($device, $rows, $args);
+            $result = $this->join($device, $rows, $args, $schemeVersion);
             return $result;
         }
 
@@ -214,7 +214,7 @@ class RTableRequest extends RRequest {
         // }
 
         $result = [
-            'success' => EC\HABData::Update($device, $this->table, $args['rows']),
+            'success' => HABData::Update($device, $this->table, $args['rows']),
             'error' => null,
         ];
 
@@ -234,9 +234,12 @@ class RTableRequest extends RRequest {
     }
 
 
-    private function join(CDevice $device, array $rows, array $args) {
+    private function join(CDevice $device, array $rows, array $args, 
+            ?int $schemeVersion) {
         foreach ($args['join'] as $join) {
             $tableRequest = $this->dataStore->getRequest($join['table']);
+            if (!($tableRequest instanceof RTableRequest))
+                throw new \Exception("Request is not an instance of RTableRequest.");
 
             if (!$this->getTable()->hasColumn($join['on'][0])) {
                 return [
@@ -285,7 +288,7 @@ class RTableRequest extends RRequest {
                     'limit' => null,
                     'groupBy' => [ $join['on'][1] ],
                     'join' => null,
-                ]);
+                ], $schemeVersion);
 
                 if (!$result['success']) {
                     return [

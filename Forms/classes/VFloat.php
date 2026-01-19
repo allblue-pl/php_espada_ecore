@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
+use EC\Text\HText;
 
 class VFloat extends Forms\VField {
 
@@ -22,7 +23,7 @@ class VFloat extends Forms\VField {
 
         if ($value === '') {
             if ($args['required'])
-                $this->error(EC\HText::_('Forms:fields.notSet'));
+                $this->error(HText::_('Forms:fields.notSet'));
 
             return;
         }

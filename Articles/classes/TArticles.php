@@ -1,13 +1,15 @@
 <?php namespace EC\Articles;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database,
-    EC\Web;
+use E, EC;
+use EC\Database;
+use EC\Database\MDatabase;
+use EC\Date\HDate;
+use EC\Strings\HStrings;
 
 class TArticles extends _TArticles {
 
-    static public function GetNew(EC\MDatabase $db, $userId) {
+    static public function GetNew(MDatabase $db, $userId) {
         $table = new TArticles($db);
 
         $row = $table->row_Where([
@@ -45,10 +47,10 @@ class TArticles extends _TArticles {
     }
 
 
-    public function __construct(EC\MDatabase $db) {
+    public function __construct(MDatabase $db) {
         parent::__construct($db, 'a_a');
 
-        $time = $db->escapeTime_DateTime(EC\HDate::GetTime());
+        $time = $db->escapeTime_DateTime(HDate::GetTime());
 
         /* Columns */
         $this->addColumns_Extra([
@@ -63,7 +65,7 @@ class TArticles extends _TArticles {
         /* Validators */
         $this->setColumnVFields('Title', [
             'required' => true,
-            'chars' => EC\HStrings::GetCharsRegexp_Basic('\r\n') . '"',
+            'chars' => HStrings::GetCharsRegexp_Basic('\r\n') . '"',
         ]);
         $this->setColumnVFields('Intro', [
             'required' => false,

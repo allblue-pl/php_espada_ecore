@@ -1,7 +1,10 @@
 <?php namespace EC\CookiesPolicy;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC; ?>
+use E, EC;
+use EC\Text\HText;
+
+ ?>
 
 <div id="ECookiesPolicy_Modal" class="modal fade" data-bs-backdrop="static" 
         data-bs-keyboard="false" tabindex="-1">
@@ -10,7 +13,7 @@ use E, EC; ?>
             <div class="modal-header">
                 <h5 class="modal-title"><?php echo $_Title; ?></h5>
                 <button id="eCookiesPolicy_Close" type="button" class="btn-close" 
-                        aria-label="<?php echo EC\HText::_('CookiesPolicy:Close'); ?>"></button>
+                        aria-label="<?php echo HText::_('CookiesPolicy:Close'); ?>"></button>
             </div>
             <div class="modal-body">
                 <?php echo $_Body; ?>
@@ -18,7 +21,7 @@ use E, EC; ?>
             <div class="modal-footer">
                 <button id="eCookiesPolicy_Agree" type="button" 
                         class="btn btn-secondary">
-                    <?php echo EC\HText::_('CookiesPolicy:Agree'); ?>
+                    <?php echo HText::_('CookiesPolicy:Agree'); ?>
                 </button>
             </div>
         </div>

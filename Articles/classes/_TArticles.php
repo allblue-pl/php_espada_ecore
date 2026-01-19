@@ -3,10 +3,11 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC,
     EC\Database;
+use EC\Database\MDatabase;
 
 class _TArticles extends Database\TTable {
 
-    public function __construct(EC\MDatabase $db, $tablePrefix = 't') {
+    public function __construct(MDatabase $db, $tablePrefix = 't') {
         parent::__construct($db, 'Articles_Articles', $tablePrefix);
 
         $this->setColumns([

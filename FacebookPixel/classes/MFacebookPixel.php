@@ -2,13 +2,14 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Basic\MHead;
 
 class MFacebookPixel extends E\Module {
+    private MHead $header;
+    private $trackingCode;
 
-    private $trackingCode = null;
 
-
-    public function __construct(EC\Basic\MHead $header, $trackingCode = '') {
+    public function __construct(MHead $header, $trackingCode = '') {
         parent::__construct();
 
         $this->header = $header;

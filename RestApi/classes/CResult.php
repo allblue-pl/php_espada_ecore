@@ -5,11 +5,11 @@ use E, EC;
 
 class CResult {
 
-    static public function Success(array $json = null) {
+    static public function Success(?array $json = null) {
         return new CResult(200, $json);
     }
 
-    static public function Error(int $statusCode = 500, array $json = null) {
+    static public function Error(int $statusCode = 500, ?array $json = null) {
         return new CResult($statusCode, $json);
     }
 

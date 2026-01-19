@@ -2,11 +2,17 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Config\HConfig;
+use EC\ELibs\MELibs;
+use EC\Files\HFiles;
+use EC\Images\HImages;
+use EC\Strings\HStrings;
+use EC\Text\HText;
 
 class HFilesUpload {
 
     static public function Copy($filePath_Src, $filePath) {
-        EC\HFiles::Dir_Create_Safe(dirname($filePath), 0777, true);
+        HFiles::Dir_Create_Safe(dirname($filePath), 0777, true);
 
         return copy($filePath_Src, $filePath);
     }
@@ -22,7 +28,7 @@ class HFilesUpload {
     }
 
     static public function DeleteFile($categoryName, $id, $fileName = null) {
-        $category = EC\HFilesUpload::GetCategory($categoryName);  
+        $category = self::GetCategory($categoryName);  
         if ($category['multiple'])
             return self::DeleteFile_Multiple($categoryName, $id, [ $fileName ]);
         else
@@ -30,7 +36,7 @@ class HFilesUpload {
     }
 
     static public function DeleteFile_Single($categoryName, $id) {
-        $category = EC\HFilesUpload::GetCategory($categoryName);  
+        $category = self::GetCategory($categoryName);  
 
         foreach ($category['sizes'] as $sizeName => $size) {
             $filePath = HFilesUpload::GetFilePath($categoryName, $id, $sizeName);
@@ -102,7 +108,7 @@ class HFilesUpload {
     }
 
     static public function GetCategory(string $categoryName) {
-        $categories = EC\HConfig::GetRequired('FilesUpload', 'categories');
+        $categories = HConfig::GetRequired('FilesUpload', 'categories');
         if (!array_key_exists($categoryName, $categories))
             throw new \Exception("FilesUpload category '{$categoryName}' does not exist.");
 
@@ -332,20 +338,20 @@ class HFilesUpload {
     // }
 
     static public function ExistsCategory($categoryName) {
-        $categories = EC\HConfig::GetRequired('FilesUpload', 'categories');
+        $categories = HConfig::GetRequired('FilesUpload', 'categories');
 
         return array_key_exists($categoryName, $categories);
     }
 
-    static public function Init(EC\MELibs $eLibs, $apiUri, array $overrides = []) {
+    static public function Init(MELibs $eLibs, $apiUri, array $overrides = []) {
         $field = array_merge_recursive([
             'apiUri' => $apiUri,
-            'categories' => EC\HConfig::GetRequired('FilesUpload', 'categories'),
+            'categories' => HConfig::GetRequired('FilesUpload', 'categories'),
             'uris' => [
                 'file' => E\Uri::File('FilesUpload:images/file.jpg'),
                 'loading' => E\Uri::File('FilesUpload:images/loading.gif'),
             ],
-            'texts' => EC\HText::GetTranslations('FilesUpload:spk')->getArray(),
+            'texts' => HText::GetTranslations('FilesUpload:spk')->getArray(),
         ], $overrides);
 
         $eLibs->addTranslations('FilesUpload');
@@ -355,22 +361,22 @@ class HFilesUpload {
     static public function ParseFileName($fileName) {
         $fileName_Parsed = $fileName;
         $fileName_Parsed = mb_strtolower($fileName_Parsed);
-        $fileName_Parsed = EC\HStrings::EscapeLangCharacters($fileName_Parsed);
+        $fileName_Parsed = HStrings::EscapeLangCharacters($fileName_Parsed);
         $fileName_Parsed = str_replace(' ', '-', $fileName_Parsed);
-        $fileName_Parsed = EC\HStrings::RemoveCharacters($fileName_Parsed, 
+        $fileName_Parsed = HStrings::RemoveCharacters($fileName_Parsed, 
                 'a-z0-9' . '\\._\\-');
-        $fileName_Parsed = EC\HStrings::RemoveDoubles($fileName_Parsed, '-');
+        $fileName_Parsed = HStrings::RemoveDoubles($fileName_Parsed, '-');
 
         return $fileName_Parsed;
     }
 
     static public function Scale($filePath_Src, $filePath, $size, 
             $quality = 75, $compress = true) {
-        EC\HFiles::Dir_Create_Safe(dirname($filePath), 0777, true);
+        HFiles::Dir_Create_Safe(dirname($filePath), 0777, true);
         // if (!file_exists(dirname($filePath)))
         //     mkdir(dirname($filePath), 0777, true);
 
-        return EC\HImages::Scale_ToMinSize($filePath_Src,
+        return HImages::Scale_ToMinSize($filePath_Src,
                 $filePath, $size[0], $size[1], $quality, $compress);
     }
 

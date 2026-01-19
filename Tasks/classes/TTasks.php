@@ -1,12 +1,12 @@
 <?php namespace EC\Tasks;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database;
+use E, EC;
+use EC\Database\MDatabase;
 
 class TTasks extends _TTasks {
 
-    public function __construct(EC\MDatabase $db) {
+    public function __construct(MDatabase $db) {
         parent::__construct($db, 'r');
 
         $this->setColumnParser('Info', [

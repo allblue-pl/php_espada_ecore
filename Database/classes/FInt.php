@@ -15,7 +15,7 @@ class FInt extends FField {
         ], $info));
     }
 
-    protected function _escape(EC\MDatabase $db, $value) {
+    protected function _escape(MDatabase $db, $value) {
         return $db->escapeInt($value);
     }
 
@@ -26,7 +26,7 @@ class FInt extends FField {
         return (int)$value;
     }
 
-    protected function _unescape(EC\MDatabase $db, $value) {
+    protected function _unescape(MDatabase $db, $value) {
         return $db->unescapeInt($value);
     }
 

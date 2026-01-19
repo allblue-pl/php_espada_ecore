@@ -2,11 +2,12 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Config\CConfig;
 
 class HMailer extends E\Module {
 
 	static public function NewMail($to_mail, $to_name) {
-		$config = new EC\CConfig('Mailer');
+		$config = new CConfig('Mailer');
 
 		$mail = new CMail($config->from_Mail, $config->from_Name,
 				$to_mail, $to_name);

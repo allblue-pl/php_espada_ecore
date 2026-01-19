@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
+use EC\Text\HText;
 
 class VTime extends Forms\VField {
 
@@ -15,7 +16,7 @@ class VTime extends Forms\VField {
             'maxTime' => null
         ]);
 
-        $this->texts = EC\HText::GetTranslations('Forms:fields');
+        $this->texts = HText::GetTranslations('Forms:fields');
     }
 
     protected function _validate(&$value) {
@@ -35,7 +36,7 @@ class VTime extends Forms\VField {
             if ($args['minTime'] !== null) {
                 if ($value < $args['minTime']) {
                     $this->error($this->texts->get('date_BelowMinDate',
-                            array(date(EC\HText::_('Date:Format_Date'),
+                            array(date(HText::_('Date:Format_Date'),
                             $args['minTime']))));
                 }
             }
@@ -43,7 +44,7 @@ class VTime extends Forms\VField {
             if ($args['maxTime'] !== null) {
                 if ($value > $args['maxTime']) {
                     $this->error($this->texts->get('date_AboveMaxDate',
-                            array(date(EC\HText::_('Date:Format_Date'),
+                            array(date(HText::_('Date:Format_Date'),
                             $args['maxTime']))));
                 }
             }

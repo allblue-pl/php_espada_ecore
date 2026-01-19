@@ -163,7 +163,7 @@ class CMail {
 			}
 
 			return true;
-		} catch (\phpmailerException $e) {
+		} catch (PHPMailer\Exception $e) {
 			$this->error = $e->errorMessage();
 		} catch (\Exception $e) {
 			$this->error = $e->getMessage();

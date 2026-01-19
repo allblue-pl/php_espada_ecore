@@ -2,11 +2,13 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\TTable;
+use EC\Date\HDate;
 
 class HABData {
 
     static public function AddDeletedRows(CDevice $device, 
-            EC\Database\TTable $table, array $rows) {
+            TTable $table, array $rows) {
         $db = $table->getDB();
 
         $deleteRows = [];
@@ -20,7 +22,7 @@ class HABData {
             $deleteRows[] = $deleteRow;
         }
 
-        return (new EC\ABData\TDeletedRows($db))->update($deleteRows);
+        return (new TDeletedRows($db))->update($deleteRows);
     }
 
     static public function ClearDeviceRows_ByLastSync(EC\Database\MDatabase $db,
@@ -122,7 +124,7 @@ class HABData {
     }
 
     static public function ParseUpdateRow(EC\ABData\CDevice $device, &$row) {
-        $maxExecutionTime = EC\HDate::Millis_Span_Second * 
+        $maxExecutionTime = HDate::Millis_Span_Second * 
                 ini_get('max_execution_time');
 
         $row['_Modified_DateTime'] = new EC\Database\CRawValue(

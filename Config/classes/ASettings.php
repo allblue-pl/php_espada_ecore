@@ -1,12 +1,19 @@
 <?php namespace EC\Config;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC, EC\Sys,
-    EC\Api\CArgs, EC\Api\CResult;
+use E, EC;
+use EC\Api\CArgs;
+use EC\Api\CResult;
+use EC\Api\SApi;
+use EC\Database\MDatabase;
+use EC\Images\HImages;
+use EC\Text\HText;
+use EC\Upload\HUpload;
 
 class ASettings extends EC\Api\ABasic {
+    private MDatabase $db;
 
-    public function __construct(EC\SApi $site, array $apiArgs) {
+    public function __construct(SApi $site, array $apiArgs) {
         parent::__construct($site, $apiArgs['userType'], [ 'Sys_Settings' ]);
 
         $this->db = $site->m->db;
@@ -26,7 +33,7 @@ class ASettings extends EC\Api\ABasic {
     public function action_Get(CArgs $args) {
         $settings = [];
         foreach ($args->names as $name)
-            $settings[$name] = EC\HConfig::DB_Get($this->db, $name);
+            $settings[$name] = HConfig::DB_Get($this->db, $name);
 
         return CResult::Success()
             ->add('settings', $settings);
@@ -41,7 +48,7 @@ class ASettings extends EC\Api\ABasic {
             if ($args->get("carouselImages_{$i}") === 'null') 
                 continue;
 
-            if (!EC\HUpload::Validate($args->get("carouselImages_{$i}"), [
+            if (!HUpload::Validate($args->get("carouselImages_{$i}"), [
                 'exts' => [ 'jpg', 'jpeg' ],
             ], $upload_error)) {
                 return CResult::Failure('Cannot upload photo.')
@@ -50,12 +57,12 @@ class ASettings extends EC\Api\ABasic {
 
             $headerPath = E\Path::Media('Web', "header{$i}.jpg");
 
-            EC\HImages::Scale_ToMinSize($args->get("carouselImages_{$i}")['tmp_name'],
+            HImages::Scale_ToMinSize($args->get("carouselImages_{$i}")['tmp_name'],
                     $headerPath, 1920, 1080);
         }
 
         foreach ($args->settings as $name => $value) {
-            if (!EC\HConfig::DB_Set($this->db, $name, $value)) {
+            if (!HConfig::DB_Set($this->db, $name, $value)) {
                 $this->db->transaction_Finish(false);
                 return CResult::Failure('Cannot update settings.');
             }
@@ -64,7 +71,7 @@ class ASettings extends EC\Api\ABasic {
         if (!$this->db->transaction_Finish($this->db))
             return CResult::Failure('Cannot commit.');
 
-        return CResult::Success(EC\HText::_('Config:Successes_UpdatedSetting'));
+        return CResult::Success(HText::_('Config:Successes_UpdatedSetting'));
     }
 
 }

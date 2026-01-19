@@ -2,7 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
-
+use EC\Api\CResult;
 
 class SDownloader extends E\Site {
 

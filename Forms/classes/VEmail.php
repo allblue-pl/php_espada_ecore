@@ -1,7 +1,9 @@
 <?php namespace EC\Forms;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC, EC\Forms;
+use E, EC;
+use EC\Forms;
+use EC\Text\HText;
 
 class VEmail extends Forms\VField {
 
@@ -16,13 +18,13 @@ class VEmail extends Forms\VField {
 
         if ($value === '') {
             if ($args['required'])
-                $this->error(EC\HText::_('Forms:fields.notSet'));
+                $this->error(HText::_('Forms:fields.notSet'));
 
             return;
         }
 
         if (!filter_var($value, FILTER_VALIDATE_EMAIL))
-			$this->error(EC\HText::_('Forms:fields.email_WrongFormat'));
+			$this->error(HText::_('Forms:fields.email_WrongFormat'));
     }
 
 }

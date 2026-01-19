@@ -3,12 +3,13 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 use EC\Database\MDatabase;
+use EC\Date\HDate;
 use EC\Hash\HHash;
 use EC\Text\HText;
 
 class CDevice {
-    static public $ExpirationTime       = 15 * EC\HDate::Span_Minute;
-    static public $MaxDBSyncTime        = 1 * EC\HDate::Span_Minute;
+    static public $ExpirationTime       = 15 * HDate::Span_Minute;
+    static public $MaxDBSyncTime        = 1 * HDate::Span_Minute;
 
     static public $Devices_Offset       = 100000000;
 
@@ -141,7 +142,7 @@ class CDevice {
         if ($row_Update !== null) {
             if (!$table->update([ $row_Update ])) {
                 if (EDEBUG)
-                    throw new Exception('Cannot update Device row.');
+                    throw new \Exception('Cannot update Device row.');
 
                 $db->transaction_Finish(false);
 
@@ -352,6 +353,10 @@ class CDevice {
 
     public function getCreateTime() {
         return $this->createTime;
+    }
+
+    public function getDB() {
+        return $this->db;
     }
 
     public function getId() {

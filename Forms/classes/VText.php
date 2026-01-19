@@ -2,6 +2,8 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
+use EC\Strings\HStrings;
+use EC\Text\HText;
 
 class VText extends Forms\VField {
 
@@ -14,10 +16,10 @@ class VText extends Forms\VField {
             'maxLength' => null,
             'regexp' => null,
             'trim' => false,
-            'chars' => EC\HStrings::GetCharsRegexp_Basic()
+            'chars' => HStrings::GetCharsRegexp_Basic()
         ]);
 
-        $this->texts = EC\Text\HText::GetTranslations('Forms:fields');
+        $this->texts = HText::GetTranslations('Forms:fields');
     }
 
     protected function _validate(&$value) {
@@ -59,7 +61,7 @@ class VText extends Forms\VField {
                 // $value = ' hello ';
                 // echo '#' . $chars . '#' . $value . '#';
                 $invalidChars = [];
-                if (!EC\HStrings::ValidateChars($value, $chars, $invalidChars)) {
+                if (!HStrings::ValidateChars($value, $chars, $invalidChars)) {
 
                     $not_allowed_chars_arr = $invalidChars;
                     $not_allowed_chars = implode(', ', $not_allowed_chars_arr);

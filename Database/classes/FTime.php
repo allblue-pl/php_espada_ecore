@@ -15,7 +15,7 @@ class FTime extends FField {
         ], $info));
     }
 
-    protected function _escape(EC\MDatabase $db, $value) {
+    protected function _escape(MDatabase $db, $value) {
         return $db->escapeLong($value);
     }
 
@@ -26,7 +26,7 @@ class FTime extends FField {
         return (float)round($value);
     }
 
-    protected function _unescape(EC\MDatabase $db, $value) {
+    protected function _unescape(MDatabase $db, $value) {
         return $db->unescapeLong($value);
     }
 

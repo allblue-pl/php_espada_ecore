@@ -2,13 +2,13 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
-use SessionHandlerInterface;
+use EC\Database\MDatabase;
 
 class MSession extends E\Module {
     private $db;
     private $sessionHandler;
 
-	public function __construct(EC\MDatabase $db, $expirationTime = 0, $base = '/') {
+	public function __construct(MDatabase $db, $expirationTime = 0, $base = '/') {
         $this->db = $db;
         $this->sessionHandler = new CSessionHandler($this);
 

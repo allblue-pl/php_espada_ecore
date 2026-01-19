@@ -2,11 +2,17 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
+use EC\Database\TTable;
+use EC\Date\HDate;
+use EC\ELibs\MELibs;
+use EC\FilesUpload\HFilesUpload;
+use EC\Router\HRouter;
 
 class HArticles {
 
-    static public function AddColumnParsers(EC\Database\TTable $table) {
-        $time = $table->getDB()->escapeTime_DateTime(EC\HDate::GetTime());
+    static public function AddColumnParsers(TTable $table) {
+        $time = $table->getDB()->escapeTime_DateTime(HDate::GetTime());
 
         // $table->addColumns_Extra([
         //     'Alias'             => [ null, new EC\Database\FString(false, 128) ],
@@ -23,12 +29,12 @@ class HArticles {
                     'Title' => str_replace('Id', 'Title', $name),
                 ];
 
-                $alias = EC\HArticles::Alias_Format($row[$colNames['Title']]);
+                $alias = HArticles::Alias_Format($row[$colNames['Title']]);
 
                 return [
                     $name => $value,
                     $colNames['Alias'] => $alias,
-                    $colNames['IntroImage_Uri'] => EC\HFilesUpload::GetFileUri_Single(
+                    $colNames['IntroImage_Uri'] => HFilesUpload::GetFileUri_Single(
                             'eArticles_Intro', (int)$value),
                 ];
             },
@@ -52,7 +58,7 @@ class HArticles {
     }
 
     static public function Alias_Format($str) {
-        return EC\HRouter::GetAlias($str);
+        return HRouter::GetAlias($str);
     }
 
     static public function Alias_Get($id, $title) {
@@ -124,33 +130,33 @@ class HArticles {
     }
 
     static public function DeleteMedia($articleId) {
-        EC\HFilesUpload::Delete('eArticles_Intro', $articleId);
-        EC\HFilesUpload::Delete('eArticles_Files', $articleId);
-        EC\HFilesUpload::Delete('eArticles_Images', $articleId);
-        EC\HFilesUpload::Delete('eArticles_Gallery', $articleId);
+        HFilesUpload::Delete('eArticles_Intro', $articleId);
+        HFilesUpload::Delete('eArticles_Files', $articleId);
+        HFilesUpload::Delete('eArticles_Images', $articleId);
+        HFilesUpload::Delete('eArticles_Gallery', $articleId);
     }
 
     static public function GetMediaUris_Files($articleId) {
-        return EC\HFilesUpload::GetFileUris('eArticles_Files', $articleId);
+        return HFilesUpload::GetFileUris('eArticles_Files', $articleId);
     }
 
     static public function GetMediaUris_Gallery($articleId) {
-        return EC\HFilesUpload::GetFileUris('eArticles_Gallery', $articleId);
+        return HFilesUpload::GetFileUris('eArticles_Gallery', $articleId);
     }
 
     static public function GetMediaUris_Images($articleId) {
-        return EC\HFilesUpload::GetFileUris('eArticles_Images', $articleId);
+        return HFilesUpload::GetFileUris('eArticles_Images', $articleId);
     }
 
     static public function GetMediaUris_Intro($articleId) {
-        return EC\HFilesUpload::GetFileUris('eArticles_Intro', $articleId);
+        return HFilesUpload::GetFileUris('eArticles_Intro', $articleId);
     }
 
-    static public function GetNew(EC\MDatabase $db, $userId) {
+    static public function GetNew(MDatabase $db, $userId) {
         return TArticles::GetNew($db, $userId);
     }
 
-    static public function Init(EC\MELibs $eLibs, $pkgsUri) {
+    static public function Init(MELibs $eLibs, $pkgsUri) {
         $eLibs->addTranslations('Articles');
         $eLibs->setField('eArticles', [
             'spkTinyMCEPkgUri' => $pkgsUri . '/node_modules/spk-tinymce',

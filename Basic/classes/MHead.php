@@ -2,6 +2,8 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Config\HConfig;
+use EC\Hash\HHash;
 
 class MHead extends E\Module {
 
@@ -45,9 +47,9 @@ class MHead extends E\Module {
 
     public function addScript($uri) {
         if (EDEBUG)
-            $uri .= "?v=" . EC\HHash::Generate(8);
+            $uri .= "?v=" . HHash::Generate(8);
         else
-            $uri .= "?v=" . EC\HConfig::Get('Config', 'version', '1');
+            $uri .= "?v=" . HConfig::Get('Config', 'version', '1');
 
         $this->html .= $this->getNode('script', [
             "type" => "text/javascript",
@@ -68,7 +70,7 @@ class MHead extends E\Module {
     public function generateScriptCSPHash() {
         $this->requireBeforePostInitialize();
 
-        $hash = EC\HHash::Generate(16);
+        $hash = HHash::Generate(16);
         $this->scriptCSPHashes[] = "'nonce-{$hash}'";
 
         return $hash;
@@ -77,7 +79,7 @@ class MHead extends E\Module {
     public function generateStyleCSPHash() {
         $this->requireBeforePostInitialize();
 
-        $hash = EC\HHash::Generate(16);
+        $hash = HHash::Generate(16);
         $this->styleCSPHashes[] = "'nonce-{$hash}'";
 
         return $hash;

@@ -1,12 +1,12 @@
 <?php namespace EC\Session;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database;
+use E, EC;
+use EC\Database\MDatabase;
 
 class TSessions extends _TSessions {
 
-    public function __construct(EC\MDatabase $db) {
+    public function __construct(MDatabase $db) {
         parent::__construct($db, 's_s');
     }
 

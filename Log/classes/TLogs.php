@@ -1,12 +1,12 @@
 <?php namespace EC\Log;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database;
+use E, EC;
+use EC\Database\MDatabase;
 
 class TLogs extends _TLogs {
 
-    public function __construct(EC\MDatabase $db) {
+    public function __construct(MDatabase $db) {
         parent::__construct($db, 'Log_Logs', 'l');
 
         $this->setColumnParser('Data', [

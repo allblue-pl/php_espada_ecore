@@ -2,13 +2,14 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
 
 class HConfig {
 
     static private $Properties = null;
     static private $DBCache = [];
 
-    static public function DB_Get(EC\MDatabase $db, $name, $defaultValue = null,
+    static public function DB_Get(MDatabase $db, $name, $defaultValue = null,
             $forUpdate = false) {
         if (array_key_exists($name, HConfig::$DBCache))
             return HConfig::$DBCache[$name];
@@ -33,7 +34,7 @@ class HConfig {
         return $row['Value'];
     }
 
-    static public function DB_Set(EC\MDatabase $db, $name, $value) {
+    static public function DB_Set(MDatabase $db, $name, $value) {
         $table = new TSettings($db);
 
         if (!$table->update([[

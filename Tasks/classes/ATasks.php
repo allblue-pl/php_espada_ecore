@@ -1,15 +1,17 @@
 <?php namespace EC\Tasks;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Api\CArgs, EC\Api\CResult;
+use E, EC;
+use EC\Api\CArgs;
+use EC\Api\CResult;
+use EC\Api\SApi;
 
 class ATasks extends EC\Api\ABasic {
 
     private $db = null;
     private $user = null;
 
-    public function __construct(EC\SApi $site, $args) {
+    public function __construct(SApi $site, $args) {
         parent::__construct($site);
 
         /* Modules */
@@ -34,12 +36,13 @@ class ATasks extends EC\Api\ABasic {
         if ($info === null)
             return CResult::Failure('Cannot parse `info` json.');
 
-        $task = HTasks::Start($this->db, $info);
+        $task = HTasks::Create($this->db);
         if ($task === null)
             return CResult::Failure('Cannot start task.');
+        $task->setInfo($info);
 
         return CResult::Success()
-            ->add('task', $task_hash);
+            ->add('task', $task->getHash());
     }
 
     public function action_Status(CArgs $args) {
@@ -53,9 +56,10 @@ class ATasks extends EC\Api\ABasic {
         $result = CResult::Success()
             ->add('task', $task);
 
-        if ($args->destroyOnFinish && $task['finished']) {
-            if (!HTasks::Destroy($this->db, $task['hash']))
-                $result->add('error', 'Cannot destroy task.');
+        if ($args->destroyOnFinish && $task->isFinished()) {
+            $task->destroy();
+            if ($task->update($this->db))
+                return CResult::Failure('Cannot update task.');
         }
 
         return $result;

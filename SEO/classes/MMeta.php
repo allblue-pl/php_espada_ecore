@@ -2,8 +2,12 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Basic\MHead;
+use EC\Strings\HStrings;
 
 class MMeta extends E\Module {
+
+    private MHead $header;
 
     private $title = '';
     private $description = '';
@@ -12,7 +16,7 @@ class MMeta extends E\Module {
     public $type = 'article';
     public $imageUris = [];
 
-    public function __construct(EC\Basic\MHead $header, EC\Facebook\MOpenGraph $og) {
+    public function __construct(MHead $header) {
         parent::__construct();
 
         $this->header = $header;
@@ -27,9 +31,9 @@ class MMeta extends E\Module {
 
     public function setDescription($description) {
         $description = strip_tags($description);
-        $description = EC\HStrings::RemoveCharacters($description, 
-                EC\HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
-        $description = EC\HStrings::RemoveDoubles($description, ' ');
+        $description = HStrings::RemoveCharacters($description, 
+                HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
+        $description = HStrings::RemoveDoubles($description, ' ');
         if (mb_strlen($description) > 300)
             $description = mb_substr($description, 0, 297) . '...';
 
@@ -42,9 +46,9 @@ class MMeta extends E\Module {
 
     public function setTitle($title) {
         $title = strip_tags($title);
-        $title = EC\HStrings::RemoveCharacters($title, 
-                EC\HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
-        $title = EC\HStrings::RemoveDoubles($title, ' ');
+        $title = HStrings::RemoveCharacters($title, 
+                HStrings::GetCharsRegexp([ 'digits', 'letters' ], '\\., '));
+        $title = HStrings::RemoveDoubles($title, ' ');
 
         $this->title = $title;        
     }

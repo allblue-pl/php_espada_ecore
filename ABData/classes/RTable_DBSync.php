@@ -2,8 +2,9 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\TTable;
 
-class RTable_DBSync extends RRequest {
+class RTable_DBSync extends RDBSyncRequest {
     static public function Table_Select(EC\Database\TTable $table, array $args, 
             ?string &$error) : ?array {
         if (!array_key_exists('columnNames', $args))
@@ -77,14 +78,22 @@ class RTable_DBSync extends RRequest {
     }
 
 
-    /* RRequest */
+    private TTable $table;
+
+    public function __construct(CDataStore $dataStore, TTable $table) {
+        parent::__construct($dataStore);
+
+        $this->table = $table;
+    }
+
+    /* RDBSyncRequest */
     public function getDeviceRowIds(EC\ABData\CDevice $device) : array {
-        $rows = (new TDeviceRows($this->db))->select_Where([
+        $rows = (new TDeviceRows($device->getDB()))->select_Where([
             [ 'DeviceId', '=', $device->getId() ],
-            [ 'TableId', '=', EC\HABData::GetTableId($this->table) ],
+            [ 'TableId', '=', HABData::GetTableId($this->table->getTableName()) ],
         ]);
 
         return array_column($rows, '_Id');
     }
-    /* / RRequest */
+    /* / RDBSyncRequest */
 }

@@ -9,29 +9,23 @@ class CResult_Base {
     const FAILURE       = 1;
     const ERROR         = 2;
 
-    static public function Success_Base($type, $message = '') {
+    static public function Success_Base($type, $message) {
         if ($type === 'json')
             return new CResult(self::SUCCESS, $message);
-        else if ($type === 'bytes')
-            return new CResult_Bytes(self::SUCCESS, $message);
         
         throw new \Exception('Unknown result type.');
     }
 
-    static public function Failure_Base($type, $message = '') {
+    static public function Failure_Base($type, $message) {
         if ($type === 'json')
             return new CResult(self::FAILURE, $message);
-        else if ($type === 'bytes')
-            return new CResult_Bytes(self::FAILURE, $message);
         
         throw new \Exception('Unknown result type.');
     }
 
-    static public function Error_Base($type, $message = '') {
+    static public function Error_Base($type, $message) {
         if ($type === 'json')
             return new CResult(self::ERROR, $message);
-        else if ($type === 'bytes')
-            return new CResult_Bytes(self::ERROR, $message);
 
         throw new \Exception('Unknown result type.');
     }

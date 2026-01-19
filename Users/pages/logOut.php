@@ -2,12 +2,15 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Basic\SBasic;
+use EC\Database\MDatabase;
+use EC\Session\MSession;
 
-$site = new EC\SBasic();
+$site = new SBasic();
 
-$site->addM('session', new EC\MSession());
-$site->addM('db', new EC\MDatabase());
-$site->addM('user', new EC\Users\MUser($site->m->session, $site->m->db, 
+$site->addM('db', new MDatabase());
+$site->addM('session', new MSession($site->m->db));
+$site->addM('user', new MUser($site->m->session, $site->m->db, 
         E\Args::Page('userType')));
 
 $site->onPreInitialize(function() use ($site) {

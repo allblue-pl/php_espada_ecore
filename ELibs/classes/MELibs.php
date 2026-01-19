@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Text\HText;
 
 class MELibs extends E\Module {
 
@@ -29,7 +30,7 @@ class MELibs extends E\Module {
     function addTranslations($path) {
         $pkg = explode(':', $path)[0];
         $texts = [];
-        $translationsArr = EC\HText::GetTranslations($pkg)->getArray();
+        $translationsArr = HText::GetTranslations($pkg)->getArray();
 
         foreach ($translationsArr as $text => $textTranslation) 
             $texts["{$pkg}:{$text}"] = $textTranslation;
@@ -39,7 +40,7 @@ class MELibs extends E\Module {
 
     function addTranslations_As($prefixName, $path) {
         $texts = [];
-        $translationsArr = EC\HText::GetTranslations($path)->getArray();
+        $translationsArr = HText::GetTranslations($path)->getArray();
 
         foreach ($translationsArr as $text => $textTranslation) 
             $texts["{$prefixName}:{$text}"] = $textTranslation;
@@ -88,9 +89,9 @@ class MELibs extends E\Module {
         $fieldsString = str_replace("'", "\\'", $fields_JSON);
         $textsString = str_replace("'", "\\'", json_encode($this->texts));
 
-        $date_Formats_Date = EC\HText::_('ELibs:date_Formats_Date');
-        $date_Formats_DateTime = EC\HText::_('ELibs:date_Formats_DateTime');
-        $date_Formats_Time = EC\HText::_('ELibs:date_Formats_Time');
+        $date_Formats_Date = HText::_('ELibs:date_Formats_Date');
+        $date_Formats_DateTime = HText::_('ELibs:date_Formats_DateTime');
+        $date_Formats_Time = HText::_('ELibs:date_Formats_Time');
 
         $script = <<<SCRIPT
     (function() {

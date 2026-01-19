@@ -1,8 +1,11 @@
 <?php
+
+use EC\Api\SApi;
+
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-$site = new EC\SApi();
+$site = new SApi();
 
 $apiClass = E\Args::Page('api');
 if (E\Args::Page_Exists('args'))

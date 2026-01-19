@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Text\HText;
 
 class SApi extends E\Site {
     private $actionName = '';
@@ -82,7 +83,7 @@ class SApi extends E\Site {
 
         if (!E\Args::Post_ValidateSize()) {
             return CResult::Failure('File size too big.')
-                ->add('errorMessage', EC\HText::_('Api:Errors_PostSizeExceeded'));
+                ->add('errorMessage', HText::_('Api:Errors_PostSizeExceeded'));
         }
 
         $post_args = E\Args::Post_All();

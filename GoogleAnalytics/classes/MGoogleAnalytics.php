@@ -2,9 +2,10 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Basic\MHead;
 
 class MGoogleAnalytics extends E\Module {
-
+    private MHead $head;
     private $trackingCode = null;
     private $scriptCSPHash = null;
 

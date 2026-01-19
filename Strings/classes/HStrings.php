@@ -12,7 +12,7 @@ class HStrings {
             $langs = null) {
         foreach ($types as $type) {
             if (!in_array($type, $types))
-                throw new Exception("Unknown chars type `{$type}`.");
+                throw new \Exception("Unknown chars type `{$type}`.");
         }
 
         $chars = '';

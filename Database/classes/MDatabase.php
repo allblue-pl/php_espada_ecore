@@ -2,6 +2,8 @@
 defined( '_ESPADA' ) or die( NO_ACCESS);
 
 use E, EC;
+use EC\Config\CConfig;
+use EC\Log\HLog;
 
 class MDatabase extends E\Module {
 
@@ -279,7 +281,7 @@ class MDatabase extends E\Module {
                     if ($timeSpan >= self::$MinLogTimeSpan) {
                         $minLogTimeSpan = self::$MinLogTimeSpan;
                         self::$MinLogTimeSpan = null;
-                        EC\HLog::Add($this, null, 'Database Query Time Span', 
+                        HLog::Add($this, null, 'Database Query Time Span', 
                                 [ 'timeSpan' => $timeSpan, 'query' => $query ]);
                         self::$MinLogTimeSpan = $minLogTimeSpan;
                     }
@@ -314,7 +316,7 @@ class MDatabase extends E\Module {
                     if ($timeSpan >= self::$MinLogTimeSpan) {
                         $minLogTimeSpan = self::$MinLogTimeSpan;
                         self::$MinLogTimeSpan = null;
-                        EC\HLog::Add($this, null, 'Database Query Time Span', 
+                        HLog::Add($this, null, 'Database Query Time Span', 
                                 [ 'timeSpan' => $timeSpan, 'query' => $query ]);
                         self::$MinLogTimeSpan = $minLogTimeSpan;
                     }
@@ -364,7 +366,7 @@ class MDatabase extends E\Module {
 		if ($this->mysqli !== null)
 			throw new \Exception('`disconnect` from database before calling `connect`.');
 
-		$config = new EC\CConfig('Database');
+		$config = new CConfig('Database');
 
 		$host = 	$config->getRequired("{$this->prefix}_Host");
 		$user = 	$config->getRequired("{$this->prefix}_User");

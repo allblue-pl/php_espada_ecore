@@ -2,10 +2,11 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
 
 class HApi {
 
-    static public function Parse(EC\MDatabase $db, $user_id = null, $task_arg = [],
+    static public function Parse(MDatabase $db, $user_id = null, $task_arg = [],
             &$error = null) {
         if (!self::ValidateArg($task_arg, $error))
             return null;
@@ -27,7 +28,7 @@ class HApi {
         return $task;
     }
 
-    static public function Update(EC\MDatabase $db, CTask $task, $task_arg) {
+    static public function Update(MDatabase $db, CTask $task, $task_arg) {
         if (!self::ValidateArg($task_arg, $error))
             return null;
 

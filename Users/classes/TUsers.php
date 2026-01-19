@@ -1,12 +1,12 @@
 <?php namespace EC\Users;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Database;
+use E, EC;
+use EC\Database\MDatabase;
 
 class TUsers extends _TUsers {
 
-    public function __construct(EC\MDatabase $db) {
+    public function __construct(MDatabase $db) {
         parent::__construct($db, 'u_u');
 
         /* Columns - Extra */

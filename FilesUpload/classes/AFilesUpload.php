@@ -1,15 +1,21 @@
 <?php namespace EC\FilesUpload;
 defined('_ESPADA') or die(NO_ACCESS);
 
-use E, EC,
-    EC\Api\CArgs, EC\Api\CResult;
+use E, EC;
+use EC\Api\CArgs;
+use EC\Api\CResult;
+use EC\Api\SApi;
+use EC\Config\HConfig;
+use EC\Users\MUser;
 
 class AFilesUpload extends EC\Api\ABasic {
 
     private $config = null;
+    private MUser $user;
+    private $categories;
 
 
-    public function __construct(EC\SApi $site, array $apiArgs) {
+    public function __construct(SApi $site, array $apiArgs) {
         parent::__construct($site, $apiArgs['userType'], $apiArgs['requiredPermissions']);
 
         $this->user = $site->m->user;
@@ -34,7 +40,7 @@ class AFilesUpload extends EC\Api\ABasic {
             'file' => true,
         ]);
 
-        $this->categories = EC\HConfig::GetRequired('FilesUpload', 'categories');
+        $this->categories = HConfig::GetRequired('FilesUpload', 'categories');
     }
 
     public function action_Delete(CArgs $args) {

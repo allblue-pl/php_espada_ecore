@@ -2,13 +2,15 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
+use EC\Users\TUsers;
 
 class TInfos extends _TInfos {
 
-    public function __construct(EC\MDatabase $db) {
+    public function __construct(MDatabase $db) {
         parent::__construct($db, 'a_i');
 
-        $this->addColumns_Ref(new EC\TUsers($db), [
+        $this->addColumns_Ref(new TUsers($db), [
             'Active' => [ 'u_u.Active', 'Active' ]
         ]);
 

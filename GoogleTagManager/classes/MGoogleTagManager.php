@@ -2,9 +2,10 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Basic\MHead;
 
 class MGoogleTagManager extends E\Module {
-
+    private MHead $header;
     private $trackingCode = null;
 
 

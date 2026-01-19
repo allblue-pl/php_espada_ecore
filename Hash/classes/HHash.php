@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Config\HConfig;
 
 class HHash {
 
@@ -36,7 +37,7 @@ class HHash {
 	}
 
 	static public function Salt() {
-		return EC\HConfig::GetRequired('Hash', 'salt');
+		return HConfig::GetRequired('Hash', 'salt');
 	}
 
 }

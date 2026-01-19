@@ -2,9 +2,14 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\ABWeb\MABWeb;
+use EC\Basic\SBasic;
+use EC\Database\MDatabase;
+use EC\ELibs\MELibs;
+use EC\Session\MSession;
+use EC\Users\MUser;
 
-class SLemonBee extends EC\SBasic {
-
+class SLemonBee extends SBasic {
     private $modulePath = null;
 
     private $defaultSetup = null;
@@ -17,13 +22,13 @@ class SLemonBee extends EC\SBasic {
         $this->modulePath = $modulePath;
 
         /* Modules */
-        $this->addM('db', new EC\MDatabase());
-        $this->addM('session', new EC\MSession($this->m->db));
-        $this->addM('user', new EC\Users\MUser($this->m->session, $this->m->db, 
+        $this->addM('db', new MDatabase());
+        $this->addM('session', new MSession($this->m->db));
+        $this->addM('user', new MUser($this->m->session, $this->m->db, 
                 $userType));
 
-        $this->addM('abWeb', new EC\MABWeb($this->m->head, $abWebBuildPath));
-        $this->addM('eLibs', new EC\MELibs($this->m->head));
+        $this->addM('abWeb', new MABWeb($this->m->head, $abWebBuildPath));
+        $this->addM('eLibs', new MELibs($this->m->head));
 
         // $this->addM('spk', new EC\MSPK($this->m->head,
         //         $this->m->abTemplate));

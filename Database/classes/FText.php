@@ -30,7 +30,7 @@ class FText extends FField {
         ], $info));
     }
 
-    protected function _escape(EC\MDatabase $db, $value) {
+    protected function _escape(MDatabase $db, $value) {
         return $db->escapeString($value);
     }
 
@@ -41,7 +41,7 @@ class FText extends FField {
         return (string)$value;
     }
 
-    protected function _unescape(EC\MDatabase $db, $value) {
+    protected function _unescape(MDatabase $db, $value) {
         return $db->unescapeString($value);
     }
 
