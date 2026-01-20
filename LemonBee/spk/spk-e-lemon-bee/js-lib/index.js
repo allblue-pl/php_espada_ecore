@@ -81,13 +81,11 @@ export class Site extends spocky.Module {
 
                     if (result.isSuccess()) {
                         return {
-                            success: true,
                             error: null,
                         };
                     }
 
                     return {
-                        success: false,
                         error: result.data.message,
                     };
                 },
