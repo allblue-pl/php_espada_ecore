@@ -206,8 +206,10 @@ class CDataStore {
                         " does not exist.");
             }
 
-            [ $tableName, $tableRequest ] = 
-                    $this->dbSyncRequestFns[$dbSyncRequestName]();
+            
+            $dbSyncRequestInfo = $this->dbSyncRequestFns[$dbSyncRequestName]();
+            $tableName = $dbSyncRequestInfo->tableName;
+            $tableRequest = $dbSyncRequestInfo->request;
 
             if (!($tableRequest instanceof RRequest))
                 throw new \Exception("Table request '{$dbSyncRequestName}' is not an instance of 'RRequest'.");
