@@ -157,7 +157,7 @@ class HDate {
     }
 
     static public function GetUTCOffset(float $time) {
-        self::GetUTCOffset_Time($time) / 60 / 60;
+        return self::GetUTCOffset_Time($time) / 60 / 60;
     }
 
     static public function GetUTCOffset_Time(float $time) {
