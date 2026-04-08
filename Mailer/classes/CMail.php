@@ -1,11 +1,7 @@
 <?php namespace EC\Mailer;
 defined('_ESPADA') or die(NO_ACCESS);
 
-require(__DIR__.'/../3rdparty/PHPMailer/src/Exception.php');
-require(__DIR__.'/../3rdparty/PHPMailer/src/OAuth.php');
-require(__DIR__.'/../3rdparty/PHPMailer/src/PHPMailer.php');
-require(__DIR__.'/../3rdparty/PHPMailer/src/POP3.php');
-require(__DIR__.'/../3rdparty/PHPMailer/src/SMTP.php');
+require(__DIR__.'/../3rdparty/PHPMailer/vendor/autoload.php');
 
 use E, EC,
 	PHPMailer\PHPMailer;
