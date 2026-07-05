@@ -1,12 +1,6 @@
-'use strict';
+import webABApi from "web-ab-api";
 
-const
-    webABApi = require('web-ab-api')
-;
-
-
-class eTasks_Class {
-
+export class eTasks_Class {
     constructor() {
         this.timeout = 1000;
     }
@@ -61,4 +55,5 @@ class eTasks_Class {
     // }
 
 }
-export default eTasks = new eTasks_Class();
+const eTasks = new eTasks_Class();
+export default eTasks;
