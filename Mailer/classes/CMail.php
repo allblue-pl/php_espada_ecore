@@ -1,13 +1,12 @@
 <?php namespace EC\Mailer;
 defined('_ESPADA') or die(NO_ACCESS);
 
-require(__DIR__.'/../3rdparty/PHPMailer/vendor/autoload.php');
+require(PATH_ESITE.'/composer/vendor/autoload.php');
 
 use E, EC,
 	PHPMailer\PHPMailer;
 
 class CMail {
-
 	private $from_Mail = '';
 	private $from_Name = '';
 
@@ -171,5 +170,4 @@ class CMail {
 	public function getError() {
 		return $this->error;
 	}
-
 }
