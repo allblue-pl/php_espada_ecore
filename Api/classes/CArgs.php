@@ -4,7 +4,6 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 class CArgs {
-
     private $args = [];
 
     public function __construct($argInfos) {
@@ -19,11 +18,11 @@ class CArgs {
         }
     }
 
-    public function exists($name) {
+    public function exists($name): bool {
         return in_array($name, array_keys($this->args));
     }
 
-    public function &get($name) {
+    public function &get($name): mixed {
         $this->validateArg($name);
 
         if (!$this->args[$name]['set'])
@@ -50,6 +49,13 @@ class CArgs {
         return $this->args[$name]['set'];
     }
 
+    public function set(string $name, mixed $value) {
+        $this->validateArg($name);
+
+        $this->args[$name]['set'] = true;
+        $this->args[$name]['value'] = $value;
+    }
+
     public function &__get($name) {
         return $this->get($name);
     }
@@ -59,10 +65,7 @@ class CArgs {
     }
 
     public function __set($name, $value) {
-        $this->validateArg($name);
-
-        $this->args[$name]['set'] = true;
-        $this->args[$name]['value'] = $value;
+        $this->set($name, $value);
     }
 
     public function __exists($name) {

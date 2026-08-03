@@ -21,13 +21,13 @@ class AApi {
         return $this->actions[$actionName];
     }
 
-    public function getResult($action_name, $args) {
-        if (!isset($this->actions[$action_name])) {
-            return EC\Api\CResult::Failure("Action `{$action_name}`" .
+    public function getResult($actionName, $args) {
+        if (!isset($this->actions[$actionName])) {
+            return EC\Api\CResult::Failure("Action `{$actionName}`" .
                     ' does not exist.');
         }
 
-        $action = $this->actions[$action_name];
+        $action = $this->actions[$actionName];
 
         $action['argInfos']['_debug'] = false;
         $action['argInfos']['_test'] = false;
@@ -49,6 +49,7 @@ class AApi {
             if ($result === null)
                 return CResult_Base::Error_Base($action['type'], 'Result cannot be null.');
         } catch (\Exception $e) {
+            /** @phpstan-ignore booleanNot.alwaysFalse */
             if (!EDEBUG) {
                 E\Exception::NotifyListeners($e);
                 return CResult_Base::Error_Base($action['type'], 

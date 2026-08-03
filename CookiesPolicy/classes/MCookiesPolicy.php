@@ -2,19 +2,21 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Basic\MHead;
 
 class MCookiesPolicy extends E\Module {
+    private MHead $head;
+    private ?string $title = null;
+    private ?string $body = null;
+    private ?string $scriptCSPHash = null;
 
-    private $head = null;
-    private $title = null;
-    private $body = null;
-    private $scriptCSPHash = null;
+    public function __construct(E\Site $site, MHead $head) {
+        parent::__construct($site);
 
-    public function __construct(EC\Basic\MHead $head) {
         $this->head = $head;
     }
 
-    public function setContent($title, $body) {
+    public function setContent(string $title, string $body) {
         $this->title = $title;
         $this->body = $body;
         $this->scriptCSPHash = $this->head->generateScriptCSPHash();
@@ -22,8 +24,6 @@ class MCookiesPolicy extends E\Module {
 
 
     protected function _preDisplay(E\Site $site) {
-        parent::_preDisplay($site);
-
         if ($this->title === null || $this->body === null) {
             throw new \Exception('Cookies Policy content not set.');
         }

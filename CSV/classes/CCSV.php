@@ -151,14 +151,14 @@ class CCSV {
                     if ($char_Next === $this->separator)
                         $index++;
 
-                    $row->addColumn($column === null ? '' : $column);
+                    $row->addColumn($column);
                     $column = null;
                     $quoted = false;
                     continue;
                 }
             } else {
                 if ($char === $this->separator) {
-                    $row->addColumn($column === null ? '' : $column);
+                    $row->addColumn($column);
                     $column = null;
                     continue;
                 }
@@ -184,19 +184,17 @@ class CCSV {
             throw new \Exception('Cannot determine separator without second line.');
 
         $this->separator = null;
-        $max_count = -1;
-        if ($line1 !== null) {
-            foreach ($this->separators as $separator) {
-                $line0_count = substr_count($line0, $separator);
-                $line1_count = substr_count($line1, $separator);
+        // $max_count = -1;
+        foreach ($this->separators as $separator) {
+            $line0_count = substr_count($line0, $separator);
+            $line1_count = substr_count($line1, $separator);
 
-                if ($line0_count === 0)
-                    continue;
+            if ($line0_count === 0)
+                continue;
 
-                if ($line0_count === $line1_count) {
-                    if ($line0_count > $max_count)
-                        $this->separator = $separator;
-                }
+            if ($line0_count === $line1_count) {
+                // if ($line0_count > $max_count)
+                    $this->separator = $separator;
             }
         }
 

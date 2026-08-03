@@ -12,8 +12,8 @@ class CMail {
 
     private $tos = null;
     private $replyTos = [];
-	private $ccs = [];
-	private $bcce = [];
+	// private $ccs = [];
+	// private $bcce = [];
 
     private $attachments = [];
     private $images = [];

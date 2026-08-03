@@ -288,24 +288,24 @@ class HABData {
     }
 
     static public function Update_Where(CDevice $device, EC\Database\TTable $table, 
-            $values, $whereConditions) {
+            $values, $whereConditions): bool {
         self::ParseUpdateRow($device, $values);
 
-        return $table->update_Where($values, $whereConditions, true);
+        return $table->update_Where($values, $whereConditions);
     }
 
     static public function ValidateDefault_All(EC\Database\TTable $table, 
-            EC\Forms\CValidator $validator, array $row, array $ignoreColumns = []) {
+            EC\Forms\CValidator $validator, array $row, array $ignoreColumns = []): void {
         $ignoreColumns[] = '_Modified_DateTime';
 
-        return $table->validateDefault_All($validator, $row, $ignoreColumns);
+        $table->validateDefault_All($validator, $row, $ignoreColumns);
     }   
 
 
     static private $TableIds = null;
 
     
-    static private function RowsMatch($table, $whenColumns, $rowA, $rowB) {
+    static private function RowsMatch($table, $whenColumns, $rowA, $rowB): bool {
         $whenMatch = true;
         foreach ($whenColumns as $whenColumn) {
             $column = $table->getColumn($whenColumn, true);

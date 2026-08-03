@@ -5,9 +5,8 @@ use E, EC;
 use EC\Database\MDatabase;
 
 class TLogs extends _TLogs {
-
     public function __construct(MDatabase $db) {
-        parent::__construct($db, 'Log_Logs', 'l');
+        parent::__construct($db, 'l');
 
         $this->setColumnParser('Data', [
             'out' => function($row, $name, $value) {

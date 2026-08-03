@@ -5,10 +5,12 @@ use E, EC;
 use EC\Database\MDatabase;
 
 class MSession extends E\Module {
-    private $db;
-    private $sessionHandler;
+    private MDatabase $db;
+    private CSessionHandler $sessionHandler;
 
-	public function __construct(MDatabase $db, $expirationTime = 0, $base = '/') {
+	public function __construct(E\Site $site, MDatabase $db, $expirationTime = 0) {
+        parent::__construct($site);
+
         $this->db = $db;
         $this->sessionHandler = new CSessionHandler($this);
 
@@ -38,7 +40,7 @@ class MSession extends E\Module {
 		// 		$cookie_params['secure'], $cookie_params['httponly']);
 	}
 
-	public function &get($name) {
+	public function &get(string $name) {
 		$this->requirePreInitialize();
 
 		if (isset($_SESSION[$name]))
@@ -48,7 +50,7 @@ class MSession extends E\Module {
 		return $null;
 	}
 
-	public function set($name, $value) {
+	public function set(string $name, mixed $value) {
 		$this->requirePreInitialize();
 		$this->requireBeforePostInitialize();
 
@@ -61,7 +63,7 @@ class MSession extends E\Module {
 		// print_r($_SESSION);
 	}
 
-	public function delete($name) {
+	public function delete(string $name) {
 		$this->requirePreInitialize();
 		$this->requireBeforePostInitialize();
 
@@ -78,15 +80,15 @@ class MSession extends E\Module {
 		session_destroy();
 	}
 
-	public function &__get($name) {
+	public function &__get(string $name) {
 		return $this->get($name);
     }
     
-    public function __isset($name) {
+    public function __isset(string $name) {
         return isset($_SESSION[$name]);
     }
 
-	public function __set($name, $value) {
+	public function __set(string $name, mixed $value) {
 		$this->set($name, $value);
 	}
 
@@ -100,7 +102,7 @@ class MSession extends E\Module {
         return true;
     }
 
-    public function sessionHandlers_Destroy($id) {
+    public function sessionHandlers_Destroy(string $id) {
         if (!$this->db->isConnected())
             return true;
 
@@ -112,7 +114,7 @@ class MSession extends E\Module {
         return true;
     }
 
-    public function sessionHandlers_GC($max) {
+    public function sessionHandlers_GC(int $max) {
         if (!$this->db->isConnected())
             return true;
 
@@ -128,7 +130,7 @@ class MSession extends E\Module {
         return true;
     }
 
-    public function sessionHandlers_Read($id) {
+    public function sessionHandlers_Read(string $id) {
         if (!$this->db->isConnected())
             return true;
 
@@ -142,7 +144,7 @@ class MSession extends E\Module {
         return $row['Data'];
     }
 
-    public function sessionHandlers_Write($id, $data) {
+    public function sessionHandlers_Write(string $id, string $data) {
         if (!$this->db->isConnected())
             return true;
 

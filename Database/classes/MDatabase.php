@@ -27,8 +27,8 @@ class MDatabase extends E\Module {
 
 	private $lastQuery = null;
 
-	public function __construct($prefix = 'default') {
-		parent::__construct();
+	public function __construct(E\Site $site, $prefix = 'default') {
+		parent::__construct($site);
 
 		$this->prefix = $prefix;
 	}
@@ -296,8 +296,6 @@ class MDatabase extends E\Module {
 
 		throw new \Exception('Database error: ' . $query . ' # ' .
 				$this->mysqli->error);
-
-		return null;
 	}
 
 	public function query_Execute($query) {

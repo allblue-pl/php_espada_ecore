@@ -129,7 +129,8 @@ class RTableRequest extends RRequest {
         if (!HABData::Delete_Where($device, $this->table, $args['where'])) {
             return [
                 'success' => false,
-                'error' => EDEBUG ?
+                /** @phpstan-ignore ternary.alwaysTrue */
+                'error' => EDEBUG ? 
                     $this->db->getError() :
                     'Cannot delete rows.',
             ];
@@ -218,6 +219,7 @@ class RTableRequest extends RRequest {
             'error' => null,
         ];
 
+        /** @phpstan-ignore ternary.alwaysTrue */
         $result['error'] = EDEBUG ?
                     $this->db->getError() :
                     'Cannot update rows.';

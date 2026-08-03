@@ -5,11 +5,6 @@ use E, EC, EC\Forms;
 use EC\Text\HText;
 
 class VFloat extends Forms\VField {
-
-    private $min = 0;
-    private $max = 0;
-    private $required = true;
-
     public function __construct($args = []) {
         parent::__construct($args, [
             'required' => true,
@@ -28,9 +23,6 @@ class VFloat extends Forms\VField {
             return;
         }
 
-        if (!$args['required'] && $value === '')
-            return;
-
         if (!is_numeric($value))
             $this->error(EC\Text\HText::_('Forms:fields.int_NotANumber'));
         else {
@@ -38,14 +30,14 @@ class VFloat extends Forms\VField {
             if ($args['minValue'] !== null) {
                 if ($number < $args['minValue']) {
                     $this->error(EC\Text\HText::_(
-                            'Forms:fields.int_BelowMin', array($this->min)));
+                            'Forms:fields.int_BelowMin', array($args['minValue'])));
                 }
             }
 
             if ($args['maxValue']) {
                 if ($number > $args['maxValue']) {
                     $this->error(EC\Text\HText::_(
-                            'Forms:fields.int_AboveMax', array($this->max)));
+                            'Forms:fields.int_AboveMax', array($args['maxValue'])));
                 }
             }
         }

@@ -4,17 +4,17 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 use EC\Api\CArgs;
 use EC\Api\CResult;
-use EC\Api\SApi;
+use EC\Api\SUserApi;
 use EC\Text\HText;
 
-class AUsers extends EC\Api\ABasic {
+class AUsers extends EC\Api\AUserApi {
 
     private $requiredPermissions = null;
 
     private $db = null;
     private $user = null;
 
-    public function __construct(SApi $site, $args) {
+    public function __construct(SUserApi $site, $args) {
         parent::__construct($site, $args['userType']);
 
         if (!isset($args['requiredPermissions']))
@@ -24,8 +24,8 @@ class AUsers extends EC\Api\ABasic {
         $this->requiredPermissions = $args['requiredPermissions'];
 
         /* Modules */
-        $this->db = $site->m->db;
-        $this->user = $site->m->user;
+        $this->db = $site->getDB();
+        $this->user = $site->getUser();
 
         /* Actions */
         $this->action('activate', 'action_Activate', [
@@ -34,21 +34,21 @@ class AUsers extends EC\Api\ABasic {
         ]);
     }
 
-    public function action_Activate(EC\Api\CArgs $args) {
+    public function action_Activate(CArgs $args) {
         foreach ($this->requiredPermissions as $permission) {
             if (!$this->user->hasPermission($permission))
                 return CResult::Failure('Permission denied.');
         }
 
         $existingActiveUserId = null;
-        if (!HUsers::Activate($this->db, $args->id, $args->active, 
+        if (!HUsers::Activate($this->db, $args->get("id"), $args->get("active"), 
                 $existingActiveUserId)) {
             if ($existingActiveUserId !== null) {
                 return CResult::Failure(HText::_(
                         'Users:Errors_ActiveUserWithLoginAlreadyExists'));
             }
 
-            return CResult::Failure($args->active ?
+            return CResult::Failure($args->get("active") ?
                     HText::_('Users:Errors_CannotActivateUser') :
                     HText::_('Users:Errors_CannotDeactivateUser'));
         }

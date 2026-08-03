@@ -110,6 +110,7 @@ class SApi extends E\Site {
         /* Debug with GET. */
         $apiArgs['_debug'] = false;
         $apiArgs['_test'] = false;
+        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG) {
             if (E\Args::Get_Exists('_debug')) {
                $getArgs = E\Args::Get_All();

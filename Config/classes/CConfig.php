@@ -19,6 +19,10 @@ class CConfig {
         return HConfig::Get($this->packageName, $name, $default_value);
     }
 
+    public function getR($name) {
+        return $this->getRequired($name);
+    }
+
     public function getRequired($name) {
         return HConfig::GetRequired($this->packageName, $name);
     }

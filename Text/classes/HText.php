@@ -5,13 +5,13 @@ use E, EC;
 
 class HText {
 
-    static public $Listeners_OnTextNotFound = null;
-	static private $Translations = [];
+    static public ?\Closure $Listeners_OnTextNotFound = null;
+	static private array $Translations = [];
 
-	static public function _($text, $args = []) {
-		$text_array = self::ParseText($text);
+	static public function _(string $text, array $args = []) {
+		$textArray = self::ParseText($text);
 
-		if ($text_array[0] === '' || $text_array[2] === '') {
+		if ($textArray[0] === '' || $textArray[2] === '') {
             $translation = $text;
             if (count($args) > 0) {
                 $translation .= '(';
@@ -33,25 +33,25 @@ class HText {
             return '#' . $translation . '#';
         }
 
-		$translations_key = self::GetTranslationsKey($text_array[0],
-				$text_array[1]);
+		$translations_key = self::GetTranslationsKey($textArray[0],
+				$textArray[1]);
 
-		self::Load($translations_key, $text_array[0], $text_array[1]);
+		self::Load($translations_key, $textArray[0], $textArray[1]);
 		return self::$Translations[$translations_key]
-			    ->get($text_array[2], $args);
+			    ->get($textArray[2], $args);
 	}
 
-	static public function GetTranslations($path) {
-		$path_array = self::ParsePath($path);
+	static public function GetTranslations(string $path) {
+		$pathArray = self::ParsePath($path);
 
-		$translations_key = self::GetTranslationsKey($path_array[0],
-				$path_array[1]);
+		$translations_key = self::GetTranslationsKey($pathArray[0],
+				$pathArray[1]);
 
-		self::Load($translations_key, $path_array[0], $path_array[1]);
+		self::Load($translations_key, $pathArray[0], $pathArray[1]);
 		return self::$Translations[$translations_key];
 	}
 
-	static public function GetTranslationsKey($package, $file = '') {
+	static public function GetTranslationsKey(string $package, ?string $file = '') {
 		$key = $package;
 		if ($file !== null)
 			$key .= ':' . $file;
@@ -59,20 +59,20 @@ class HText {
 		return $key;
 	}
 
-	static public function Load($translations_key, $package, $path = '') {
-		if (isset(self::$Translations[$translations_key]))
+	static public function Load(string $translationsKey, string $package, $path = '') {
+		if (isset(self::$Translations[$translationsKey]))
 			return;
 
-		self::$Translations[$translations_key] =
+		self::$Translations[$translationsKey] =
 				new CTranslations($package, $path);
 	}
 
-    static public function SetListener_OnTextNotFound(callable $onTextNotFoundFn) {
+    static public function SetListener_OnTextNotFound(\Closure $onTextNotFoundFn) {
         self::$Listeners_OnTextNotFound = $onTextNotFoundFn;
     }
 
 
-	static private function ParseText($text) {
+	static private function ParseText(string $text) {
 		$pos = mb_strrpos($text, ':');
 		if ($pos === false)
 			return ['', '', ''];
@@ -92,14 +92,14 @@ class HText {
 		}
 	}
 
-	static private function ParsePath($lang_path) {
-		$pos = mb_strpos($lang_path, ':');
+	static private function ParsePath(string $langPath) {
+		$pos = mb_strpos($langPath, ':');
 		if ($pos === false)
-			return array($lang_path, '');
+			return array($langPath, '');
 		else {
 			return array(
-				mb_substr($lang_path, 0, $pos),
-				mb_substr($lang_path, $pos + 1)
+				mb_substr($langPath, 0, $pos),
+				mb_substr($langPath, $pos + 1)
 			);
 		}
 	}

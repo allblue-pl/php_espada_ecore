@@ -5,8 +5,8 @@ use E, EC;
 
 class FId extends FField {
 
-    public function __construct($is_null, $bytes = 11) {
-        parent::__construct($is_null);
+    public function __construct(bool $isNull) {
+        parent::__construct($isNull);
     }
 
     public function getVField($info = []) {

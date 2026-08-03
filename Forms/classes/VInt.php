@@ -5,7 +5,6 @@ use E, EC, EC\Forms;
 use EC\Text\HText;
 
 class VInt extends Forms\VField {
-
     public function __construct($args = []) {
         parent::__construct($args, [
             'required' => true,
@@ -23,10 +22,6 @@ class VInt extends Forms\VField {
 
             return;
         }
-
-        if (!$args['required'] && $value === '')
-            return;
-
         if (!is_numeric($value))
             $this->error(HText::_('Forms:fields.int_NotANumber'));
         else {

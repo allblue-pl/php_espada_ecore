@@ -79,7 +79,7 @@ class HConfig {
             return;
 
         self::$Properties = [];
-        self::RequireConfigFile(self::$Properties);
+        self::RequireConfigFile();
     }
 
 

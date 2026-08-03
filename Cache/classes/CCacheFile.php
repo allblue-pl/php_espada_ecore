@@ -4,16 +4,12 @@ defined('_ESPADA') or die('NO_ACCESS');
 use E, EC;
 
 class CCacheFile {
+    private string $id = '';
+    private ?string $filePath = '';
 
-    private $cache = null;
-    private $id = '';
-    private $filePath = '';
-
-    public function __construct(MCache $cache,
-                                $id, $file_path, $expires = 0) {
-        $this->cache = $cache;
+    public function __construct(string $id, string $filePath) {
         $this->id = $id;
-        $this->filePath = $file_path;
+        $this->filePath = $filePath;
     }
 
     public function getId() {

@@ -21,29 +21,29 @@ class HImages {
         return null;
     }
 
-    static public function Save($image, $dest_file_path, $quality) {
-        $ext = mb_strtolower(pathinfo($dest_file_path, PATHINFO_EXTENSION));
+    static public function Save($image, $destFilePath, $quality) {
+        $ext = mb_strtolower(pathinfo($destFilePath, PATHINFO_EXTENSION));
         if ($ext === 'jpg' || $ext === 'jpeg')
-            return imagejpeg($image, $dest_file_path, $quality);
+            return imagejpeg($image, $destFilePath, $quality);
         else if ($ext === 'png') {
-            $quality_Png = 9 - round(($quality / 100.0) * 9);
+            $quality_Png = 9 - (int)round(($quality / 100.0) * 9);
             imagesavealpha($image, true);
-            return imagepng($image, $dest_file_path, $quality_Png);
+            return imagepng($image, $destFilePath, $quality_Png);
         } else
             throw new \Exception('Unknown image extension.');
     }
 
-    static public function Scale_ToMinSize($file_path, $dest_file_path,
+    static public function Scale_ToMinSize($filePath, $destFilePath,
             $min_width, $min_height, $quality = 75, $compress = true) {
         $memory_limit = ini_get('memory_limit');
         ini_set('memory_limit', '128M');
 
-        $ext = pathinfo($dest_file_path, PATHINFO_EXTENSION);
-        $image = self::Create($file_path);
+        $ext = pathinfo($destFilePath, PATHINFO_EXTENSION);
+        $image = self::Create($filePath);
 
         if ($ext === 'jpg' || $ext === 'jpeg') {
             try {
-                $exif = exif_read_data($file_path);
+                $exif = exif_read_data($filePath);
                 if (!empty($exif['Orientation'])) {
                     $image_Source = $image;
                     switch ($exif['Orientation']) {
@@ -74,9 +74,9 @@ class HImages {
         if ($image_width < $min_width || $image_height < $min_height) {
             $result = false;
             if (!$compress)
-                $result = copy($file_path, $dest_file_path);
+                $result = copy($filePath, $destFilePath);
             else
-                $result = self::Save($image, $dest_file_path, $quality);
+                $result = self::Save($image, $destFilePath, $quality);
 
             imagedestroy($image);
             return $result;
@@ -92,7 +92,7 @@ class HImages {
             throw new \Exception('Cannot scale image.');
         imagedestroy($image);
 
-        $result = self::Save($scaled_image, $dest_file_path, $quality);
+        $result = self::Save($scaled_image, $destFilePath, $quality);
 
         imagedestroy($scaled_image);
 

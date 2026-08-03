@@ -7,30 +7,29 @@ use EC\Database\MDatabase;
 use EC\Session\MSession;
 
 class MUser extends E\Module {
-
 	const HASH_ROUNDS = 7;
 
-	private $session = null;
-    private $db = null;
-    private $type = null;
+	private MSession $session;
+    private MDatabase $db;
+    private string $type;
 
-    private $session_Name = null;
+    private string $session_Name;
 
-	private $usersPermissions = [];
+	// private $usersPermissions = [];
 
-	private $id = -1;
-	private $login = null;
-	private $groups = [];
-	private $permissions = [];
+	private int $id = -1;
+	private ?string $login = null;
+	private array $groups = [];
+	private array $permissions = [];
 
 	/* Config */
-	private $testUsers = null;
+	private ?array $testUsers = null;
 
-	private $salt = '';
+	// private $salt = '';
 
-    public function __construct(?MSession $session, MDatabase $database,
+    public function __construct(E\Site $site, MSession $session, MDatabase $database,
             $type = 'Default') {
-		parent::__construct();
+		parent::__construct($site);
 
 		$this->session = $session;
         $this->db = $database;
@@ -60,7 +59,7 @@ class MUser extends E\Module {
 		return [];
 	}
 
-	public function hasPermission($permission) {
+	public function hasPermission(string $permission) {
 		return in_array($permission, $this->permissions);
     }
     
@@ -73,8 +72,8 @@ class MUser extends E\Module {
 		return true;
 	}
 
-	public function isInGroup($group_name) {
-		return in_array($group_name, $this->groups);
+	public function isInGroup(string $groupName) {
+		return in_array($groupName, $this->groups);
 	}
 
 	// /* Pages */
@@ -125,28 +124,28 @@ class MUser extends E\Module {
         $this->initUser_SetId($user['id'], $user['login']);
     }
     
-    public function initUser_SetId($user_id, $user_login) {
-        $userInfo = HUsers::Get($this->db, $user_id);
+    public function initUser_SetId(int $userId, string $userLogin) {
+        $userInfo = HUsers::Get($this->db, $userId);
 
         if ($userInfo === null || !$userInfo['Active']) {
             $this->destroy();
             return;
         }
 
-        $this->id = $user_id;
-        $this->login = $user_login;
+        $this->id = $userId;
+        $this->login = $userLogin;
         $this->groups = $userInfo['Groups'];
         $this->permissions = array_merge($this->getPermissions_Default(),
                 $userInfo['Groups_Permissions']);
     }
 
 	/* Session */
-	public function startSession($user_id, $user_login) {
+	public function startSession(int $userId, string $userLogin) {
 		$this->session->delete($this->session_Name);
 
 		$user = [];
-		$user['id'] = $user_id;
-        $user['login'] = $user_login;
+		$user['id'] = $userId;
+        $user['login'] = $userLogin;
 
         $this->session->set($this->session_Name, $user);
 
@@ -176,7 +175,7 @@ class MUser extends E\Module {
 
 	private function _preInitialize_Config() {
 		$this->testUsers = HUsers::GetTestUsers();
-		$this->salt = HConfig::GetRequired('Hash', 'salt');
+		// $this->salt = HConfig::GetRequired('Hash', 'salt');
 	}
 
 	// private function _preInitialize_Permissions()

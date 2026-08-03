@@ -35,7 +35,7 @@ class TTable {
             $this->prefix = $table_alias . '.';
 
         $this->addColumns_Optional([
-            'Count' => [ 'COUNT(*)', new FInt(true, 11) ]
+            'Count' => [ 'COUNT(*)', new FInt(true) ]
         ]);
     }
 
@@ -878,9 +878,9 @@ class TTable {
         $this->addColumnVFields($columnName, $vFields);
     }
 
-    public function stripRow($row, $table_columns_only = true) {
+    public function stripRow($row, $tableColumnsOnly = true): array {
         foreach ($row as $columnName => $column_value) {
-            if (!$this->columnExists($columnName, $table_columns_only))
+            if (!$this->columnExists($columnName, $tableColumnsOnly))
                 unset($row[$columnName]);
         }
 
@@ -1202,7 +1202,7 @@ class TTable {
         return $this->db->query_Execute($query);
     }
 
-    public function validate(EC\Forms\CValidator $validator, $fieldInfos) {
+    public function validate(EC\Forms\CValidator $validator, $fieldInfos): void {
         foreach ($fieldInfos as $field_name => $field_info) {
             $validator->add($field_name, $field_info[1],
                     $this->getColumn($field_info[0])['vFields']);
@@ -1210,7 +1210,7 @@ class TTable {
     }
 
     public function validateDefault(EC\Forms\CValidator $validator, $values,
-            $ignoreColumns = []) {
+            $ignoreColumns = []): void {
         $fieldInfos = [];
         foreach ($values as $columnName => $value) {
             if (in_array($columnName, $ignoreColumns))
@@ -1219,11 +1219,11 @@ class TTable {
             $fieldInfos[$columnName] = [ $columnName, $value ];
         }
 
-        return $this->validate($validator, $fieldInfos);
+        $this->validate($validator, $fieldInfos);
     }
 
     public function validateDefault_All(EC\Forms\CValidator $validator, $values,
-            $ignoreColumns = []) {
+            $ignoreColumns = []): void {
         $fieldInfos = [];
         $columnNames = $this->getColumnNames(true);
         foreach ($columnNames as $columnName) {
@@ -1236,7 +1236,7 @@ class TTable {
             $fieldInfos[$columnName] = [ $columnName, $value ];
         }
 
-        return $this->validate($validator, $fieldInfos);
+        $this->validate($validator, $fieldInfos);
     }
 
     // public function validateRow($row) {
@@ -1318,14 +1318,14 @@ class TTable {
             } else if (!is_int($key))
                 throw new \Exception("Unknown logic operator `{$key}`.");
 
-            if (count($column_condition) === 1) {
-                if (is_array($column_condition[0])) {
-                    $args[] = '(' . $this->getQuery_Conditions_Helper(
-                        'AND', $column_condition[0], 
-                        $tableOnly) . ')';
-                    continue;
-                }
-            }
+            // if (count($column_condition) === 1) {
+            //     if (is_array($column_condition[0])) {
+            //         $args[] = '(' . $this->getQuery_Conditions_Helper(
+            //             'AND', $column_condition[0], 
+            //             $tableOnly) . ')';
+            //         continue;
+            //     }
+            // }
 
             if (count($column_condition) === 2) {
                 if ($column_condition[0] === 'OR' || $column_condition[0] === 'AND' 
@@ -1346,19 +1346,20 @@ class TTable {
 
             $column = $this->getColumn($columnName);
 
-            $db_column_name = $tableOnly ? $this->db->quote($columnName) :
+            $dbColumnName = $tableOnly ? $this->db->quote($columnName) :
                     $this->getColumn($columnName)['expr'];
 
             $prefix = '';
+            $dbValue = '';
             if ($sign === null) {
-                $db_value = $value;
+                $dbValue = $value;
                 $sign = '';
             } else {
                 if ($value === null) {
                     if ($sign === '=')
-                        $db_value = 'IS NULL';
+                        $dbValue = 'IS NULL';
                     else if ($sign === '<>')
-                        $db_value = 'IS NOT NULL';
+                        $dbValue = 'IS NOT NULL';
                     else
                         throw new \Exception("Unknown `{$sign}` and `null` conjuction.");
 
@@ -1374,19 +1375,19 @@ class TTable {
                                 continue;
                             }
                         } else
-                            $db_value = ' ' . $this->escapeArray($column['field'], $value);
+                            $dbValue = ' ' . $this->escapeArray($column['field'], $value);
                     } else {
                         if (is_string($value) && $sign === '==') {
                             $prefix = 'BINARY ';
                             $sign = '=';
                         }
 
-                        $db_value = ' ' . $column['field']->escape($this->db, $value);
+                        $dbValue = ' ' . $column['field']->escape($this->db, $value);
                     }
                 }
             }
 
-            $args[] = "{$prefix}{$db_column_name} {$sign}{$db_value}";
+            $args[] = "{$prefix}{$dbColumnName} {$sign}{$dbValue}";
         }
 
         return implode(" {$logic_operator} ", $args);

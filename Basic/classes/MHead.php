@@ -6,31 +6,30 @@ use EC\Config\HConfig;
 use EC\Hash\HHash;
 
 class MHead extends E\Module {
+    // private $fields = null;
 
-    private $fields = null;
-
-    private $csp = null;
-    private $csp_ScriptSrc = null;
-    private $scriptCSPHashes = [];
-    private $styleCSPHashes = [];
+    private ?string $csp = null;
+    private ?String $csp_ScriptSrc = null;
+    private array $scriptCSPHashes = [];
+    private array $styleCSPHashes = [];
 
     /* Meta Data */
-    private $title = 'Espada Website';
-    private $description = '';
-    private $keywords = [];
-    private $author = null;
+    private string $title = 'Espada Website';
+    private string $description = '';
+    private array $keywords = [];
+    private ?string $author = null;
 
-    /* Scripts */
-    private $scripts = '';
+    // /* Scripts */
+    // private $scripts = '';
 
-    /* Tags */
-    private $tags = '';
+    // /* Tags */
+    // private $tags = '';
 
     /* Other */
     private $html = '';
 
-    public function __construct() {
-        parent::__construct();
+    public function __construct(E\Site $site) {
+        parent::__construct($site);
     }
 
     public function setContentSecurityPolicy(string $contentSecurityPolicy) {
@@ -41,11 +40,12 @@ class MHead extends E\Module {
         $this->csp_ScriptSrc = $scriptSrc;
     }
 
-    public function addHtml($html) {
+    public function addHtml(string $html) {
         $this->html .= $html . "\r\n";
     }
 
-    public function addScript($uri) {
+    public function addScript(string $uri) {
+        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG)
             $uri .= "?v=" . HHash::Generate(8);
         else
@@ -57,13 +57,13 @@ class MHead extends E\Module {
         ]);
     }
 
-    public function addKeywords($keywords) {
+    public function addKeywords(string $keywords) {
         $this->keywords = array_merge($this->keywords, explode(',', $keywords));
     }
 
-    public function addTag($name, $attribs = [], $self_closing = false,
-            $value = '') {
-        $this->html .= $this->getNode($name, $attribs, $self_closing, $value) .
+    public function addTag(string $name, array $attribs = [], 
+            bool $selfClosing = false, string $value = '') {
+        $this->html .= $this->getNode($name, $attribs, $selfClosing, $value) .
                 "\n";
     }
 
@@ -85,19 +85,19 @@ class MHead extends E\Module {
         return $hash;
     }
 
-    public function setAuthor($author) {
+    public function setAuthor(string $author) {
         $this->author = $author;
     }
 
-    public function setDescription($description) {
+    public function setDescription(string $description) {
         $this->description = $description;
     }
 
-    public function setKeywords($keywords) {
+    public function setKeywords(string $keywords) {
         $this->keywords = explode(',', $keywords);
     }
 
-    public function setTitle($title) {
+    public function setTitle(string $title) {
         $this->title = $title;
     }
 
@@ -152,7 +152,8 @@ class MHead extends E\Module {
         }));
     }
 
-    private function getNode($name, $attribs = [], $self_closing = false,
+    private function getNode(string $name, array $attribs = [], 
+            bool $self_closing = false,
         $value = '') {
         /* Open Tag */
         $node = '<' . $name;

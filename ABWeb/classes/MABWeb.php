@@ -8,7 +8,10 @@ class MABWeb extends E\Module {
     private EC\Basic\MHead $_header;
     private string $_dirPath;
 
-    public function __construct(EC\Basic\MHead $header, $dirPath) {
+    public function __construct(E\Site $site, EC\Basic\MHead $header, 
+            string $dirPath) {
+        parent::__construct($site);
+
         $this->_header = $header;
         $this->_dirPath = $dirPath;
     }

@@ -6,21 +6,20 @@ use EC\Users;
 use EC\Api\CArgs;
 use EC\Api\CResult;
 use EC\Api\SApi;
+use EC\Api\SUserApi;
 use EC\Config\HConfig;
 use EC\Date\HDate;
 use EC\Hash\HHash;
 use EC\Mailer\HMailer;
 use EC\Text\HText;
 
-class AUser extends EC\Api\ABasic {
-
-    private $userType = null;
+class AUser extends EC\Api\AUserApi {
     private $requiredPermissions = null;
 
     private $db = null;
     private $user = null;
 
-    public function __construct(SApi $site, $args) {
+    public function __construct(SUserApi $site, $args) {
         parent::__construct($site, array_key_exists('userType', $args) ? 
                 $args['userType'] : 'Default');
 
@@ -31,8 +30,8 @@ class AUser extends EC\Api\ABasic {
         $this->requiredPermissions = $args['requiredPermissions'];
 
         /* Modules */
-        $this->db = $site->m->db;
-        $this->user = $site->m->user;
+        $this->db = $site->getDB();
+        $this->user = $site->getUser();
 
         /* Actions */
         $this->action('check', 'action_Check');
@@ -54,6 +53,7 @@ class AUser extends EC\Api\ABasic {
             'newPassword' => true,
         ]);
 
+        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG) {
             $this->action('hash', 'action_Hash', [
                 'password' => true,
@@ -74,7 +74,7 @@ class AUser extends EC\Api\ABasic {
 
         $logInError = null;
         if (!HUsers::CheckLoginAndPassword($db, $this->user->getType(),
-                $userLogin, $args->password, $logInError)) {
+                $userLogin, $args->get("password"), $logInError)) {
             $errorMessage = null;
             if ($logInError === HUsers::LogInError_UserDoesNotExist)
                 $errorMessage = HText::_('Users:Errors_UserDoesNotExist');
@@ -86,11 +86,11 @@ class AUser extends EC\Api\ABasic {
             return CResult::Failure($errorMessage);
         }
 
-        if (!HUsers::CheckPasswordStrength($args->newPassword))
+        if (!HUsers::CheckPasswordStrength($args->get("newPassword")))
             return CResult::Failure(HText::_('Users:Errors_WrongPasswordFormat'));
 
         if (!HUsers::ChangePassword($db, $userId,
-                $args->newPassword))
+                $args->get("newPassword")))
             return CResult::Error();
 
         return CResult::Success(HText::_('Users:Successes_PasswordChanged'));
@@ -104,17 +104,17 @@ class AUser extends EC\Api\ABasic {
     protected function action_Hash(CArgs $args) {
         $hash = null;
         if (isset($args->hashRounds))
-            $hash = HHash::GetPassword($args->password, $args->hashRounds);
+            $hash = HHash::GetPassword($args->get("password"), $args->get("hashRounds"));
         else
-            $hash = HHash::GetPassword($args->password);
+            $hash = HHash::GetPassword($args->get("password"));
 
         return CResult::Success()
             ->add('hash', $hash);
     }
 
     protected function action_LogIn(CArgs $args) {
-        $login = $args->login;
-        $password = $args->password;
+        $login = $args->get("login");
+        $password = $args->get("password");
 
         $db = $this->db;
         $user = $this->user;
@@ -185,28 +185,28 @@ class AUser extends EC\Api\ABasic {
     }
 
     protected function action_RemindPassword(CArgs $args) {
-        $args->email = trim(mb_strtolower($args->email));
+        $args->set("email", trim(mb_strtolower($args->get("email"))));
 
-        if ($args->login === '')
+        if ($args->get("login") === '')
             return CResult::Failure(HText::_('Users:Errors_LoginCannotBeEmpty'));
-        if ($args->email === '')
+        if ($args->get("email") === '')
             return CResult::Failure(HText::_('Users:Errors_EmailCannotBeEmpty'));
 
         $row = (new TUsers($this->db))->row_Where([
-            [ 'LoginHash', '=', HUsers::GetLoginHash($args->login) ],
+            [ 'LoginHash', '=', HUsers::GetLoginHash($args->get("login")) ],
         ]);
 
         if ($row === null) {
-            return CResult::Failure(HText::_('Users:Errors_LoginDoesNotExist'), [
-                'Login' => $args->login,
-            ]);
+            return CResult::Failure(HText::_('Users:Errors_LoginDoesNotExist', [
+                'Login' => $args->get("login"),
+            ]));
         }
 
-        if (!HUsers::CheckEmailHash($args->email, $row['EmailHash'])) {
-            return CResult::Failure(HText::_('Users:Errors_EmailDoesNotMatchLogin'), [
-                'Login' => $args->login,
-                'Email' => $args->email,
-            ]);
+        if (!HUsers::CheckEmailHash($args->get("email"), $row['EmailHash'])) {
+            return CResult::Failure(HText::_('Users:Errors_EmailDoesNotMatchLogin', [
+                'Login' => $args->get("login"),
+                'Email' => $args->get("email"),
+            ]));
         }
 
         $hash = '';
@@ -216,19 +216,19 @@ class AUser extends EC\Api\ABasic {
         $link = HConfig::GetRequired('Users', 'uris')['resetPassword'] . 
                 $hash;
 
-        $mail = HMailer::NewMail($args->email, $args->login);
+        $mail = HMailer::NewMail($args->get("email"), $args->get("login"));
 
         $mail->setSubject(HText::_('Users:mails.ResetPassword_Subject', [
             'title' => HConfig::GetRequired('Config', 'title'),
         ]));
         $mail->setText(HText::_('Users:mails.ResetPassword_Text', [
             'title' => HConfig::GetRequired('Config', 'title'),
-            'login' => $args->login,
+            'login' => $args->get("login"),
             'link' => $link,
         ]));
         $mail->setHtml(HText::_('Users:mails.ResetPassword_Html', [
             'title' => HConfig::GetRequired('Config', 'title'),
-            'login' => $args->login,
+            'login' => $args->get("login"),
             'link' => $link,
         ]));
 
@@ -246,7 +246,7 @@ class AUser extends EC\Api\ABasic {
     protected function action_ResetPassword(CArgs $args) {
         $rResetPasswordHash = (new TResetPasswordHashes($this->db))
                 ->row_Where([
-            [ 'Hash', '=', $args->resetPasswordHash ],
+            [ 'Hash', '=', $args->get("resetPasswordHash") ],
         ], 'ORDER BY DateTime DESC');
 
         if ($rResetPasswordHash === null)
@@ -255,11 +255,11 @@ class AUser extends EC\Api\ABasic {
         if ($rResetPasswordHash['DateTime'] < time() - HDate::Span_Day)
             return CResult::Failure(HText::_('Users:Errors_RecoveryHashExpired'));
 
-        if (!HUsers::CheckPasswordStrength($args->newPassword))
+        if (!HUsers::CheckPasswordStrength($args->get("newPassword")))
             return CResult::Failure(HText::_('Users:Errors_WrongPasswordFormat'));
 
         if (!HUsers::ChangePassword($this->db, $rResetPasswordHash['User_Id'], 
-                $args->newPassword))
+                $args->get("newPassword")))
             return CResult::Failure(HText::_('Users:Errors_CannotResetPassword'));
 
         (new EC\Users\TResetPasswordHashes($this->db))->delete_Where([

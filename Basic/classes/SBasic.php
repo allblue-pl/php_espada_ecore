@@ -4,11 +4,17 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 class SBasic extends E\Site {
+    private MHead $head;
 
     public function __construct() {
         parent::__construct();
 
-        $this->addM('head', new \EC\Basic\MHead());
+        $this->head = new \EC\Basic\MHead($this);
+    }
+
+
+    public function getHead(): MHead {
+        return $this->head;
     }
 
     
@@ -17,6 +23,7 @@ class SBasic extends E\Site {
     }
 
     protected function _preDisplay() {
+        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG) {
             $this->addL('debug', E\Layout::_('Basic:raw', [
                 'raw' => $this->getDebugJS(),
@@ -44,5 +51,4 @@ class SBasic extends E\Site {
 
         return $js;
     }
-
 }

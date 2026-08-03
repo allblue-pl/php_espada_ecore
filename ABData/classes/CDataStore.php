@@ -80,7 +80,8 @@ class CDataStore {
     // }
 
     public function dbSync_GetUpdateData(CDevice $device, ?int $schemeVersion, 
-            ?float $lastSync, ?array &$dataInfos, bool $assocUpdateData, ?\Exception &$error) {
+            ?float $lastSync, ?array &$dataInfos, bool $assocUpdateData, 
+            ?string &$error) {
         $updateData = [
             'update' => [],
             'update_ColumnNames' => [],
@@ -117,6 +118,8 @@ class CDataStore {
                         $lastUpdate, $rowsOffset, $rowsLimit, false, $error);
 
                 if (count($rows) > 0) {
+                    $rows_TableColumns = [];
+
                     if ($assocUpdateData)
                         $rows_New = $rows;
                     else {
@@ -255,6 +258,8 @@ class CDataStore {
 
             $rows = $actionResult['rows'];
             if (count($rows) > 0) {
+                $rows_TableColumns = [];
+
                 if ($assocUpdateData)
                     $rows_New = $rows;
                 else {
@@ -335,6 +340,7 @@ class CDataStore {
         $dbRequestIds = array_column($dbRequests, 0);
         
         $rDeviceRequests_Processed = [];
+        $deviceRequestIds_Processed = [];
         if (count($dbRequestIds)) {
             $rDeviceRequests_Processed = (new TDeviceRequests($this->db))->select_Where([
                 [ 'DeviceId', '=', $device->getId() ],
@@ -368,9 +374,11 @@ class CDataStore {
                         ->executeAction($device, $actionName, $actionArgs, 
                         $schemeVersion, $device->getLastUpdate());
             } catch (\Exception $e) {
+                /** @phpstan-ignore if.alwaysTrue */
                 if (EDEBUG)
                     throw $e;
 
+                /** @phpstan-ignore deadCode.unreachable */
                 $success = false;
                 
                 $response['type'] = self::Response_Types_ActionError;
@@ -444,7 +452,7 @@ class CDataStore {
         if ($success) {
             if ($device->getLastSync() !== null)
                 $device->refreshLastSync();
-            if (!$device->update($this->db)) {
+            if (!$device->update()) {
                 $success = false;
 
                 $response['type'] = self::Response_Types_Error;
@@ -525,9 +533,11 @@ class CDataStore {
                         ->executeAction($device, $actionName, $actionArgs, 
                         $schemeVersion, null);
             } catch (\Exception $e) {
+                /** @phpstan-ignore if.alwaysTrue */
                 if (EDEBUG)
                     throw $e;
 
+                /** @phpstan-ignore deadCode.unreachable */
                 $success = false;
 
                 $response['type'] = self::Response_Types_ActionError;
@@ -585,7 +595,7 @@ class CDataStore {
 
         if ($success) {
             if ($device !== null) {
-                if (!$device->update($this->db)) {
+                if (!$device->update()) {
                     $success = false;
 
                     $response['type'] = self::Response_Types_Error;

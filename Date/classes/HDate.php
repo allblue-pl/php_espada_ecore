@@ -127,12 +127,12 @@ class HDate {
         return HText::_("Date:Format_DayOfWeek_{$day_of_week}");
     }
 
-    static public function GetTime(): ?float {
+    static public function GetTime(): int {
         return time();
     }
 
-    static public function GetTimeMillis(): ?float {
-        return round(microtime(true) * 1000);
+    static public function GetTimeMillis(): int {
+        return (int)round(microtime(true) * 1000);
     }
 
     static public function GetTime_Rel(?float $time = null): ?float {
@@ -156,21 +156,18 @@ class HDate {
         return self::$TimeZone;
     }
 
-    static public function GetUTCOffset(float $time) {
+    static public function GetUTCOffset(int $time) {
         return self::GetUTCOffset_Time($time) / 60 / 60;
     }
 
-    static public function GetUTCOffset_Time(float $time) {
+    static public function GetUTCOffset_Time(int $time) {
         $dateTime = new \DateTime();
         $dateTime->setTimestamp($time);
         
         return self::GetTimeZone()->getOffset($dateTime);
     }
 
-    static public function Round_Day($time) {
-        if ($time === null)
-            return $time;
-
+    static public function Round_Day(int $time) {
         return floor($time / self::Span_Day) * self::Span_Day;
     }
 

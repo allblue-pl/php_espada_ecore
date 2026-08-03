@@ -4,19 +4,19 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 use EC\Api\CArgs;
 use EC\Api\CResult;
-use EC\Api\SApi;
+use EC\Api\SUserApi;
 use EC\Database\MDatabase;
 use EC\Images\HImages;
 use EC\Text\HText;
 use EC\Upload\HUpload;
 
-class ASettings extends EC\Api\ABasic {
+class ASettings extends EC\Api\AUserApi {
     private MDatabase $db;
 
-    public function __construct(SApi $site, array $apiArgs) {
-        parent::__construct($site, $apiArgs['userType'], [ 'Sys_Settings' ]);
+    public function __construct(SUserApi $site) {
+        parent::__construct($site, [ 'Sys_Settings' ]);
 
-        $this->db = $site->m->db;
+        $this->db = $this->getDB();
 
         $this->actionR('get', 'action_Get', [
             'names' => true,
@@ -32,7 +32,7 @@ class ASettings extends EC\Api\ABasic {
 
     public function action_Get(CArgs $args) {
         $settings = [];
-        foreach ($args->names as $name)
+        foreach ($args->get("names") as $name)
             $settings[$name] = HConfig::DB_Get($this->db, $name);
 
         return CResult::Success()
@@ -48,11 +48,12 @@ class ASettings extends EC\Api\ABasic {
             if ($args->get("carouselImages_{$i}") === 'null') 
                 continue;
 
+            $uploadError = null;
             if (!HUpload::Validate($args->get("carouselImages_{$i}"), [
                 'exts' => [ 'jpg', 'jpeg' ],
-            ], $upload_error)) {
+            ], $uploadError)) {
                 return CResult::Failure('Cannot upload photo.')
-                    ->add('errorMessage', $upload_error);
+                    ->add('errorMessage', $uploadError);
             }
 
             $headerPath = E\Path::Media('Web', "header{$i}.jpg");
@@ -61,7 +62,7 @@ class ASettings extends EC\Api\ABasic {
                     $headerPath, 1920, 1080);
         }
 
-        foreach ($args->settings as $name => $value) {
+        foreach ($args->get("settings") as $name => $value) {
             if (!HConfig::DB_Set($this->db, $name, $value)) {
                 $this->db->transaction_Finish(false);
                 return CResult::Failure('Cannot update settings.');

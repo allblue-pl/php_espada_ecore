@@ -8,13 +8,12 @@ use EC\Session\MSession;
 
 $site = new SBasic();
 
-$site->addM('db', new MDatabase());
-$site->addM('session', new MSession($site->m->db));
-$site->addM('user', new MUser($site->m->session, $site->m->db, 
-        E\Args::Page('userType')));
+$db = new MDatabase($site);
+$session = new MSession($site, $db);
+$user = new MUser($site, $session, $db, E\Args::Page('userType'));
 
-$site->onPreInitialize(function() use ($site) {
-    $site->m->user->destroy();
+$site->onPreInitialize(function() use ($site, $user) {
+    $user->destroy();
 
     $redirectUri = '/';
     if (E\Args::Get_Exists('redirectUri'))

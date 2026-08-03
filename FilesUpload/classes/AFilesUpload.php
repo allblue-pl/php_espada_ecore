@@ -5,20 +5,16 @@ use E, EC;
 use EC\Api\CArgs;
 use EC\Api\CResult;
 use EC\Api\SApi;
+use EC\Api\SUserApi;
 use EC\Config\HConfig;
 use EC\Users\MUser;
 
-class AFilesUpload extends EC\Api\ABasic {
-
-    private $config = null;
-    private MUser $user;
+class AFilesUpload extends EC\Api\AUserApi {
     private $categories;
 
 
-    public function __construct(SApi $site, array $apiArgs) {
-        parent::__construct($site, $apiArgs['userType'], $apiArgs['requiredPermissions']);
-
-        $this->user = $site->m->user;
+    public function __construct(SUserApi $site, array $apiArgs) {
+        parent::__construct($site, $apiArgs['requiredPermissions']);
 
         $this->action('delete', 'action_Delete', [
             'categoryName' => true,
@@ -45,12 +41,14 @@ class AFilesUpload extends EC\Api\ABasic {
 
     public function action_Delete(CArgs $args) {
         try {
-            HFilesUpload::DeleteFile($args->categoryName, $args->id, 
-                    $args->fileName);
+            HFilesUpload::DeleteFile($args->get("categoryName"), $args->get("id"), 
+                    $args->get("fileName"));
         } catch (\Exception $e) {
+            /** @phpstan-ignore if.alwaysTrue */
             if (EDEBUG)
                 throw $e;
                 
+            /** @phpstan-ignore deadCode.unreachable */
             return CResult::Failure($e->getMessage());
         }
 
@@ -78,10 +76,11 @@ class AFilesUpload extends EC\Api\ABasic {
     // }
 
     public function action_List(CArgs $args) {
-        if (!array_key_exists($args->categoryName, $this->categories))
-            return CResult::Failure("Upload category '{$args->categoryName}' does not exist.");
+        if (!array_key_exists($args->get("categoryName"), $this->categories))
+            return CResult::Failure("Upload category '{$args->get("categoryName")}' does not exist.");
 
-        $files = HFilesUpload::GetFileInfos($args->categoryName, $args->id);
+        $files = HFilesUpload::GetFileInfos($args->get("categoryName"), 
+                $args->get("id"));
 
         return CResult::Success()
             ->add('files', $files);
@@ -89,19 +88,23 @@ class AFilesUpload extends EC\Api\ABasic {
 
     public function action_Upload(CArgs $args) {
         try {
-            HFilesUpload::Upload($args->categoryName, $args->id, $args->file);
+            HFilesUpload::Upload($args->get("categoryName"), $args->get("id"), 
+                    $args->get("file"));
         } catch (\Exception $e) {
+            /** @phpstan-ignore if.alwaysTrue */
             if (EDEBUG)
                 throw $e;
-                
+            
+            /** @phpstan-ignore deadCode.unreachable */
             return CResult::Failure($e->getMessage());
         }
 
-        $category = HFilesUpload::GetCategory($args->categoryName);
+        $category = HFilesUpload::GetCategory($args->get("categoryName"));
         $fileInfo = $category['multiple'] ?
-                HFilesUpload::GetFileInfo_Multiple($args->categoryName, 
-                    $args->id, $args->file['name']) :
-                HFilesUpload::GetFileInfo_Single($args->categoryName, $args->id);
+                HFilesUpload::GetFileInfo_Multiple($args->get("categoryName"), 
+                    $args->get("id"), $args->get("file['name']")) :
+                HFilesUpload::GetFileInfo_Single($args->get("categoryName"), 
+                        $args->get("id"));
 
         return CResult::Success()
             ->add('fileInfo', $fileInfo);

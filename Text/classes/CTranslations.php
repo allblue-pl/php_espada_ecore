@@ -8,7 +8,6 @@ class CTranslations {
 	private $package = '';
 	private $path = '';
 	private $translations = [];
-	private $noFile = true;
 
 	/**
 	 *

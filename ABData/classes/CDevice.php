@@ -22,11 +22,11 @@ class CDevice {
     static public $SystemDevice_Id = 1;
 
 
-    static private $SystemDevice_Row = null;
+    // static private $SystemDevice_Row = null;
 
-    static private $SystemItemIds_Last = null;
-    static private $SystemItemIds_Declared = [];
-    static private $SystemItemIds_Used = [];
+    // static private $SystemItemIds_Last = null;
+    // static private $SystemItemIds_Declared = [];
+    // static private $SystemItemIds_Used = [];
 
 
     static public function Create(MDatabase $db, $deviceId, 
@@ -139,15 +139,15 @@ class CDevice {
             ];
         }
 
-        if ($row_Update !== null) {
-            if (!$table->update([ $row_Update ])) {
-                if (EDEBUG)
-                    throw new \Exception('Cannot update Device row.');
+        if (!$table->update([ $row_Update ])) {
+            /** @phpstan-ignore if.alwaysTrue */
+            if (EDEBUG)
+                throw new \Exception('Cannot update Device row.');
 
-                $db->transaction_Finish(false);
+            /** @phpstan-ignore deadCode.unreachable */
+            $db->transaction_Finish(false);
 
-                return null;
-            }
+            return null;
         }
 
         if (!$db->transaction_Finish(true)) {

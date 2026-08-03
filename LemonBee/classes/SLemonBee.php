@@ -10,25 +10,24 @@ use EC\Session\MSession;
 use EC\Users\MUser;
 
 class SLemonBee extends SBasic {
-    private $modulePath = null;
-
-    private $defaultSetup = null;
-    private $setup = [];
+    private array $defaultSetup;
+    private array $setup = [];
+    private MUser $user;
+    private MSession $session;
+    private MDatabase $db;
+    private MABWeb $abWeb; /**  @phpstan-ignore property.onlyWritten */
+    private MELibs $eLibs;
 
     public function __construct(string $abWebBuildPath, string $modulePath,
             string $userType = 'LemonBee') {
         parent::__construct();
 
-        $this->modulePath = $modulePath;
-
         /* Modules */
-        $this->addM('db', new MDatabase());
-        $this->addM('session', new MSession($this->m->db));
-        $this->addM('user', new MUser($this->m->session, $this->m->db, 
-                $userType));
-
-        $this->addM('abWeb', new MABWeb($this->m->head, $abWebBuildPath));
-        $this->addM('eLibs', new MELibs($this->m->head));
+        $this->db = new MDatabase($this);
+        $this->session = new MSession($this, $this->db);
+        $this->user = new MUser($this, $this->session, $this->db, $userType);
+        $this->abWeb = new MABWeb($this, $this->getHead(), $abWebBuildPath);
+        $this->eLibs = new MELibs($this, $this->getHead());
 
         // $this->addM('spk', new EC\MSPK($this->m->head,
         //         $this->m->abTemplate));
@@ -44,8 +43,8 @@ class SLemonBee extends SBasic {
 
         // print_r(EC\HText::GetTranslations('LemonBee:spk')->getArray());
 
-        $this->m->eLibs->addTranslations('LemonBee');
-        $this->m->eLibs->addTranslations_As('SPKTables', 'LemonBee:spkTables');
+        $this->eLibs->addTranslations('LemonBee');
+        $this->eLibs->addTranslations_As('SPKTables', 'LemonBee:spkTables');
 
         $packageBase = '/dev/node_modules/spk-lemon-bee/';
 
@@ -65,9 +64,9 @@ class SLemonBee extends SBasic {
                 'base' => E\Uri::Base(),
             ],
             'user' => [
-                'loggedIn' => $this->m->user->isLoggedIn(),
-                'login' => $this->m->user->getLogin(),
-                'permissions' => $this->m->user->getPermissions(),
+                'loggedIn' => $this->user->isLoggedIn(),
+                'login' => $this->user->getLogin(),
+                'permissions' => $this->user->getPermissions(),
             ],
 
             'spkMessages' => [
@@ -78,8 +77,6 @@ class SLemonBee extends SBasic {
                 ],
             ],
         ];
-
-        
     }
 
     public function lbSetup(array $setup) {
@@ -89,11 +86,9 @@ class SLemonBee extends SBasic {
 
     /* E\Site */
     protected function _postInitialize() {
-        parent::_postInitialize();
-
         $setup = array_replace_recursive($this->defaultSetup, $this->setup);
 
-        $this->m->eLibs->setField('lbSetup', $setup);
+        $this->eLibs->setField('lbSetup', $setup);
     }
     /* / E\Site */
 

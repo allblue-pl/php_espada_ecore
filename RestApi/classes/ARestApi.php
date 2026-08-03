@@ -89,6 +89,7 @@ class ARestApi {
             if ($result === null)
                 return CResult::Error(500, [ 'error' => 'Result cannot be null.' ]);
         } catch (\Exception $e) {
+            /** @phpstan-ignore booleanNot.alwaysFalse */
             if (!EDEBUG) {
                 E\Exception::NotifyListeners($e);
                 return CResult::Error(500, [ 'error' => INTERNAL_ERROR_MESSAGE ]);

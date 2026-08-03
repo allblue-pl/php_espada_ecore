@@ -118,9 +118,9 @@ class CValidator {
         return array_key_exists($field_name, $this->info['fields']);
     }
 
-    private function field_Message($type, $prioroty, $message = null) {
+    // private function field_Message($type, $prioroty, $message = null) {
 
-    }
+    // }
 
     private function &field_Get($field_name) {
         if (!isset($this->info['fields'][$field_name]))

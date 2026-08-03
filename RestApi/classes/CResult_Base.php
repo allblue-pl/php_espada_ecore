@@ -50,6 +50,7 @@ class CResult_Base {
     }
 
     public function debug($message) {
+        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG) {
             if ($this->debug === null)
                 $this->debug = [];

@@ -5,17 +5,18 @@ use E, EC;
 use EC\Text\HText;
 
 class MELibs extends E\Module {
+    // private $head = null;
+    private string $scriptCSPHash;
 
-    private $head = null;
-    private $scriptCSPHash = null;
+    private array $fields = [];
+    private array $fieldFns = [];
+    private array $texts = [];
+    private string $script = '';
 
-    private $fields = [];
-    private $fieldFns = [];
-    private $texts = [];
-    private $script = '';
+    function __construct(E\Site $site, EC\Basic\MHead $head) {
+        parent::__construct($site);
 
-    function __construct(EC\Basic\MHead $head) {
-        $this->head = $head;
+        // $this->head = $head;
         $this->scriptCSPHash = $head->generateScriptCSPHash();
     }
 
@@ -27,7 +28,7 @@ class MELibs extends E\Module {
         $this->texts = array_merge($this->texts, $texts);
     }
 
-    function addTranslations($path) {
+    function addTranslations(string $path) {
         $pkg = explode(':', $path)[0];
         $texts = [];
         $translationsArr = HText::GetTranslations($pkg)->getArray();
@@ -38,7 +39,7 @@ class MELibs extends E\Module {
         $this->addTexts($texts);
     }
 
-    function addTranslations_As($prefixName, $path) {
+    function addTranslations_As(string $prefixName, string $path) {
         $texts = [];
         $translationsArr = HText::GetTranslations($path)->getArray();
 
@@ -48,13 +49,13 @@ class MELibs extends E\Module {
         $this->addTexts($texts);
     }
 
-    function setField($fieldName, $fieldValue) {
+    function setField(string $fieldName, mixed $fieldValue) {
         // $this->requireBeforePreDisplay();
 
         $this->fields[$fieldName] = $fieldValue;
     } 
 
-    function setFieldFn($fieldName, $fieldFn) {
+    function setFieldFn(string $fieldName, \Closure $fieldFn) {
         $this->fieldFns[$fieldName] = $fieldFn;
     }
 
