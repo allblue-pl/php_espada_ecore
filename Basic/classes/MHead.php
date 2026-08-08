@@ -101,7 +101,7 @@ class MHead extends E\Module {
         $this->title = $title;
     }
 
-    protected function _postInitialize(E\Site $site) {
+    protected function _postInitialize(E\Site $site): void {
         if ($this->csp !== null) {
             header("Content-Security-Policy: {$this->csp}" . 
                     " script-src 'self' 'unsafe-eval' " . 
@@ -111,7 +111,7 @@ class MHead extends E\Module {
         }
     }
 
-    protected function _preDisplay(E\Site $site) {
+    protected function _preDisplay(E\Site $site): void {
         $site->addL('postHead', E\Layout::_('Basic:raw', function() {
             $header = '';
 

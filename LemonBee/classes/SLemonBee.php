@@ -85,7 +85,7 @@ class SLemonBee extends SBasic {
 
 
     /* E\Site */
-    protected function _postInitialize() {
+    protected function _postInitialize(): void {
         $setup = array_replace_recursive($this->defaultSetup, $this->setup);
 
         $this->eLibs->setField('lbSetup', $setup);

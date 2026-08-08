@@ -18,11 +18,11 @@ class SBasic extends E\Site {
     }
 
     
-    protected function _initialize() {
+    protected function _initialize(): void {
         parent::_initialize();
     }
 
-    protected function _preDisplay() {
+    protected function _preDisplay(): void {
         /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG) {
             $this->addL('debug', E\Layout::_('Basic:raw', [

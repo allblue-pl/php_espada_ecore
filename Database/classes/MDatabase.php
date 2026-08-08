@@ -352,11 +352,11 @@ class MDatabase extends E\Module {
 	}
 
 	/* Initialization */
-	protected function _preInitialize(\E\Site $site) {
+	protected function _preInitialize(\E\Site $site): void {
 		$this->connect();
 	}
 
-	protected function _deinitialize() {
+	protected function _deinitialize(): void {
 		$this->disconnect();
 	}
 

@@ -21,7 +21,7 @@ class MABTemplate extends \E\Module {
         return URI_TMP . "ab-template/{$this->name}";
     }
 
-    protected function _preInitialize(E\Site $site) {
+    protected function _preInitialize(E\Site $site): void {
         // if ($this->name === null)
         //     throw new \Exception('ABTemplate name not set.');
 

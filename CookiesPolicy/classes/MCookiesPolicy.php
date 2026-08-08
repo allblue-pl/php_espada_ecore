@@ -23,7 +23,7 @@ class MCookiesPolicy extends E\Module {
     }
 
 
-    protected function _preDisplay(E\Site $site) {
+    protected function _preDisplay(E\Site $site): void {
         if ($this->title === null || $this->body === null) {
             throw new \Exception('Cookies Policy content not set.');
         }

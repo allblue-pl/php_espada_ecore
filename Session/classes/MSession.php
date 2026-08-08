@@ -20,15 +20,15 @@ class MSession extends E\Module {
         session_set_save_handler($this->sessionHandler);
 	}
 
-	protected function _preInitialize(E\Site $site) {
+	protected function _preInitialize(E\Site $site): void {
 		session_start();
 	}
 
-	protected function _postInitialize(E\Site $site) {
+	protected function _postInitialize(E\Site $site): void {
 		session_write_close();
 	}
 
-	protected function _deinitialize() {
+	protected function _deinitialize(): void {
 		// $cookie_params = session_get_cookie_params();
 		//
 		// $cookie_expire = $cookie_params['lifetime'] === 0 ?

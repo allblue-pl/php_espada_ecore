@@ -17,7 +17,7 @@ class MABWeb extends E\Module {
     }
 
     
-    protected function _preInitialize(E\Site $site) {
+    protected function _preInitialize(E\Site $site): void {
         if (!file_exists($this->_dirPath))
             throw new \Exception("'abWeb' path does not exist.");
 

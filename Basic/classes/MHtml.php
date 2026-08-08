@@ -22,7 +22,7 @@ class MHtml extends E\Module {
     }
 
 	protected function output_Default(E\Fields &$fields) {
-        $fields->set($this->fields);
+        $fields->_set($this->fields);
 
 		if ($this->name !== null) {
 			if (E\File::Exists(PATH_DATA . '/html/' . $this->name . '.php'))

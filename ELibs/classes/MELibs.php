@@ -59,7 +59,7 @@ class MELibs extends E\Module {
         $this->fieldFns[$fieldName] = $fieldFn;
     }
 
-    function _preDisplay(E\Site $site) {
+    function _preDisplay(E\Site $site): void {
         $site->addL('postBody', new EC\Basic\LScript(function() {
             return $this->getScript(); }, $this->scriptCSPHash));
     }

@@ -14,11 +14,11 @@ class SDownloader extends E\Site {
 
         $this->setRootL(E\Layout::_('Basic:raw', [ 'raw' => '' ]));
 
-        $uri_args = E\Args::Uri('_extra');
-        if (count($uri_args) === 0)
+        $uriArgs = E\Args::Uri_Extra();
+        if (count($uriArgs) === 0)
             throw new \Exception('Download type not set: ' . E\Uri::Current());
 
-        $this->downloadName = $uri_args[0];
+        $this->downloadName = $uriArgs[0];
     }
 
     public function setDownloader(DDownloader $downloader) {
@@ -33,7 +33,7 @@ class SDownloader extends E\Site {
     }
 
     /* E\Site Overrides */
-    protected function _preDisplay() {
+    protected function _preDisplay(): void {
         parent::_preDisplay();
 
         $this->outputDownload();

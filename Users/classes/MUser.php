@@ -167,7 +167,7 @@ class MUser extends E\Module {
 	}
 
 	/* Initialization */
-	protected function _preInitialize(E\Site $site) {
+	protected function _preInitialize(E\Site $site): void {
 		$this->_preInitialize_Config();
 		$this->initUser();
 		// $this->_preInitialize_Permissions();

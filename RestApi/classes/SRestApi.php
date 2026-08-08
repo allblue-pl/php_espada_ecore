@@ -11,14 +11,14 @@ class SRestApi extends E\Site {
     public function __construct() {
         parent::__construct();
 
-        $this->parseArgs(E\Args::Uri('_extra'));
+        $this->parseArgs(E\Args::Uri_Extra());
     }
 
     public function restApi(ARestApi $restApi) {
         $this->restApi = $restApi;
     }
 
-    protected function _initialize() {
+    protected function _initialize(): void {
         parent::_initialize();
 
         $result = $this->getResult();

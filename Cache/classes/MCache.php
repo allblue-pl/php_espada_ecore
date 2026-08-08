@@ -78,7 +78,7 @@ class MCache extends E\Module {
         $this->filesTable->delete_Where($where_conditions);
     }
 
-    protected function _preInitialize(E\Site $site) {
+    protected function _preInitialize(E\Site $site): void {
         $this->filesTable = new TFiles($this->db);
 
         $rFiles_Expired = $this->filesTable->select_Where([
@@ -96,7 +96,7 @@ class MCache extends E\Module {
         ]);
     }
 
-    protected function _deinitialize() {
+    protected function _deinitialize(): void {
 
     }
 

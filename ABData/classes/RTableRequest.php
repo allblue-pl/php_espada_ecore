@@ -2,6 +2,9 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
+use EC\Database\TTable;
+use FFI\CData;
 
 class RTableRequest extends RRequest {
 
@@ -90,26 +93,26 @@ class RTableRequest extends RRequest {
     }
 
 
-    private $db = null;
-    private $dataStore = null;
-    private $table = null;
+    private MDatabase $db;
+    private CDataStore $dataStore;
+    private TTable $table;
 
-    public function __construct(CDataStore $dataStore, EC\Database\TTable $table) {
+    public function __construct(CDataStore $dataStore, TTable $table) {
         parent::__construct($dataStore);
 
         $this->dataStore = $dataStore;
         $this->db = $this->dataStore->getDB();
         $this->table = $table;
 
-        $this->setA('delete', function(CDevice $device, array $args, 
+        $this->setA('delete', "w", function(CDevice $device, array $args, 
                 ?int $schemeVersion) {
             return $this->action_Delete($device, $args, $schemeVersion);
         });
-        $this->setA('row', function(CDevice $device, array $args, 
+        $this->setA('row', "r", function(CDevice $device, array $args, 
                 ?int $schemeVersion) {
             return $this->action_Row($device, $args, $schemeVersion);
         });
-        $this->setA('select', function(CDevice $device, array $args, 
+        $this->setA('select', "r", function(CDevice $device, array $args, 
                 ?int $schemeVersion) {
             return $this->action_Select($device, $args, $schemeVersion);
         });
@@ -117,7 +120,7 @@ class RTableRequest extends RRequest {
         //         ?int $schemeVersion) {
         //     return $this->action_Set($device, $args, $schemeVersion);
         // });
-        $this->setA('update', function(CDevice $device, array $args, 
+        $this->setA('update', "w", function(CDevice $device, array $args, 
                 ?int $schemeVersion) {
             return $this->action_Update($device, $args, $schemeVersion);
         });
@@ -149,7 +152,7 @@ class RTableRequest extends RRequest {
         if (!(new TDeletedRows($this->db))->update($rDeletedRows)) {
             return [
                 'success' => false,
-                'error' => "Cannot update 'DeletedRows': " + $this->db->getError(),
+                'error' => "Cannot update 'DeletedRows': " . $this->db->getError(),
             ];
         } 
 
