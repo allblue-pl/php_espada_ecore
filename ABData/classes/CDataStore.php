@@ -8,7 +8,6 @@ use E, EC,
 use EC\Database\MDatabase;
 
 class CDataStore {
-
     const Response_Types_Success = 0;
     const Response_Types_ResultFailure = 1;
     const Response_Types_ResultError = 2;
@@ -510,11 +509,8 @@ class CDataStore {
             'requestIds' => [],
         ];
 
+        $activeTransaction = false;
         $localTransaction = false;
-        if ($this->db->transaction_IsAutocommit()) {
-            $localTransaction = true;
-            $this->db->transaction_Start();
-        }
 
         $success = true;
 
@@ -529,9 +525,21 @@ class CDataStore {
             $result = null;
 
             try {
-                $result = $this->getRequest($requestName)
-                        ->executeAction($device, $actionName, $actionArgs, 
-                        $schemeVersion, null);
+                $request = $this->getRequest($requestName);
+                if (!$activeTransaction) {
+                    $actionType = $request->getActionType($actionName);
+
+                    if ($actionType === "w") {
+                        if ($this->db->transaction_IsAutocommit()) {
+                            $localTransaction = true;
+                            $this->db->transaction_Start();
+                        }
+                        $activeTransaction = true;
+                    }
+                }
+
+                $result = $request->executeAction($device, $actionName, 
+                        $actionArgs, $schemeVersion, null);
             } catch (\Exception $e) {
                 /** @phpstan-ignore if.alwaysTrue */
                 if (EDEBUG)

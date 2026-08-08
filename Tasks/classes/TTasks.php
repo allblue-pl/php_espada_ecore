@@ -3,6 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 use EC\Database\MDatabase;
+use EC\Tasks\_Tables\_TTasks;
 
 class TTasks extends _TTasks {
 

@@ -3,6 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 use EC\Database\MDatabase;
+use EC\Log\_Tables\_TLogs;
 
 class TLogs extends _TLogs {
     public function __construct(MDatabase $db) {

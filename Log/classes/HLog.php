@@ -7,10 +7,10 @@ use EC\Database\TTable;
 use EC\Date\HDate;
 
 class HLog {
-    static public function Add(MDatabase $db, $user_id, string $message, $data = null) {
+    static public function Add(MDatabase $db, ?float $userId, string $message, $data = null) {
         (new TLogs($db))->update([[
             'Id' => null,
-            'User_Id' => $user_id,
+            'User_Id' => $userId,
 
             'DateTime' => HDate::GetTime(),
             'Message' => $message,

@@ -3,9 +3,9 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 use EC\Database\MDatabase;
+use EC\Users\_Tables\_TUsers;
 
 class TUsers extends _TUsers {
-
     public function __construct(MDatabase $db) {
         parent::__construct($db, 'u_u');
 
@@ -31,5 +31,4 @@ class TUsers extends _TUsers {
             }
         ]);
     }
-
 }

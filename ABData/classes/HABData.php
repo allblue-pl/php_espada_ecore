@@ -258,6 +258,7 @@ class HABData {
                     $row[$columnName] = $columnValue;
             }
         }
+        unset($row);
 
         // print_r($rows);
 

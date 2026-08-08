@@ -21,6 +21,24 @@ class RRequest {
                 $schemeVersion, $lastUpdate);
     }
 
+    public function getAction(string $actionName): array {
+        if (!array_key_exists($actionName, $this->actions))
+            throw new \Exception("Action '{$actionName}' does not exists.");
+
+        return $this->actions[$actionName];
+    }
+
+    /**
+     * 
+     * @param string $actionName 
+     * @return "r"|"w"
+     */
+    public function getActionType(string $actionName): string {
+        $action = $this->getAction($actionName);
+
+        return $action["type"];
+    }
+
     public function getDS() {
         return $this->getDataStore();
     }
@@ -33,16 +51,25 @@ class RRequest {
         return array_key_exists($actionName, $this->actions);
     }
 
-    public function setA(string $actionName, \Closure $actionFn) {
-        $this->setAction($actionName, $actionFn);
+    public function setA(string $actionName, string $type, \Closure $actionFn) {
+        $this->setAction($actionName, $type, $actionFn);
     }
 
-    public function setAction(string $actionName, \Closure $actionFn) {
+    /**
+     * 
+     * @param string $actionName 
+     * @param "r"|"w" $type 
+     * @param \Closure $actionFn 
+     * @return void 
+     * @throws \Exception 
+     */
+    public function setAction(string $actionName, string $type, \Closure $actionFn) {
         if (array_key_exists($actionName, $this->actions))
             throw new \Exception("Action '{$actionName}' already exists.");
 
         $this->actions[$actionName] = [
-            'fn' => $actionFn
+            "fn" => $actionFn,
+            "type" => $type,
         ];
     }
 }

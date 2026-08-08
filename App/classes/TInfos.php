@@ -4,9 +4,9 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 use EC\Database\MDatabase;
 use EC\Users\TUsers;
+use EC\App\_Tables\_TInfos;
 
 class TInfos extends _TInfos {
-
     public function __construct(MDatabase $db) {
         parent::__construct($db, 'a_i');
 
@@ -48,5 +48,4 @@ class TInfos extends _TInfos {
             }
         ]);
     }
-
 }

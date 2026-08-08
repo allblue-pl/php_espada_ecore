@@ -3,6 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E;
 use EC\Database\MDatabase;
+use EC\ABData\_Tables\_TDevices;
 
 class TDevices extends _TDevices {
 

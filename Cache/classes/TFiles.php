@@ -2,10 +2,10 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Cache\_Tables\_TFiles;
 use EC\Database\MDatabase;
 
 class TFiles extends _TFiles {
-
     public function __construct(MDatabase $db) {
         parent::__construct($db, 'f');
 
@@ -14,5 +14,4 @@ class TFiles extends _TFiles {
             ' ON u_u.Id = f.User_Id'
         );
     }
-
 }

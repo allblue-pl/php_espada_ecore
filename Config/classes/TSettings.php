@@ -3,9 +3,9 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 use EC\Database\MDatabase;
+use EC\Config\_Tables\_TSettings;
 
 class TSettings extends _TSettings {
-
     public function __construct(MDatabase $db) {
         parent::__construct($db, 's');
 
@@ -21,5 +21,4 @@ class TSettings extends _TSettings {
             }
         ]);
     }
-
 }

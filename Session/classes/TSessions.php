@@ -3,6 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 use EC\Database\MDatabase;
+use EC\Session\_Tables\_TSessions;
 
 class TSessions extends _TSessions {
 
