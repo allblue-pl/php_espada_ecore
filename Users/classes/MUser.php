@@ -9,7 +9,7 @@ use EC\Session\MSession;
 class MUser extends E\Module {
 	const HASH_ROUNDS = 7;
 
-	private MSession $session;
+	private MSession|null $session;
     private MDatabase $db;
     private string $type;
 
@@ -27,7 +27,7 @@ class MUser extends E\Module {
 
 	// private $salt = '';
 
-    public function __construct(E\Site $site, MSession $session, MDatabase $database,
+    public function __construct(E\Site $site, MSession|null $session, MDatabase $database,
             $type = 'Default') {
 		parent::__construct($site);
 

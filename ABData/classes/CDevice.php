@@ -140,11 +140,9 @@ class CDevice {
         }
 
         if (!$table->update([ $row_Update ])) {
-            /** @phpstan-ignore if.alwaysTrue */
             if (EDEBUG)
                 throw new \Exception('Cannot update Device row.');
 
-            /** @phpstan-ignore deadCode.unreachable */
             $db->transaction_Finish(false);
 
             return null;

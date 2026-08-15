@@ -5,16 +5,16 @@ export class eTasks_Class {
         this.timeout = 1000;
     }
 
-    start(api_uri, api_args, destroy_on_finish, fn) {
+    start(apiUri, apiArgs, destroyOnFinish, fn) {
         let task_hash = null;
 
-        let refresh = function(api_args) {
+        let refresh =(api_args) => {
             api_args.task = {
                 hash: task_hash,
-                destroyOnFinish: destroy_on_finish
+                destroyOnFinish: destroyOnFinish
             };
 
-            webABApi.json(api_uri, api_args, function(result) {
+            webABApi.json(apiUri, api_args, (result) => {
                 let task = null;
                 if (result.isSuccess()) {
                     task = result.data.task;
@@ -24,12 +24,12 @@ export class eTasks_Class {
                 if (!fn(task, result))
                     return false;
 
-                setTimeout(function() {
+                setTimeout(() => {
                     refresh(api_args);
-                });
+                }, this.timeout);
             });
         };
-        refresh(api_args);
+        refresh(apiArgs);
     }
 
     // refresh(api_uri, task_hash, destroy_on_finish, fn)

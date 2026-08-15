@@ -56,7 +56,6 @@ class CResult extends CResult_Base {
         $json['message'] = $this->getMessage();
         $json['debug'] = $this->getDebug();
 
-        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG)
             $json_string = json_encode($json, JSON_PRETTY_PRINT);
         else

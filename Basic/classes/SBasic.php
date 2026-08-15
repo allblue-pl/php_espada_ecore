@@ -23,7 +23,6 @@ class SBasic extends E\Site {
     }
 
     protected function _preDisplay(): void {
-        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG) {
             $this->addL('debug', E\Layout::_('Basic:raw', [
                 'raw' => $this->getDebugJS(),

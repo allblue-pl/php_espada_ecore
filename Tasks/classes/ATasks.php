@@ -8,7 +8,7 @@ use EC\Api\SUserApi;
 use EC\Database\MDatabase;
 use EC\Users\MUser;
 
-class ATasks extends EC\Api\AUserApi {
+class ATasks extends EC\Api\AUser {
     private MDatabase $db;
     private MUser $user;
 

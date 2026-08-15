@@ -7,7 +7,7 @@ use EC\Api\CResult;
 use EC\Api\SUserApi;
 use EC\Text\HText;
 
-class AUsers extends EC\Api\AUserApi {
+class AUsers extends EC\Api\AUser {
 
     private $requiredPermissions = null;
 

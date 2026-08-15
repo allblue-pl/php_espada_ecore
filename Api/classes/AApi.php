@@ -49,7 +49,6 @@ class AApi {
             if ($result === null)
                 return CResult_Base::Error_Base($action['type'], 'Result cannot be null.');
         } catch (\Exception $e) {
-            /** @phpstan-ignore booleanNot.alwaysFalse */
             if (!EDEBUG) {
                 E\Exception::NotifyListeners($e);
                 return CResult_Base::Error_Base($action['type'], 

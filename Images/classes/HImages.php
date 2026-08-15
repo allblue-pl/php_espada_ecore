@@ -61,7 +61,7 @@ class HImages {
                     }
                     
                     if ($image !== $image_Source)
-                        imagedestroy($image_Source);
+                        unset($image_Source);
                 }
             } catch (\Exception $e) {
                 // Do nothing.
@@ -78,7 +78,7 @@ class HImages {
             else
                 $result = self::Save($image, $destFilePath, $quality);
 
-            imagedestroy($image);
+            unset($image);
             return $result;
         }
 
@@ -90,11 +90,11 @@ class HImages {
                 (int)($factor * $image_height));
         if ($scaled_image === false)
             throw new \Exception('Cannot scale image.');
-        imagedestroy($image);
+        unset($image);
 
         $result = self::Save($scaled_image, $destFilePath, $quality);
 
-        imagedestroy($scaled_image);
+        unset($scaled_image);
 
         ini_set('memory_limit', $memory_limit);
 

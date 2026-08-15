@@ -4,14 +4,20 @@ defined('_ESPADA') or die(NO_ACCESS);
 use E, EC;
 
 
-$site = new SDownloader();
+$siteClass = E\Args::Page('site');
+if (!class_exists($siteClass))
+    throw new \Exception("Downloader site `{$siteClass}` does not exist.");
 
-$downloader_class = E\Args::Page('downloader');
+$site = new $siteClass();
+if (!($site instanceof SDownloader))
+    throw new \Exception("'site' must be a child of 'EC\Downloader\SDownloader'.");
 
-if (!class_exists($downloader_class))
-    throw new \Exception("Downloader `{$downloader_class}` does not exist.");
+$downloaderClass = E\Args::Page('downloader');
 
-$site->setDownloader(new $downloader_class($site));
+if (!class_exists($downloaderClass))
+    throw new \Exception("Downloader `{$downloaderClass}` does not exist.");
+
+$site->setDownloader(new $downloaderClass($site));
 
 
 \Espada::Initialize($site);

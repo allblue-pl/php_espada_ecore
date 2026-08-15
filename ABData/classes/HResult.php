@@ -19,7 +19,6 @@ class HResult {
         if (!array_key_exists('_message', $data))
             $data['_message'] = '';
         
-        /** @phpstan-ignore booleanNot.alwaysFalse */
         if (!EDEBUG) {
             if (array_key_exists('_debug', $data))
                 unset($data['_debug']);

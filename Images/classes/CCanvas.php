@@ -24,7 +24,7 @@ class CCanvas {
 
         if ($size !== null) {
             $s_image = HImages::Scale_ToMinSize_Image($t_image, $size[0], $size[1], true);
-            imagedestroy($t_image); $t_image = $s_image;
+            unset($t_image); $t_image = $s_image;
 
             $t_width = imagesx($t_image);
             $t_height = imagesy($t_image);

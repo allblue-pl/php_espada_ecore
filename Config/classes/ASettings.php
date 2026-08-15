@@ -10,7 +10,7 @@ use EC\Images\HImages;
 use EC\Text\HText;
 use EC\Upload\HUpload;
 
-class ASettings extends EC\Api\AUserApi {
+class ASettings extends EC\Api\AUser {
     private MDatabase $db;
 
     public function __construct(SUserApi $site) {

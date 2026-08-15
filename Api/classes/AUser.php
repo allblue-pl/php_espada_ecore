@@ -7,7 +7,7 @@ use EC\Database\MDatabase;
 use EC\Session\MSession;
 use EC\Users\MUser;
 
-class AUserApi extends AApi {
+class AUser extends AApi {
     private $actionRequiredPermissions = [];
     private $requiredPermissions = null;
     private MUser $user;

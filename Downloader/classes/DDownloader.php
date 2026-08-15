@@ -22,7 +22,6 @@ class DDownloader {
         try {
             call_user_func([$this, $download['fn']]);
         } catch (\Exception $e) {
-            /** @phpstan-ignore booleanNot.alwaysFalse */
             if (!EDEBUG)
                 return CResult::Error(INTERNAL_ERROR_MESSAGE);
 

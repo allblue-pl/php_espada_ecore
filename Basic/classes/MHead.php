@@ -45,7 +45,6 @@ class MHead extends E\Module {
     }
 
     public function addScript(string $uri) {
-        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG)
             $uri .= "?v=" . HHash::Generate(8);
         else

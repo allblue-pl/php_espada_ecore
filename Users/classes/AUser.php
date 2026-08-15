@@ -13,7 +13,7 @@ use EC\Hash\HHash;
 use EC\Mailer\HMailer;
 use EC\Text\HText;
 
-class AUser extends EC\Api\AUserApi {
+class AUser extends EC\Api\AUser {
     private $requiredPermissions = null;
 
     private $db = null;
@@ -53,7 +53,6 @@ class AUser extends EC\Api\AUserApi {
             'newPassword' => true,
         ]);
 
-        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG) {
             $this->action('hash', 'action_Hash', [
                 'password' => true,

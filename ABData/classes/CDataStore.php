@@ -373,11 +373,9 @@ class CDataStore {
                         ->executeAction($device, $actionName, $actionArgs, 
                         $schemeVersion, $device->getLastUpdate());
             } catch (\Exception $e) {
-                /** @phpstan-ignore if.alwaysTrue */
                 if (EDEBUG)
                     throw $e;
-
-                /** @phpstan-ignore deadCode.unreachable */
+                    
                 $success = false;
                 
                 $response['type'] = self::Response_Types_ActionError;
@@ -541,11 +539,9 @@ class CDataStore {
                 $result = $request->executeAction($device, $actionName, 
                         $actionArgs, $schemeVersion, null);
             } catch (\Exception $e) {
-                /** @phpstan-ignore if.alwaysTrue */
                 if (EDEBUG)
                     throw $e;
 
-                /** @phpstan-ignore deadCode.unreachable */
                 $success = false;
 
                 $response['type'] = self::Response_Types_ActionError;

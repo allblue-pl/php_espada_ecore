@@ -9,7 +9,7 @@ use EC\Api\SUserApi;
 use EC\Config\HConfig;
 use EC\Users\MUser;
 
-class AFilesUpload extends EC\Api\AUserApi {
+class AFilesUpload extends EC\Api\AUser {
     private $categories;
 
 
@@ -44,11 +44,9 @@ class AFilesUpload extends EC\Api\AUserApi {
             HFilesUpload::DeleteFile($args->get("categoryName"), $args->get("id"), 
                     $args->get("fileName"));
         } catch (\Exception $e) {
-            /** @phpstan-ignore if.alwaysTrue */
             if (EDEBUG)
                 throw $e;
                 
-            /** @phpstan-ignore deadCode.unreachable */
             return CResult::Failure($e->getMessage());
         }
 
@@ -91,11 +89,9 @@ class AFilesUpload extends EC\Api\AUserApi {
             HFilesUpload::Upload($args->get("categoryName"), $args->get("id"), 
                     $args->get("file"));
         } catch (\Exception $e) {
-            /** @phpstan-ignore if.alwaysTrue */
             if (EDEBUG)
                 throw $e;
             
-            /** @phpstan-ignore deadCode.unreachable */
             return CResult::Failure($e->getMessage());
         }
 
