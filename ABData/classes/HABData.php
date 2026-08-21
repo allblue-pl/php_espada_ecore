@@ -66,7 +66,7 @@ class HABData {
     }
 
     static public function Delete_Where(CDevice $device, EC\Database\TTable $table,
-            $whereConditions) {
+            array $whereConditions, array &$deletedRows = []) {
         $db = $table->getDB();
 
         $localTransaction = false;
@@ -75,8 +75,8 @@ class HABData {
             $localTransaction = true;
         }
 
-        $rows = $table->select_Where($whereConditions, '');
-        if (count($rows) > 0) {
+        $deletedRows = $table->select_Where($whereConditions);
+        if (count($deletedRows) > 0) {
             if (!$table->delete_Where($whereConditions)) {
                 if ($localTransaction)
                     $db->transaction_Finish(false);
@@ -84,7 +84,7 @@ class HABData {
             }
         }
 
-        if (!self::AddDeletedRows($device, $table, $rows)) {
+        if (!self::AddDeletedRows($device, $table, $deletedRows)) {
             if ($localTransaction)
                 $db->transaction_Finish(false);
             return false;

@@ -8,20 +8,21 @@ use EC\Api\CResult;
 use EC\Api\SApi;
 use EC\Api\SUserApi;
 use EC\Config\HConfig;
+use EC\Database\MDatabase;
 use EC\Date\HDate;
 use EC\Hash\HHash;
 use EC\Mailer\HMailer;
 use EC\Text\HText;
 
 class AUser extends EC\Api\AUser {
-    private $requiredPermissions = null;
+    private array $requiredPermissions;
 
-    private $db = null;
-    private $user = null;
+    private MDatabase $db;
+    private MUser $user;
 
-    public function __construct(SUserApi $site, $args) {
-        parent::__construct($site, array_key_exists('userType', $args) ? 
-                $args['userType'] : 'Default');
+    public function __construct(SUserApi $site, array $args) {
+        parent::__construct($site, array_key_exists('requiredPermissions', $args) ? 
+                $args['requiredPermissions'] : []);
 
         if (!isset($args['requiredPermissions']))
             throw new \Exception('No `requiredPermissions` specified in' .
@@ -102,7 +103,7 @@ class AUser extends EC\Api\AUser {
 
     protected function action_Hash(CArgs $args) {
         $hash = null;
-        if (isset($args->hashRounds))
+        if ($args->isset("hashRounds"))
             $hash = HHash::GetPassword($args->get("password"), $args->get("hashRounds"));
         else
             $hash = HHash::GetPassword($args->get("password"));
@@ -150,7 +151,6 @@ class AUser extends EC\Api\AUser {
 		}
 
 		$userPermissions = $userInfo['permissions'];
-
 		foreach ($this->requiredPermissions as $permission) {
 			if (!in_array($permission, $userPermissions)) {
 				return CResult::Failure(HText::_('Users:Errors_WrongLoginOrPassword'))
@@ -184,7 +184,7 @@ class AUser extends EC\Api\AUser {
     }
 
     protected function action_RemindPassword(CArgs $args) {
-        $args->set("email", trim(mb_strtolower($args->get("email"))));
+        $args->get("set")("email", trim(mb_strtolower($args->get("email"))));
 
         if ($args->get("login") === '')
             return CResult::Failure(HText::_('Users:Errors_LoginCannotBeEmpty'));

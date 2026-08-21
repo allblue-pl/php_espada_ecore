@@ -377,10 +377,7 @@ class CDevice {
         return $this->rowUpdates;
     }
 
-    public function isNewId($id) {
-        if (!is_numeric($id))
-            throw new \Exception("'_Id' must be a Long.");
-
+    public function isNewId(float $id): bool {
         $id = $id + 0;
         $idInfo = self::GetIdInfo($id);
 
