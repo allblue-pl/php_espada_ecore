@@ -21,8 +21,7 @@ class AUser extends EC\Api\AUser {
     private MUser $user;
 
     public function __construct(SUserApi $site, array $args) {
-        parent::__construct($site, array_key_exists('requiredPermissions', $args) ? 
-                $args['requiredPermissions'] : []);
+        parent::__construct($site, []);
 
         if (!isset($args['requiredPermissions']))
             throw new \Exception('No `requiredPermissions` specified in' .
@@ -151,15 +150,14 @@ class AUser extends EC\Api\AUser {
 		}
 
 		$userPermissions = $userInfo['permissions'];
-		foreach ($this->requiredPermissions as $permission) {
-			if (!in_array($permission, $userPermissions)) {
-				return CResult::Failure(HText::_('Users:Errors_WrongLoginOrPassword'))
-                    ->add('user', [
-                        'login' => null,
-                        'permissions' => [],
-                    ])
-                    ->debug('Permission denied. Required permission: ' . $permission);
-			}
+        if (!$this->hasPermissions($userPermissions)) {
+            return CResult::Failure(HText::_('Users:Errors_WrongLoginOrPassword'))
+                ->add('user', [
+                    'login' => null,
+                    'permissions' => [],
+                ])
+                ->debug('Permission denied. Required permissions: ' . 
+                        implode(", ", $userPermissions));
 		}
 
 		$user->startSession($userInfo['id'], $login);
@@ -180,11 +178,11 @@ class AUser extends EC\Api\AUser {
 			return CResult::Success();
 		}
 
-		return CResult::Failure('Not logged in.');
+		return CResult::Success();
     }
 
     protected function action_RemindPassword(CArgs $args) {
-        $args->get("set")("email", trim(mb_strtolower($args->get("email"))));
+        $args->set("email", trim(mb_strtolower($args->get("email"))));
 
         if ($args->get("login") === '')
             return CResult::Failure(HText::_('Users:Errors_LoginCannotBeEmpty'));
@@ -268,4 +266,15 @@ class AUser extends EC\Api\AUser {
         return CResult::Success(HText::_('Users:Successes_PasswordChanged'));
     }
 
+    /**
+     * @param list<string> $userPermissions 
+     */
+    private function hasPermissions(array $userPermissions): bool {
+		foreach ($this->requiredPermissions as $permission) {
+			if (!in_array($permission, $userPermissions))
+				return false;
+		}
+
+        return true;
+    }
 }
