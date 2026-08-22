@@ -513,8 +513,8 @@ class CDataStore {
         $success = true;
 
         foreach ($requests as $request) {
-            list($requestId, $requestName, $actionName, $actionArgs, 
-                    $schemeVersion) = $request;
+            list($requestId, list($requestName, $actionName, $actionArgs, 
+                    $schemeVersion)) = $request;
 
             $response['results'][$requestId] = null;
             $response['requestIds'][] = $requestId;

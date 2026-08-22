@@ -85,7 +85,7 @@ class HUsers {
             
             $row = (new TUsers($db))->row_Where([[ 'Id', '=', $user['id'] ]]);
             if ($row === null)
-                throw new \Exception("Test user row does not exist.");
+                throw new \Exception("Test user row for '{$login}' does not exist.");
 
             if (!$row['Active']) {
                 $errorCode = self::LogInError_UserNotActive;
