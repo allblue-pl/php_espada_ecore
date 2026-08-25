@@ -18,7 +18,27 @@ use EC\Database\TTable;
  * }
  */
 class _TTasks extends TTable {
-    public function __construct(MDatabase $db, $tablePrefix = 't') {
+    /**
+     *
+     * @param array $row
+     * @return _T_RTasks_Tasks
+     */
+    static public function AssertRow(array $row): array {
+        /* @phpstan-ignore return.type */
+        return $row;
+    }
+
+    /**
+     *
+     * @param array $rows
+     * @return array<_T_RTasks_Tasks>
+     */
+    static public function AssertRows(array $rows): array {
+        return $rows;
+    }
+
+
+    public function __construct(MDatabase $db, $tablePrefix = 't_t') {
         parent::__construct($db, 'Tasks_Tasks', $tablePrefix);
 
         $this->setColumns([
@@ -30,27 +50,6 @@ class _TTasks extends TTable {
             'Data' => new Database\FText(true, 'medium'), 
         ]);
         $this->setPKs([ 'Hash' ]);
-    }
 
-    /**
-     *
-     * @param array $row
-     * @return _T_RTasks_Tasks
-     */
-    public function assertRow(array $row, bool $stripRow = false): array {
-        if ($stripRow)
-            $row = $this->stripRow($row);
-
-        /* @phpstan-ignore return.type */
-        return $row;
-    }
-
-    /**
-     *
-     * @param array $rows
-     * @return array<_T_RTasks_Tasks>
-     */
-    public function assertRows(array $rows): array {
-        return $rows;
     }
 }

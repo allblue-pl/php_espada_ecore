@@ -19,7 +19,27 @@ use EC\Database\TTable;
  * }
  */
 class _TUsers extends TTable {
-    public function __construct(MDatabase $db, $tablePrefix = 't') {
+    /**
+     *
+     * @param array $row
+     * @return _T_RUsers_Users
+     */
+    static public function AssertRow(array $row): array {
+        /* @phpstan-ignore return.type */
+        return $row;
+    }
+
+    /**
+     *
+     * @param array $rows
+     * @return array<_T_RUsers_Users>
+     */
+    static public function AssertRows(array $rows): array {
+        return $rows;
+    }
+
+
+    public function __construct(MDatabase $db, $tablePrefix = 'u_u') {
         parent::__construct($db, 'Users_Users', $tablePrefix);
 
         $this->setColumns([
@@ -32,27 +52,6 @@ class _TUsers extends TTable {
             'Active' => new Database\FBool(true), 
         ]);
         $this->setPKs([ 'Id' ]);
-    }
 
-    /**
-     *
-     * @param array $row
-     * @return _T_RUsers_Users
-     */
-    public function assertRow(array $row, bool $stripRow = false): array {
-        if ($stripRow)
-            $row = $this->stripRow($row);
-
-        /* @phpstan-ignore return.type */
-        return $row;
-    }
-
-    /**
-     *
-     * @param array $rows
-     * @return array<_T_RUsers_Users>
-     */
-    public function assertRows(array $rows): array {
-        return $rows;
     }
 }

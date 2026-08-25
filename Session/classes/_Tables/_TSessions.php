@@ -15,26 +15,12 @@ use EC\Database\TTable;
  * }
  */
 class _TSessions extends TTable {
-    public function __construct(MDatabase $db, $tablePrefix = 't') {
-        parent::__construct($db, 'Session_Sessions', $tablePrefix);
-
-        $this->setColumns([
-            'Id' => new Database\FString(true, 32), 
-            'Access' => new Database\FInt(false, true), 
-            'Data' => new Database\FText(false, 'regular'), 
-        ]);
-        $this->setPKs([ 'Id' ]);
-    }
-
     /**
      *
      * @param array $row
      * @return _T_RSession_Sessions
      */
-    public function assertRow(array $row, bool $stripRow = false): array {
-        if ($stripRow)
-            $row = $this->stripRow($row);
-
+    static public function AssertRow(array $row): array {
         /* @phpstan-ignore return.type */
         return $row;
     }
@@ -44,7 +30,20 @@ class _TSessions extends TTable {
      * @param array $rows
      * @return array<_T_RSession_Sessions>
      */
-    public function assertRows(array $rows): array {
+    static public function AssertRows(array $rows): array {
         return $rows;
+    }
+
+
+    public function __construct(MDatabase $db, $tablePrefix = 's_s') {
+        parent::__construct($db, 'Session_Sessions', $tablePrefix);
+
+        $this->setColumns([
+            'Id' => new Database\FString(true, 32), 
+            'Access' => new Database\FInt(false, true), 
+            'Data' => new Database\FText(false, 'regular'), 
+        ]);
+        $this->setPKs([ 'Id' ]);
+
     }
 }

@@ -16,27 +16,12 @@ use EC\Database\TTable;
  * }
  */
 class _TInfos extends TTable {
-    public function __construct(MDatabase $db, $tablePrefix = 't') {
-        parent::__construct($db, 'App_Infos', $tablePrefix);
-
-        $this->setColumns([
-            'Id' => new Database\FInt(true, true), 
-            'User_Id' => new Database\FLong(true), 
-            'AuthenticationHash' => new Database\FString(true, 256), 
-            'Data' => new Database\FText(true, 'medium'), 
-        ]);
-        $this->setPKs([ 'Id' ]);
-    }
-
     /**
      *
      * @param array $row
      * @return _T_RApp_Infos
      */
-    public function assertRow(array $row, bool $stripRow = false): array {
-        if ($stripRow)
-            $row = $this->stripRow($row);
-
+    static public function AssertRow(array $row): array {
         /* @phpstan-ignore return.type */
         return $row;
     }
@@ -46,7 +31,21 @@ class _TInfos extends TTable {
      * @param array $rows
      * @return array<_T_RApp_Infos>
      */
-    public function assertRows(array $rows): array {
+    static public function AssertRows(array $rows): array {
         return $rows;
+    }
+
+
+    public function __construct(MDatabase $db, $tablePrefix = 'a_i') {
+        parent::__construct($db, 'App_Infos', $tablePrefix);
+
+        $this->setColumns([
+            'Id' => new Database\FInt(true, true), 
+            'User_Id' => new Database\FLong(true), 
+            'AuthenticationHash' => new Database\FString(true, 256), 
+            'Data' => new Database\FText(true, 'medium'), 
+        ]);
+        $this->setPKs([ 'Id' ]);
+
     }
 }

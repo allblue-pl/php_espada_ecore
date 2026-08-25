@@ -17,7 +17,27 @@ use EC\Database\TTable;
  * }
  */
 class _TLogs extends TTable {
-    public function __construct(MDatabase $db, $tablePrefix = 't') {
+    /**
+     *
+     * @param array $row
+     * @return _T_RLog_Logs
+     */
+    static public function AssertRow(array $row): array {
+        /* @phpstan-ignore return.type */
+        return $row;
+    }
+
+    /**
+     *
+     * @param array $rows
+     * @return array<_T_RLog_Logs>
+     */
+    static public function AssertRows(array $rows): array {
+        return $rows;
+    }
+
+
+    public function __construct(MDatabase $db, $tablePrefix = 'l_l') {
         parent::__construct($db, 'Log_Logs', $tablePrefix);
 
         $this->setColumns([
@@ -28,27 +48,6 @@ class _TLogs extends TTable {
             'Data' => new Database\FText(false, 'medium'), 
         ]);
         $this->setPKs([ 'Id' ]);
-    }
 
-    /**
-     *
-     * @param array $row
-     * @return _T_RLog_Logs
-     */
-    public function assertRow(array $row, bool $stripRow = false): array {
-        if ($stripRow)
-            $row = $this->stripRow($row);
-
-        /* @phpstan-ignore return.type */
-        return $row;
-    }
-
-    /**
-     *
-     * @param array $rows
-     * @return array<_T_RLog_Logs>
-     */
-    public function assertRows(array $rows): array {
-        return $rows;
     }
 }

@@ -14,25 +14,12 @@ use EC\Database\TTable;
  * }
  */
 class _TSettings extends TTable {
-    public function __construct(MDatabase $db, $tablePrefix = 't') {
-        parent::__construct($db, 'Config_Settings', $tablePrefix);
-
-        $this->setColumns([
-            'Name' => new Database\FString(true, 32), 
-            'Value' => new Database\FText(true, 'medium'), 
-        ]);
-        $this->setPKs([ 'Name' ]);
-    }
-
     /**
      *
      * @param array $row
      * @return _T_RConfig_Settings
      */
-    public function assertRow(array $row, bool $stripRow = false): array {
-        if ($stripRow)
-            $row = $this->stripRow($row);
-
+    static public function AssertRow(array $row): array {
         /* @phpstan-ignore return.type */
         return $row;
     }
@@ -42,7 +29,19 @@ class _TSettings extends TTable {
      * @param array $rows
      * @return array<_T_RConfig_Settings>
      */
-    public function assertRows(array $rows): array {
+    static public function AssertRows(array $rows): array {
         return $rows;
+    }
+
+
+    public function __construct(MDatabase $db, $tablePrefix = 'c_s') {
+        parent::__construct($db, 'Config_Settings', $tablePrefix);
+
+        $this->setColumns([
+            'Name' => new Database\FString(true, 32), 
+            'Value' => new Database\FText(true, 'medium'), 
+        ]);
+        $this->setPKs([ 'Name' ]);
+
     }
 }

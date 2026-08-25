@@ -794,6 +794,22 @@ class TTable {
         $this->addColumnParser($columnName, $parser);
     }
 
+    public function setColumnParser_JSON($columnName) {
+        $this->setColumnParser($columnName, [
+            'out' => function($row, $name, $value) {
+                if ($value === null)
+                    return null;
+
+                return [
+                    $name => json_decode($value, true)["value"]
+                ];
+            },
+            'in' => function($row, $name, $value) {
+                return json_encode([ "value" => $value ]);
+            }
+        ]);
+    }
+
     public function setColumns($columns) {
         $column_infos = [];
         foreach ($columns as $columnName => $column) {

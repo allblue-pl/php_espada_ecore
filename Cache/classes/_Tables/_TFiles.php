@@ -16,27 +16,12 @@ use EC\Database\TTable;
  * }
  */
 class _TFiles extends TTable {
-    public function __construct(MDatabase $db, $tablePrefix = 't') {
-        parent::__construct($db, 'Cache_Files', $tablePrefix);
-
-        $this->setColumns([
-            'Id' => new Database\FInt(true, true), 
-            'User_Id' => new Database\FLong(false), 
-            'Hash' => new Database\FString(true, 128), 
-            'Expires' => new Database\FLong(true), 
-        ]);
-        $this->setPKs([ 'Id' ]);
-    }
-
     /**
      *
      * @param array $row
      * @return _T_RCache_Files
      */
-    public function assertRow(array $row, bool $stripRow = false): array {
-        if ($stripRow)
-            $row = $this->stripRow($row);
-
+    static public function AssertRow(array $row): array {
         /* @phpstan-ignore return.type */
         return $row;
     }
@@ -46,7 +31,21 @@ class _TFiles extends TTable {
      * @param array $rows
      * @return array<_T_RCache_Files>
      */
-    public function assertRows(array $rows): array {
+    static public function AssertRows(array $rows): array {
         return $rows;
+    }
+
+
+    public function __construct(MDatabase $db, $tablePrefix = 'c_f') {
+        parent::__construct($db, 'Cache_Files', $tablePrefix);
+
+        $this->setColumns([
+            'Id' => new Database\FInt(true, true), 
+            'User_Id' => new Database\FLong(false), 
+            'Hash' => new Database\FString(true, 128), 
+            'Expires' => new Database\FLong(true), 
+        ]);
+        $this->setPKs([ 'Id' ]);
+
     }
 }
