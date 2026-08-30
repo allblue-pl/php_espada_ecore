@@ -2,17 +2,13 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC, EC\Forms;
+use EC\Text\HText;
 
 class VBool extends Forms\VField {
-
-    private $texts = null;
-
     public function __construct($args = []) {
         parent::__construct($args, [
             'required' => false,
         ]);
-
-        $this->texts = EC\Text\HText::GetTranslations('Forms:fields');
     }
 
     protected function _validate(&$value) {
@@ -20,7 +16,7 @@ class VBool extends Forms\VField {
 
         if (!$value) {
             if ($args['required'])
-                $this->error($this->texts->notChecked);
+                $this->error(HText::_("Forms:fields.notChecked"));
 
             return;
         }

@@ -385,7 +385,8 @@ class MDatabase extends E\Module {
 	}
 
 	public function disconnect() {
-		$this->transaction_Finish(false);
+        if (!$this->transaction_IsAutocommit())
+		    $this->transaction_Finish(false);
 		$this->mysqli->close();
 		$this->mysqli = null;
 	}

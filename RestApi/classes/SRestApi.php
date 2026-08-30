@@ -2,16 +2,23 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Database\MDatabase;
 
 class SRestApi extends E\Site {
-    private $actionName = '';
-
+    private string $actionName = '';
+    private MDatabase $db;
     private $restApi = null;
 
     public function __construct() {
         parent::__construct();
 
+        $this->db = new MDatabase($this);
+
         $this->parseArgs(E\Args::Uri_Extra());
+    }
+
+    public function getDB(): MDatabase {
+        return $this->db;
     }
 
     public function restApi(ARestApi $restApi) {

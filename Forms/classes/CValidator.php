@@ -16,14 +16,14 @@ class CValidator {
 
     }
 
-    public function add($name, $value, $Validator_fields = []) {
+    public function add(string $name, mixed $value, array $validatorFields = []) {
         if ($this->field_Exists($name))
             throw new \Exception("Field `{$name}` already exists.");
 
         $this->field_Add($name, $value);
 
-        foreach ($Validator_fields as $v_field)
-            $this->addValidatorField($name, $v_field);
+        foreach ($validatorFields as $vField)
+            $this->addValidatorField($name, $vField);
     }
 
     public function addValidatorField($name, VField $Validator_field) {

@@ -542,16 +542,16 @@ class TTable {
         return $parsed_rows;
     }
 
-    public function row($query_extension = '', $group_extension = '',
-            $for_update = false) {
-        if ($group_extension !== '')
-            $group_extension .= ' ';
-        $group_extension .= 'LIMIT 1';
+    public function row(string $queryExtension = '', string $groupExtension = '',
+            bool $forUpdate = false): array|null {
+        if ($groupExtension !== '')
+            $groupExtension .= ' ';
+        $groupExtension .= 'LIMIT 1';
 
-        if ($for_update)
-            $group_extension .= ' FOR UPDATE';
+        if ($forUpdate)
+            $groupExtension .= ' FOR UPDATE';
 
-        $rows = $this->select($query_extension, $group_extension);
+        $rows = $this->select($queryExtension, $groupExtension);
 
         if (count($rows) === 0)
             return null;
@@ -559,20 +559,21 @@ class TTable {
         return $rows[0];
     }
 
-    public function row_ByColumn($colName, $colValue, $group_extension = '', $for_update = false) {
+    public function row_ByColumn(string $colName, mixed $colValue, 
+            string $groupExtension = '', bool $forUpdate = false): array|null {
         return $this->row_Where([
             [ $colName, '=', $colValue ]
-        ], $group_extension, $for_update);
+        ], $groupExtension, $forUpdate);
     }
 
-    public function row_ById($id, $group_extension = '', $for_update = false) {
+    public function row_ById($id, $groupExtension = '', $forUpdate = false) {
         return $this->row_Where([
             [ 'Id', '=', $id ]
-        ], $group_extension, $for_update);
+        ], $groupExtension, $forUpdate);
     }
 
-    public function row_ByPKs(array $keys, $groupExtension = '', 
-            $forUpdate = false) {
+    public function row_ByPKs(array $keys, string $groupExtension = '', 
+            bool $forUpdate = false): array|null {
         $where = [];
         if (count($keys) !== count($this->primaryKeys)) {
             throw new \Exception('Keys do not match primary keys: ' . 
@@ -586,19 +587,6 @@ class TTable {
         $where[] = $keys_Where;
 
         return $this->row_Where($where, $groupExtension, $forUpdate);
-    }
-
-    public function row_ByPK(array $keys, $group_extension = '', $for_update = false) {
-        if (count($keys) !== count($this->primaryKeys)) {
-            throw new \Exception('Keys do not match primary keys: ' . 
-                    join(',', $this->primaryKeys));
-        }
-
-        $where = [];
-        for ($i = 0; $i < count($keys); $i++)
-            $where[] = [ $this->primaryKeys[$i], '=', $keys[$i] ];
-
-        return $this->row_Where($where, $group_extension, $for_update);
     }
 
     public function row_Columns($columnNames, $query_extension = '',
@@ -639,15 +627,15 @@ class TTable {
         return $this->row_Columns($columnNames, $query_extension, $group_extension);
     }
 
-    public function row_Where($args = [], $group_extension = '',
-            $for_update = false) {
+    public function row_Where(array $conditions = [], string $groupExtension = '',
+            bool $forUpdate = false): array|null {
         $where = '';
 
-        $conditions = $this->getQuery_Conditions($args);
+        $conditions = $this->getQuery_Conditions($conditions);
         if ($conditions !== '')
             $where .= 'WHERE ' . $conditions;
 
-        return $this->row($where, $group_extension, $for_update);
+        return $this->row($where, $groupExtension, $forUpdate);
     }
 
     public function select($query_extension = '', $group_extension = '') {
@@ -657,7 +645,7 @@ class TTable {
                 $group_extension);
     }
 
-    public function select_ByPKs(array $pks, string $groupExtension = '') {
+    public function select_ByPKs(array $pks, string $groupExtension = ''): array {
         if (count($pks) === 0)
             return [];
 
@@ -778,15 +766,15 @@ class TTable {
         return $this->db->query_Select($query);
     }
 
-    public function select_Where($conditions = [], $group_extension = '',
-            $tableOnly = false) {
+    public function select_Where(array $conditions = [], string $groupExtension = '',
+            bool $tableOnly = false): array {
         $where = '';
 
         $conditions = $this->getQuery_Conditions($conditions, $tableOnly);
         if ($conditions !== '')
             $where .= 'WHERE ' . $conditions;
 
-        return $this->select($where, $group_extension);
+        return $this->select($where, $groupExtension);
     }
 
     public function setColumnParser($columnName, array $parser) {
@@ -877,14 +865,14 @@ class TTable {
     //             ->getVField($Validator_info);
     // }
 
-    public function setColumnVFields($columnName, $default_v_field_info,
+    public function setColumnVFields($columnName, $defaultVFieldInfo,
             $vFields = []) {
         $column = &$this->getColumnRef($columnName);
         $column['vFields'] = [];
-        if ($default_v_field_info !== null) {
+        if ($defaultVFieldInfo !== null) {
             try {
                 $column['vFields'][] = $column['field']->getVField(
-                        $default_v_field_info);
+                        $defaultVFieldInfo);
             } catch (\Exception $e) {
                 throw new \Exception("Cannot set {$columnName} VFields -> " . 
                         $e->getMessage());
@@ -894,13 +882,17 @@ class TTable {
         $this->addColumnVFields($columnName, $vFields);
     }
 
-    public function stripRow($row, $tableColumnsOnly = true): array {
+    public function stripRow(array $row, bool $tableColumnsOnly = true): array {
         foreach ($row as $columnName => $column_value) {
             if (!$this->columnExists($columnName, $tableColumnsOnly))
                 unset($row[$columnName]);
         }
 
         return $row;
+    }
+
+    public function stripRow_TableColumnsOnly(array $row): array {
+        return $this->stripRow($row, true);
     }
 
     public function update(array $rows, bool $ignoreNotExistingColumns = false) {
