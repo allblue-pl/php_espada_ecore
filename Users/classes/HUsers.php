@@ -25,7 +25,7 @@ class HUsers {
 
 	static public function Activate(MDatabase $db, $userId, bool $active,
             &$existingActiveUserId = null) {
-        $rUser = (new TUsers($db))->row_ById($userId);
+        $rUser = (new TUsers($db))->row_ByPKs([ $userId ]);
         if ($rUser === null)    
             throw new \Exception('User does not exist.');
 
@@ -200,7 +200,7 @@ class HUsers {
     }
 
 	static public function Get(MDatabase $db, $userId) {
-		return (new TUsers($db))->row_ById($userId);
+		return (new TUsers($db))->row_ByPKs([ $userId ]);
 	}
 
 	static public function GetTestUsers() {
@@ -321,7 +321,7 @@ class HUsers {
 		if ($password !== null)
             $row['PasswordHash'] = self::GetPasswordHash($password);
 		else if ($row['Id'] !== null) {
-			$row_DB = (new TUsers($db))->row_ById($row['Id']);
+			$row_DB = (new TUsers($db))->row_ByPKs([ $row['Id'] ]);
 			$row['PasswordHash'] = $row_DB['PasswordHash'];
 		}
 

@@ -566,12 +566,6 @@ class TTable {
         ], $groupExtension, $forUpdate);
     }
 
-    public function row_ById($id, $groupExtension = '', $forUpdate = false) {
-        return $this->row_Where([
-            [ 'Id', '=', $id ]
-        ], $groupExtension, $forUpdate);
-    }
-
     public function row_ByPKs(array $keys, string $groupExtension = '', 
             bool $forUpdate = false): array|null {
         $where = [];

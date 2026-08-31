@@ -34,7 +34,7 @@ class TArticles extends _TArticles {
             'Content_Html' => '',
         ]]);
 
-        return $table->row_ById($table->getLastInsertedId());
+        return $table->row_ByPKs([ $table->getLastInsertedId() ]);
     }
 
     static public function GetWhereConditions_Published() {
