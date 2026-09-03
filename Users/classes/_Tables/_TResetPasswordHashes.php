@@ -10,7 +10,7 @@ use Override;
 
 /**
  *
- * @phpstan-type _T_RUsers_ResetPasswordHashes array{
+ * @phpstan-type _T_TRUsers_ResetPasswordHashes array{
  *     Id: int|null,
  *     User_Id: float,
  *     DateTime: float,
@@ -20,8 +20,8 @@ use Override;
 class _TResetPasswordHashes extends TTable {
     /**
      *
-     * @param _T_RUsers_ResetPasswordHashes $row
-     * @return _T_RUsers_ResetPasswordHashes
+     * @param _T_TRUsers_ResetPasswordHashes $row
+     * @return _T_TRUsers_ResetPasswordHashes
      */
     static public function AssertRow(array $row): array {
         return $row;
@@ -29,8 +29,8 @@ class _TResetPasswordHashes extends TTable {
 
     /**
      *
-     * @param list<_T_RUsers_ResetPasswordHashes> $rows
-     * @return list<_T_RUsers_ResetPasswordHashes>
+     * @param list<_T_TRUsers_ResetPasswordHashes> $rows
+     * @return list<_T_TRUsers_ResetPasswordHashes>
      */
     static public function AssertRows(array $rows): array {
         return $rows;
@@ -39,7 +39,7 @@ class _TResetPasswordHashes extends TTable {
     // /**
     //  *
     //  * @param array|null $row
-    //  * @return _T_RUsers_ResetPasswordHashes|null
+    //  * @return _T_TRUsers_ResetPasswordHashes|null
     //  */
     // static public function CastRow(array|null $row): array|null {
     //     /* phpstan-ignore return.type */
@@ -49,7 +49,7 @@ class _TResetPasswordHashes extends TTable {
     // /**
     //  *
     //  * @param array $rows
-    //  * @return list<_T_RUsers_ResetPasswordHashes>
+    //  * @return list<_T_TRUsers_ResetPasswordHashes>
     //  */
     // static public function CastRows(array $rows): array {
     //     return $rows;
@@ -72,7 +72,7 @@ class _TResetPasswordHashes extends TTable {
     }
 
     /** 
-     * @return _T_RUsers_ResetPasswordHashes|null
+     * @return _T_TRUsers_ResetPasswordHashes|null
      */
      #[Override]
     public function row_ByColumn(string $colName, mixed $colValue, 
@@ -82,7 +82,7 @@ class _TResetPasswordHashes extends TTable {
     }
 
     /** 
-     * @return _T_RUsers_ResetPasswordHashes|null
+     * @return _T_TRUsers_ResetPasswordHashes|null
      */
     #[Override]
     public function row_ByPKs(array $keys, string $groupExtension = '', 
@@ -92,7 +92,7 @@ class _TResetPasswordHashes extends TTable {
     }
 
     /** 
-     * @return _T_RUsers_ResetPasswordHashes|null
+     * @return _T_TRUsers_ResetPasswordHashes|null
      */
     #[Override]
     public function row_Where(array $conditions = [], string $groupExtension = '',
@@ -102,8 +102,7 @@ class _TResetPasswordHashes extends TTable {
     }
 
     /** 
-     * @return list<_T_RUsers_ResetPasswordHashes>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRUsers_ResetPasswordHashes>
      */
     #[Override]
     public function select_ByPKs(array $pks, string $groupExtension = ''): array {
@@ -111,8 +110,7 @@ class _TResetPasswordHashes extends TTable {
     }
 
     /** 
-     * @return list<_T_RUsers_ResetPasswordHashes>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRUsers_ResetPasswordHashes>
      */
     #[Override]
     public function select_Where(array $conditions = [], string $groupExtension = '',
@@ -121,7 +119,7 @@ class _TResetPasswordHashes extends TTable {
     }
 
     /** 
-     * @return _T_RUsers_ResetPasswordHashes
+     * @return _T_TRUsers_ResetPasswordHashes
      */
     #[Override]
     public function stripRow_TableColumnsOnly(array $row): array {

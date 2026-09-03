@@ -10,7 +10,7 @@ use Override;
 
 /**
  *
- * @phpstan-type _T_RApp_Infos array{
+ * @phpstan-type _T_TRApp_Infos array{
  *     Id: int|null,
  *     User_Id: float,
  *     AuthenticationHash: string,
@@ -20,8 +20,8 @@ use Override;
 class _TInfos extends TTable {
     /**
      *
-     * @param _T_RApp_Infos $row
-     * @return _T_RApp_Infos
+     * @param _T_TRApp_Infos $row
+     * @return _T_TRApp_Infos
      */
     static public function AssertRow(array $row): array {
         return $row;
@@ -29,8 +29,8 @@ class _TInfos extends TTable {
 
     /**
      *
-     * @param list<_T_RApp_Infos> $rows
-     * @return list<_T_RApp_Infos>
+     * @param list<_T_TRApp_Infos> $rows
+     * @return list<_T_TRApp_Infos>
      */
     static public function AssertRows(array $rows): array {
         return $rows;
@@ -39,7 +39,7 @@ class _TInfos extends TTable {
     // /**
     //  *
     //  * @param array|null $row
-    //  * @return _T_RApp_Infos|null
+    //  * @return _T_TRApp_Infos|null
     //  */
     // static public function CastRow(array|null $row): array|null {
     //     /* phpstan-ignore return.type */
@@ -49,7 +49,7 @@ class _TInfos extends TTable {
     // /**
     //  *
     //  * @param array $rows
-    //  * @return list<_T_RApp_Infos>
+    //  * @return list<_T_TRApp_Infos>
     //  */
     // static public function CastRows(array $rows): array {
     //     return $rows;
@@ -72,7 +72,7 @@ class _TInfos extends TTable {
     }
 
     /** 
-     * @return _T_RApp_Infos|null
+     * @return _T_TRApp_Infos|null
      */
      #[Override]
     public function row_ByColumn(string $colName, mixed $colValue, 
@@ -82,7 +82,7 @@ class _TInfos extends TTable {
     }
 
     /** 
-     * @return _T_RApp_Infos|null
+     * @return _T_TRApp_Infos|null
      */
     #[Override]
     public function row_ByPKs(array $keys, string $groupExtension = '', 
@@ -92,7 +92,7 @@ class _TInfos extends TTable {
     }
 
     /** 
-     * @return _T_RApp_Infos|null
+     * @return _T_TRApp_Infos|null
      */
     #[Override]
     public function row_Where(array $conditions = [], string $groupExtension = '',
@@ -102,8 +102,7 @@ class _TInfos extends TTable {
     }
 
     /** 
-     * @return list<_T_RApp_Infos>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRApp_Infos>
      */
     #[Override]
     public function select_ByPKs(array $pks, string $groupExtension = ''): array {
@@ -111,8 +110,7 @@ class _TInfos extends TTable {
     }
 
     /** 
-     * @return list<_T_RApp_Infos>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRApp_Infos>
      */
     #[Override]
     public function select_Where(array $conditions = [], string $groupExtension = '',
@@ -121,7 +119,7 @@ class _TInfos extends TTable {
     }
 
     /** 
-     * @return _T_RApp_Infos
+     * @return _T_TRApp_Infos
      */
     #[Override]
     public function stripRow_TableColumnsOnly(array $row): array {

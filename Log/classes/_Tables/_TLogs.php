@@ -10,7 +10,7 @@ use Override;
 
 /**
  *
- * @phpstan-type _T_RLog_Logs array{
+ * @phpstan-type _T_TRLog_Logs array{
  *     Id: int|null,
  *     User_Id: float|null,
  *     DateTime: float|null,
@@ -21,8 +21,8 @@ use Override;
 class _TLogs extends TTable {
     /**
      *
-     * @param _T_RLog_Logs $row
-     * @return _T_RLog_Logs
+     * @param _T_TRLog_Logs $row
+     * @return _T_TRLog_Logs
      */
     static public function AssertRow(array $row): array {
         return $row;
@@ -30,8 +30,8 @@ class _TLogs extends TTable {
 
     /**
      *
-     * @param list<_T_RLog_Logs> $rows
-     * @return list<_T_RLog_Logs>
+     * @param list<_T_TRLog_Logs> $rows
+     * @return list<_T_TRLog_Logs>
      */
     static public function AssertRows(array $rows): array {
         return $rows;
@@ -40,7 +40,7 @@ class _TLogs extends TTable {
     // /**
     //  *
     //  * @param array|null $row
-    //  * @return _T_RLog_Logs|null
+    //  * @return _T_TRLog_Logs|null
     //  */
     // static public function CastRow(array|null $row): array|null {
     //     /* phpstan-ignore return.type */
@@ -50,7 +50,7 @@ class _TLogs extends TTable {
     // /**
     //  *
     //  * @param array $rows
-    //  * @return list<_T_RLog_Logs>
+    //  * @return list<_T_TRLog_Logs>
     //  */
     // static public function CastRows(array $rows): array {
     //     return $rows;
@@ -74,7 +74,7 @@ class _TLogs extends TTable {
     }
 
     /** 
-     * @return _T_RLog_Logs|null
+     * @return _T_TRLog_Logs|null
      */
      #[Override]
     public function row_ByColumn(string $colName, mixed $colValue, 
@@ -84,7 +84,7 @@ class _TLogs extends TTable {
     }
 
     /** 
-     * @return _T_RLog_Logs|null
+     * @return _T_TRLog_Logs|null
      */
     #[Override]
     public function row_ByPKs(array $keys, string $groupExtension = '', 
@@ -94,7 +94,7 @@ class _TLogs extends TTable {
     }
 
     /** 
-     * @return _T_RLog_Logs|null
+     * @return _T_TRLog_Logs|null
      */
     #[Override]
     public function row_Where(array $conditions = [], string $groupExtension = '',
@@ -104,8 +104,7 @@ class _TLogs extends TTable {
     }
 
     /** 
-     * @return list<_T_RLog_Logs>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRLog_Logs>
      */
     #[Override]
     public function select_ByPKs(array $pks, string $groupExtension = ''): array {
@@ -113,8 +112,7 @@ class _TLogs extends TTable {
     }
 
     /** 
-     * @return list<_T_RLog_Logs>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRLog_Logs>
      */
     #[Override]
     public function select_Where(array $conditions = [], string $groupExtension = '',
@@ -123,7 +121,7 @@ class _TLogs extends TTable {
     }
 
     /** 
-     * @return _T_RLog_Logs
+     * @return _T_TRLog_Logs
      */
     #[Override]
     public function stripRow_TableColumnsOnly(array $row): array {

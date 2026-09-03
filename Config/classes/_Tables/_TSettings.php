@@ -10,7 +10,7 @@ use Override;
 
 /**
  *
- * @phpstan-type _T_RConfig_Settings array{
+ * @phpstan-type _T_TRConfig_Settings array{
  *     Name: string,
  *     Value: string,
  * }
@@ -18,8 +18,8 @@ use Override;
 class _TSettings extends TTable {
     /**
      *
-     * @param _T_RConfig_Settings $row
-     * @return _T_RConfig_Settings
+     * @param _T_TRConfig_Settings $row
+     * @return _T_TRConfig_Settings
      */
     static public function AssertRow(array $row): array {
         return $row;
@@ -27,8 +27,8 @@ class _TSettings extends TTable {
 
     /**
      *
-     * @param list<_T_RConfig_Settings> $rows
-     * @return list<_T_RConfig_Settings>
+     * @param list<_T_TRConfig_Settings> $rows
+     * @return list<_T_TRConfig_Settings>
      */
     static public function AssertRows(array $rows): array {
         return $rows;
@@ -37,7 +37,7 @@ class _TSettings extends TTable {
     // /**
     //  *
     //  * @param array|null $row
-    //  * @return _T_RConfig_Settings|null
+    //  * @return _T_TRConfig_Settings|null
     //  */
     // static public function CastRow(array|null $row): array|null {
     //     /* phpstan-ignore return.type */
@@ -47,7 +47,7 @@ class _TSettings extends TTable {
     // /**
     //  *
     //  * @param array $rows
-    //  * @return list<_T_RConfig_Settings>
+    //  * @return list<_T_TRConfig_Settings>
     //  */
     // static public function CastRows(array $rows): array {
     //     return $rows;
@@ -68,7 +68,7 @@ class _TSettings extends TTable {
     }
 
     /** 
-     * @return _T_RConfig_Settings|null
+     * @return _T_TRConfig_Settings|null
      */
      #[Override]
     public function row_ByColumn(string $colName, mixed $colValue, 
@@ -78,7 +78,7 @@ class _TSettings extends TTable {
     }
 
     /** 
-     * @return _T_RConfig_Settings|null
+     * @return _T_TRConfig_Settings|null
      */
     #[Override]
     public function row_ByPKs(array $keys, string $groupExtension = '', 
@@ -88,7 +88,7 @@ class _TSettings extends TTable {
     }
 
     /** 
-     * @return _T_RConfig_Settings|null
+     * @return _T_TRConfig_Settings|null
      */
     #[Override]
     public function row_Where(array $conditions = [], string $groupExtension = '',
@@ -98,8 +98,7 @@ class _TSettings extends TTable {
     }
 
     /** 
-     * @return list<_T_RConfig_Settings>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRConfig_Settings>
      */
     #[Override]
     public function select_ByPKs(array $pks, string $groupExtension = ''): array {
@@ -107,8 +106,7 @@ class _TSettings extends TTable {
     }
 
     /** 
-     * @return list<_T_RConfig_Settings>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRConfig_Settings>
      */
     #[Override]
     public function select_Where(array $conditions = [], string $groupExtension = '',
@@ -117,7 +115,7 @@ class _TSettings extends TTable {
     }
 
     /** 
-     * @return _T_RConfig_Settings
+     * @return _T_TRConfig_Settings
      */
     #[Override]
     public function stripRow_TableColumnsOnly(array $row): array {

@@ -54,7 +54,7 @@ class HDate {
     }
 
     static public function GetMonthName($monthNr) {
-        return HText::_('Date:monthNames_' . $monthNr);
+        return HText::_('Date:MonthNames_' . $monthNr);
     }
 
     static public function GetTimeZoneOffset($timezone_name) {

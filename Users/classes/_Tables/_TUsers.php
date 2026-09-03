@@ -10,7 +10,7 @@ use Override;
 
 /**
  *
- * @phpstan-type _T_RUsers_Users array{
+ * @phpstan-type _T_TRUsers_Users array{
  *     Id: float,
  *     Type: string,
  *     LoginHash: string,
@@ -23,8 +23,8 @@ use Override;
 class _TUsers extends TTable {
     /**
      *
-     * @param _T_RUsers_Users $row
-     * @return _T_RUsers_Users
+     * @param _T_TRUsers_Users $row
+     * @return _T_TRUsers_Users
      */
     static public function AssertRow(array $row): array {
         return $row;
@@ -32,8 +32,8 @@ class _TUsers extends TTable {
 
     /**
      *
-     * @param list<_T_RUsers_Users> $rows
-     * @return list<_T_RUsers_Users>
+     * @param list<_T_TRUsers_Users> $rows
+     * @return list<_T_TRUsers_Users>
      */
     static public function AssertRows(array $rows): array {
         return $rows;
@@ -42,7 +42,7 @@ class _TUsers extends TTable {
     // /**
     //  *
     //  * @param array|null $row
-    //  * @return _T_RUsers_Users|null
+    //  * @return _T_TRUsers_Users|null
     //  */
     // static public function CastRow(array|null $row): array|null {
     //     /* phpstan-ignore return.type */
@@ -52,7 +52,7 @@ class _TUsers extends TTable {
     // /**
     //  *
     //  * @param array $rows
-    //  * @return list<_T_RUsers_Users>
+    //  * @return list<_T_TRUsers_Users>
     //  */
     // static public function CastRows(array $rows): array {
     //     return $rows;
@@ -78,7 +78,7 @@ class _TUsers extends TTable {
     }
 
     /** 
-     * @return _T_RUsers_Users|null
+     * @return _T_TRUsers_Users|null
      */
      #[Override]
     public function row_ByColumn(string $colName, mixed $colValue, 
@@ -88,7 +88,7 @@ class _TUsers extends TTable {
     }
 
     /** 
-     * @return _T_RUsers_Users|null
+     * @return _T_TRUsers_Users|null
      */
     #[Override]
     public function row_ByPKs(array $keys, string $groupExtension = '', 
@@ -98,7 +98,7 @@ class _TUsers extends TTable {
     }
 
     /** 
-     * @return _T_RUsers_Users|null
+     * @return _T_TRUsers_Users|null
      */
     #[Override]
     public function row_Where(array $conditions = [], string $groupExtension = '',
@@ -108,8 +108,7 @@ class _TUsers extends TTable {
     }
 
     /** 
-     * @return list<_T_RUsers_Users>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRUsers_Users>
      */
     #[Override]
     public function select_ByPKs(array $pks, string $groupExtension = ''): array {
@@ -117,8 +116,7 @@ class _TUsers extends TTable {
     }
 
     /** 
-     * @return list<_T_RUsers_Users>|null
-     * @phpstan-ignore return.phpDocType
+     * @return list<_T_TRUsers_Users>
      */
     #[Override]
     public function select_Where(array $conditions = [], string $groupExtension = '',
@@ -127,7 +125,7 @@ class _TUsers extends TTable {
     }
 
     /** 
-     * @return _T_RUsers_Users
+     * @return _T_TRUsers_Users
      */
     #[Override]
     public function stripRow_TableColumnsOnly(array $row): array {
