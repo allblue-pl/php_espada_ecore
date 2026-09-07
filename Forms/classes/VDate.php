@@ -5,17 +5,14 @@ use E, EC, EC\Forms;
 use EC\Text\HText;
 
 class VDate extends Forms\VField {
-
-    private $texts = null;
-
     public function __construct($args = []) {
         parent::__construct($args, [
             'required' => true,
             'minDate' => null,
-            'maxDate' => null
+            'minDateError' => null,
+            'maxDate' => null,
+            'maxDateError' => null,
         ]);
-
-        $this->texts = HText::GetTranslations('Forms:fields');
     }
 
     protected function _validate(&$value) {
@@ -23,31 +20,38 @@ class VDate extends Forms\VField {
 
         if ($value === null) {
             if ($args['required'])
-                $this->error($this->texts->notSet);
+                $this->error(HText::_("Date:NotSet"));
             else
                 return;
         } else {
             if (!is_numeric($value))
-                $this->error($this->texts->date_WrongFormat);
+                $this->error(HText::_("Date:Date_WrongFormat"));
 
             $value = intval($value);
 
             if ($args['minDate'] !== null) {
                 if ($value < $args['minDate']) {
-                    $this->error($this->texts->get('date_BelowMinDate',
-                            array(date(HText::_('Date:Format_Date'),
-                            $args['minDate']))));
+                    if ($args["minDateError"] !== null)
+                        $this->error($args["minDateError"]);
+                    else {
+                        $this->error(HText::_('Date:Date_BelowMinDate',
+                                array(date(HText::_('Date:Format_Date'),
+                                $args['minDate']))));
+                    }
                 }
             }
 
             if ($args['maxDate'] !== null) {
                 if ($value > $args['maxDate']) {
-                    $this->error($this->texts->get('date_AboveMaxDate',
-                            array(date(HText::_('Date:Format_Date'),
-                            $args['maxDate']))));
+                    if ($args["maxDateError"] !== null)
+                        $this->error($args["maxDateError"]);
+                    else {
+                        $this->error(HText::_('Date:Date_AboveMaxDate',
+                                array(date(HText::_('Date:Format_Date'),
+                                $args['maxDate']))));
+                    }
                 }
             }
         }
     }
-
 }

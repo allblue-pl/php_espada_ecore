@@ -184,12 +184,12 @@ class HSPKTables {
                     continue;
                 }
 
-                if (!array_key_exists($col_name, $row)) {
-                    throw new \Exception("Column `{$col_name}`" .
+                if (!array_key_exists($colInfo['refColumnName'], $row)) {
+                    throw new \Exception("Column `{$colInfo['refColumnName']}`" .
                             " doesn't exist in a table.");
                 }
 
-                $parsed_row[] = $row[$col_name];
+                $parsed_row[] = $row[$colInfo['refColumnName']];
             }
 
             $parsed_rows[] = $parsed_row;

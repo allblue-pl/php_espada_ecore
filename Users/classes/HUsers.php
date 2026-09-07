@@ -10,7 +10,6 @@ use EC\Hash\HHash;
 use EC\Text\HText;
 
 class HUsers {
-
     const Exists_Login  = 1;
     const Exists_Email  = 2;
 

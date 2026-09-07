@@ -53,8 +53,90 @@ class HDate {
         return $time;
     }
 
+    static public function GetDayNr(int|null $time = null) {
+        if ($time === null)
+            $time = time();
+
+        return intval(self::Format("d", $time)) - 1;
+    }
+
+    static public function GetDayNr_UTC(int|null $time = null) {
+        if ($time === null)
+            $time = time();
+
+        return intval(self::Format_UTC("d", $time)) - 1;
+    }
+
+    static public function GetMonthNr(int|null $time = null) {
+        if ($time === null)
+            $time = time();
+
+        return intval(self::Format("m", $time)) - 1;
+    }
+
+    static public function GetMonthNr_UTC(int|null $time = null) {
+        if ($time === null)
+            $time = time();
+
+        return intval(self::Format_UTC("m", $time)) - 1;
+    }
+
     static public function GetMonthName($monthNr) {
         return HText::_('Date:MonthNames_' . $monthNr);
+    }
+
+    static public function GetTime(): int {
+        return time();
+    }
+
+    static public function GetTime_FromNrs(int $year, int $month, int $day) {
+        $month++;
+        $day++;
+
+        return self::StrToTime("{$year}-{$month}-{$day} 00:00");
+    }
+
+    static public function GetTime_FromNrs_Rel(int $year, int $month, int $day) {
+        $month++;
+        $day++;
+
+        return self::StrToTime_RelNeg("{$year}-{$month}-{$day} 00:00");
+    }
+
+    static public function GetTime_Rel(?float $time = null): ?float {
+        if ($time === null)
+            $time = time();
+
+        return $time + self::GetUTCOffset($time) * self::Span_Hour;
+    }
+
+    static public function GetTime_RelNeg(?float $time = null) {
+        if ($time === null)
+            $time = time();
+
+        return $time - self::GetUTCOffset($time) * self::Span_Hour;
+    }
+
+    static public function GetTimeMillis(): int {
+        return (int)round(microtime(true) * 1000);
+    }
+
+    static public function GetTimeZone(): \DateTimeZone {
+        if (self::$TimeZone == null)
+            return new \DateTimeZone('UTC');
+
+        return self::$TimeZone;
+    }
+
+    static public function GetUTCOffset(int $time) {
+        return self::GetUTCOffset_Time($time) / 60 / 60;
+    }
+
+    static public function GetUTCOffset_Time(int $time) {
+        $dateTime = new \DateTime();
+        $dateTime->setTimestamp($time);
+        
+        return self::GetTimeZone()->getOffset($dateTime);
     }
 
     static public function GetTimeZoneOffset($timezone_name) {
@@ -64,6 +146,36 @@ class HDate {
         $timezone_offset = $timezone->getOffset($utc_time) / 60 / 60;
 
         return $timezone_offset;
+    }
+
+    static public function GetYearNr(int|null $time = null) {
+        if ($time === null)
+            $time = time();
+
+        return intval(self::Format("Y", $time));
+    }
+
+    static public function GetYearNr_UTC(int|null $time = null) {
+        if ($time === null)
+            $time = time();
+
+        return intval(self::Format_UTC("Y", $time));
+    }
+
+    static public function Format(string $format, int|null $time) {
+        if ($time === null)
+            $time = time();
+
+        $time += self::GetUTCOffset_Time($time);
+
+        return gmdate($format, $time);
+    }
+
+    static public function Format_UTC(string $format, int|null $time) {
+        if ($time === null)
+            $time = time();
+
+        return gmdate($format, $time);
     }
 
     static public function Format_Date($time) {
@@ -127,46 +239,6 @@ class HDate {
         return HText::_("Date:Format_DayOfWeek_{$day_of_week}");
     }
 
-    static public function GetTime(): int {
-        return time();
-    }
-
-    static public function GetTimeMillis(): int {
-        return (int)round(microtime(true) * 1000);
-    }
-
-    static public function GetTime_Rel(?float $time = null): ?float {
-        if ($time === null)
-            $time = time();
-
-        return $time + self::GetUTCOffset($time) * self::Span_Hour;
-    }
-
-    static public function GetTime_RelNeg(?float $time = null) {
-        if ($time === null)
-            $time = time();
-
-        return $time - self::GetUTCOffset($time) * self::Span_Hour;
-    }
-
-    static public function GetTimeZone(): \DateTimeZone {
-        if (self::$TimeZone == null)
-            return new \DateTimeZone('UTC');
-
-        return self::$TimeZone;
-    }
-
-    static public function GetUTCOffset(int $time) {
-        return self::GetUTCOffset_Time($time) / 60 / 60;
-    }
-
-    static public function GetUTCOffset_Time(int $time) {
-        $dateTime = new \DateTime();
-        $dateTime->setTimestamp($time);
-        
-        return self::GetTimeZone()->getOffset($dateTime);
-    }
-
     static public function Round_Day(int $time) {
         return floor($time / self::Span_Day) * self::Span_Day;
     }
@@ -182,4 +254,12 @@ class HDate {
         return (float)strtotime($str . ' UTC');
     }
 
+    static public function StrToTime_RelNeg($str) {
+        if ($str === null || $str === '')
+            return null;
+
+        $time = (float)strtotime($str . ' UTC');
+
+        return $time - self::GetUTCOffset($time) * self::Span_Hour;
+    }
 }

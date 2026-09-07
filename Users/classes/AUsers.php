@@ -15,7 +15,7 @@ class AUsers extends EC\Api\AUser {
     private $user = null;
 
     public function __construct(SUserApi $site, $args) {
-        parent::__construct($site, $args['userType']);
+        parent::__construct($site);
 
         if (!isset($args['requiredPermissions']))
             throw new \Exception('No `requiredPermissions` specified in' .

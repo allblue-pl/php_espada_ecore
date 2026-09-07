@@ -153,14 +153,12 @@ class MDatabase extends E\Module {
 		return $this->mysqli->commit();
 	}
 
-	public function transaction_Finish($commit = null) {
+	public function transaction_Finish(bool $commit) {
 		$result = true;
 
-		if ($commit === null && $this->transaction_InProgress)
-			$result = $this->transaction_Rollback();
-		else if ($commit === true)
+		if ($commit)
 			$result = $this->transaction_Commit();
-		else if ($commit === false)
+		else
 			$result = $this->transaction_Rollback();
 
 		$this->mysqli->autocommit(true);
@@ -390,5 +388,4 @@ class MDatabase extends E\Module {
 		$this->mysqli->close();
 		$this->mysqli = null;
 	}
-
 }
