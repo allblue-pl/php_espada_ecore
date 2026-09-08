@@ -2,20 +2,26 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Config\HConfig;
 use EC\Database\MDatabase;
 
 class MSession extends E\Module {
     private MDatabase $db;
     private CSessionHandler $sessionHandler;
 
-	public function __construct(E\Site $site, MDatabase $db, $expirationTime = 0) {
+	public function __construct(E\Site $site, MDatabase $db) {
         parent::__construct($site);
 
         $this->db = $db;
         $this->sessionHandler = new CSessionHandler($this);
 
-        ini_set('session.cookie_lifetime', $expirationTime);
-        ini_set('session.gc_maxlifetime', $expirationTime);
+        session_set_cookie_params([
+            'domain' => HConfig::Get("Session", "domain", null),
+            'lifetime' => HConfig::Get("Session", "expirationTime", 0),
+            'secure'   => isset($_SERVER['HTTPS']),
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
 
         session_set_save_handler($this->sessionHandler);
 	}

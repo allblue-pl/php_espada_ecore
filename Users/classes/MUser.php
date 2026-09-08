@@ -27,8 +27,8 @@ class MUser extends E\Module {
 
 	// private $salt = '';
 
-    public function __construct(E\Site $site, MSession|null $session, MDatabase $database,
-            $type = 'Default') {
+    public function __construct(E\Site $site, MSession|null $session, 
+            MDatabase $database, $type = 'Default') {
 		parent::__construct($site);
 
 		$this->session = $session;

@@ -12,7 +12,7 @@ class SUserApi extends SApi {
     private MDatabase $db;
 
 
-    public function __construct(string $userType = "Default") {
+    public function __construct(int $userType = 0) {
         parent::__construct();
 
         $this->db = new MDatabase($this);

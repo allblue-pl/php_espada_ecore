@@ -12,7 +12,7 @@ use Override;
  *
  * @phpstan-type _T_TRUsers_Users array{
  *     Id: float,
- *     Type: string,
+ *     Type: int,
  *     LoginHash: string,
  *     EmailHash: string,
  *     PasswordHash: string,
@@ -64,7 +64,7 @@ class _TUsers extends TTable {
 
         $this->setColumns([
             'Id' => new Database\FLong(true), 
-            'Type' => new Database\FString(true, 16), 
+            'Type' => new Database\FInt(true, false), 
             'LoginHash' => new Database\FString(true, 256), 
             'EmailHash' => new Database\FString(true, 256), 
             'PasswordHash' => new Database\FString(true, 256), 

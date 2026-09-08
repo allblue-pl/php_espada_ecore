@@ -54,7 +54,7 @@ class HUsers {
 		return HHash::CheckPassword($email, $emailHash);
 	}
 
-    static public function CheckLoginAndPassword(MDatabase $db, string $type, 
+    static public function CheckLoginAndPassword(MDatabase $db, int $type, 
             string $login, string $password, ?int &$errorCode) {
         $login = trim(mb_strtolower($login));
 
