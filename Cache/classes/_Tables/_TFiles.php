@@ -11,11 +11,29 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRCache_Files array{
- *     Id: int|null,
+ *     Id: float,
  *     User_Id: float|null,
  *     Hash: string,
  *     Expires: float,
  * }
+ * @phpstan-type _T_TRCache_Files_Insert array{
+ *     Id: float|null,
+ *     User_Id: float|null,
+ *     Hash: string,
+ *     Expires: float,
+ * }
+ * @phpstan-type _T_TRCache_Files_Update array{
+ *     Id?: float|null,
+ *     User_Id?: float|null,
+ *     Hash?: string,
+ *     Expires?: float,
+ * }
+ * @phpstan-type _T_TRCache_Files_Variant array{
+ *     Id: float,
+ *     User_Id: float|null,
+ *     Hash: string,
+ *     Expires: float,
+ *     ...<string,mixed>}
  */
 class _TFiles extends TTable {
     /**
@@ -24,6 +42,24 @@ class _TFiles extends TTable {
      * @return _T_TRCache_Files
      */
     static public function AssertRow(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRCache_Files_Insert $row
+     * @return _T_TRCache_Files_Insert
+     */
+    static public function AssertRow_Insert(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRCache_Files_Update $row
+     * @return _T_TRCache_Files_Update
+     */
+    static public function AssertRow_Update(array $row): array {
         return $row;
     }
 
@@ -60,7 +96,7 @@ class _TFiles extends TTable {
         parent::__construct($db, 'Cache_Files', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FInt(true, true), 
+            'Id' => new Database\FLong(true), 
             'User_Id' => new Database\FLong(false), 
             'Hash' => new Database\FString(true, 128), 
             'Expires' => new Database\FLong(true), 

@@ -26,16 +26,16 @@ class VFloat extends Forms\VField {
         if (!is_numeric($value))
             $this->error(EC\Text\HText::_('Forms:fields.int_NotANumber'));
         else {
-            $number = $value + 0.0;
+            $value = floatval($value);
             if ($args['minValue'] !== null) {
-                if ($number < $args['minValue']) {
+                if ($value < $args['minValue']) {
                     $this->error(EC\Text\HText::_(
                             'Forms:fields.int_BelowMin', array($args['minValue'])));
                 }
             }
 
             if ($args['maxValue']) {
-                if ($number > $args['maxValue']) {
+                if ($value > $args['maxValue']) {
                     $this->error(EC\Text\HText::_(
                             'Forms:fields.int_AboveMax', array($args['maxValue'])));
                 }

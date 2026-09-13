@@ -26,19 +26,19 @@ class VLong extends Forms\VField {
         if (!is_numeric($value))
             $this->error(HText::_('Forms:fields.long_NotANumber'));
         else {
-            $number = $value + 0;
-            if (fmod($number, 1) !== 0.0)
+            $value = floatval($value);
+            if (fmod($value, 1) !== 0.0)
                 $this->error(HText::_('Forms:fields.long_NotWhole'));
             else {
                 if ($args['minValue'] !== null) {
-                    if ($number < $args['minValue']) {
+                    if ($value < $args['minValue']) {
                         $this->error(HText::_(
                                 'Forms:fields.int_BelowMin', array($args['minValue'])));
                     }
                 }
 
                 if ($args['maxValue']) {
-                    if ($number > $args['maxValue']) {
+                    if ($value > $args['maxValue']) {
                         $this->error(HText::_(
                                 'Forms:fields.int_AboveMax', array($args['maxValue'])));
                     }

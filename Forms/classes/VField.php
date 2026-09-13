@@ -15,10 +15,8 @@ abstract class VField {
         $defaultArgs['notNull'] = true;
         
         foreach ($args as $argName => $argValue) {
-            if (!array_key_exists($argName, $defaultArgs)) {
-                print_r($args);
+            if (!array_key_exists($argName, $defaultArgs)) 
                 throw new \Exception("Arg '{$argName}' does not exist.");
-            }
 
             $defaultArgs[$argName] = $args[$argName];
         }
@@ -38,7 +36,7 @@ abstract class VField {
         $this->validator->fieldSuccess($this->name, $message);
     }
 
-    public function validate(CValidator $validator, $name, $value) {
+    public function validate(CValidator $validator, $name, &$value) {
         $this->validator = $validator;
         $this->name = $name;
 
@@ -63,5 +61,4 @@ abstract class VField {
     }
 
     abstract protected function _validate(&$value);
-
 }

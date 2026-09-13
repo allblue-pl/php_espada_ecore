@@ -25,19 +25,19 @@ class VInt extends Forms\VField {
         if (!is_numeric($value))
             $this->error(HText::_('Forms:fields.int_NotANumber'));
         else {
-            $number = $value + 0;
-            if (!is_int($number))
+            $value = intval($value);
+            if (!is_int($value))
                 $this->error(HText::_('Forms:fields.int_NotAnInt'));
             else {
                 if ($args['minValue'] !== null) {
-                    if ($number < $args['minValue']) {
+                    if ($value < $args['minValue']) {
                         $this->error(HText::_(
                                 'Forms:fields.int_BelowMin', [ $args['minValue'] ]));
                     }
                 }
 
                 if ($args['maxValue']) {
-                    if ($number > $args['maxValue']) {
+                    if ($value > $args['maxValue']) {
                         $this->error(HText::_(
                                 'Forms:fields.int_AboveMax', [ $args['maxValue'] ]));
                     }

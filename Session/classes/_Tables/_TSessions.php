@@ -15,6 +15,21 @@ use Override;
  *     Access: int|null,
  *     Data: string|null,
  * }
+ * @phpstan-type _T_TRSession_Sessions_Insert array{
+ *     Id: string,
+ *     Access: int|null,
+ *     Data: string|null,
+ * }
+ * @phpstan-type _T_TRSession_Sessions_Update array{
+ *     Id?: string,
+ *     Access?: int|null,
+ *     Data?: string|null,
+ * }
+ * @phpstan-type _T_TRSession_Sessions_Variant array{
+ *     Id: string,
+ *     Access: int|null,
+ *     Data: string|null,
+ *     ...<string,mixed>}
  */
 class _TSessions extends TTable {
     /**
@@ -23,6 +38,24 @@ class _TSessions extends TTable {
      * @return _T_TRSession_Sessions
      */
     static public function AssertRow(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRSession_Sessions_Insert $row
+     * @return _T_TRSession_Sessions_Insert
+     */
+    static public function AssertRow_Insert(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRSession_Sessions_Update $row
+     * @return _T_TRSession_Sessions_Update
+     */
+    static public function AssertRow_Update(array $row): array {
         return $row;
     }
 

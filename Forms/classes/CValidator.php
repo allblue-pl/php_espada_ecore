@@ -16,7 +16,7 @@ class CValidator {
 
     }
 
-    public function add(string $name, mixed $value, array $validatorFields = []) {
+    public function add(string $name, mixed &$value, array $validatorFields = []) {
         if ($this->field_Exists($name))
             throw new \Exception("Field `{$name}` already exists.");
 
@@ -26,11 +26,11 @@ class CValidator {
             $this->addValidatorField($name, $vField);
     }
 
-    public function addValidatorField($name, VField $Validator_field) {
+    public function addValidatorField($name, VField $validatorField) {
         $field = $this->field_Get($name);
 
         $str_value = $field['value'] === null ? '' : strval($field['value']);
-        $Validator_field->validate($this, $name, $field['value']);
+        $validatorField->validate($this, $name, $field['value']);
 
         $fields['value'] = $str_value;
     }
@@ -101,32 +101,32 @@ class CValidator {
     }
 
 
-    private function field_Add($field_name, &$field_value) {
-        $this->info['fields'][$field_name] = [
+    private function field_Add($fieldName, &$fieldValue) {
+        $this->info['fields'][$fieldName] = [
             'valid' => true,
-            'value' => &$field_value,
+            'value' => &$fieldValue,
             'state' => '',
             'errors' => [],
             'warnings' => [],
             'successes' => []
         ];
 
-        return $this->info['fields'][$field_name];
+        return $this->info['fields'][$fieldName];
     }
 
-    private function field_Exists($field_name) {
-        return array_key_exists($field_name, $this->info['fields']);
+    private function field_Exists($fieldName) {
+        return array_key_exists($fieldName, $this->info['fields']);
     }
 
     // private function field_Message($type, $prioroty, $message = null) {
 
     // }
 
-    private function &field_Get($field_name) {
-        if (!isset($this->info['fields'][$field_name]))
-            throw new \Exception("Field `{$field_name}` does not exist.");
+    private function &field_Get($fieldName) {
+        if (!isset($this->info['fields'][$fieldName]))
+            throw new \Exception("Field `{$fieldName}` does not exist.");
 
-        return $this->info['fields'][$field_name];
+        return $this->info['fields'][$fieldName];
     }
 
 }

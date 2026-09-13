@@ -13,11 +13,35 @@ use Override;
  * @phpstan-type _T_TRTasks_Tasks array{
  *     Hash: string,
  *     User_Id: float|null,
- *     DateTime: float,
+ *     DateTime: int,
  *     Finished: bool,
  *     Info: string,
  *     Data: string,
  * }
+ * @phpstan-type _T_TRTasks_Tasks_Insert array{
+ *     Hash: string,
+ *     User_Id: float|null,
+ *     DateTime: int,
+ *     Finished: bool,
+ *     Info: string,
+ *     Data: string,
+ * }
+ * @phpstan-type _T_TRTasks_Tasks_Update array{
+ *     Hash?: string,
+ *     User_Id?: float|null,
+ *     DateTime?: int,
+ *     Finished?: bool,
+ *     Info?: string,
+ *     Data?: string,
+ * }
+ * @phpstan-type _T_TRTasks_Tasks_Variant array{
+ *     Hash: string,
+ *     User_Id: float|null,
+ *     DateTime: int,
+ *     Finished: bool,
+ *     Info: string,
+ *     Data: string,
+ *     ...<string,mixed>}
  */
 class _TTasks extends TTable {
     /**
@@ -26,6 +50,24 @@ class _TTasks extends TTable {
      * @return _T_TRTasks_Tasks
      */
     static public function AssertRow(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRTasks_Tasks_Insert $row
+     * @return _T_TRTasks_Tasks_Insert
+     */
+    static public function AssertRow_Insert(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRTasks_Tasks_Update $row
+     * @return _T_TRTasks_Tasks_Update
+     */
+    static public function AssertRow_Update(array $row): array {
         return $row;
     }
 

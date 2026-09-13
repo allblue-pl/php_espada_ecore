@@ -67,6 +67,15 @@ class HDate {
         return intval(self::Format_UTC("d", $time)) - 1;
     }
 
+    static public function GetDayOfWeek(int|null $time = null): int {
+        $time = $time === null ? self::GetTime() : $time;
+        return gmdate('N', $time + self::GetUTCOffset_Time($time)) - 1;
+    }
+
+    static public function GetDayOfWeek_UTC(int|null $time = null): int {
+        return gmdate('N', $time === null ? self::GetTime() : $time) - 1;
+    }
+
     static public function GetMonthNr(int|null $time = null) {
         if ($time === null)
             $time = time();

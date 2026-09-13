@@ -19,6 +19,33 @@ use Override;
  *     Groups: string,
  *     Active: bool,
  * }
+ * @phpstan-type _T_TRUsers_Users_Insert array{
+ *     Id: float,
+ *     Type: int,
+ *     LoginHash: string,
+ *     EmailHash: string,
+ *     PasswordHash: string,
+ *     Groups: string,
+ *     Active: bool,
+ * }
+ * @phpstan-type _T_TRUsers_Users_Update array{
+ *     Id?: float,
+ *     Type?: int,
+ *     LoginHash?: string,
+ *     EmailHash?: string,
+ *     PasswordHash?: string,
+ *     Groups?: string,
+ *     Active?: bool,
+ * }
+ * @phpstan-type _T_TRUsers_Users_Variant array{
+ *     Id: float,
+ *     Type: int,
+ *     LoginHash: string,
+ *     EmailHash: string,
+ *     PasswordHash: string,
+ *     Groups: string,
+ *     Active: bool,
+ *     ...<string,mixed>}
  */
 class _TUsers extends TTable {
     /**
@@ -27,6 +54,24 @@ class _TUsers extends TTable {
      * @return _T_TRUsers_Users
      */
     static public function AssertRow(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRUsers_Users_Insert $row
+     * @return _T_TRUsers_Users_Insert
+     */
+    static public function AssertRow_Insert(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRUsers_Users_Update $row
+     * @return _T_TRUsers_Users_Update
+     */
+    static public function AssertRow_Update(array $row): array {
         return $row;
     }
 

@@ -11,12 +11,33 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRLog_Logs array{
- *     Id: int|null,
+ *     Id: float,
  *     User_Id: float|null,
  *     DateTime: float|null,
  *     Message: string|null,
  *     Data: string|null,
  * }
+ * @phpstan-type _T_TRLog_Logs_Insert array{
+ *     Id: float|null,
+ *     User_Id: float|null,
+ *     DateTime: float|null,
+ *     Message: string|null,
+ *     Data: string|null,
+ * }
+ * @phpstan-type _T_TRLog_Logs_Update array{
+ *     Id?: float|null,
+ *     User_Id?: float|null,
+ *     DateTime?: float|null,
+ *     Message?: string|null,
+ *     Data?: string|null,
+ * }
+ * @phpstan-type _T_TRLog_Logs_Variant array{
+ *     Id: float,
+ *     User_Id: float|null,
+ *     DateTime: float|null,
+ *     Message: string|null,
+ *     Data: string|null,
+ *     ...<string,mixed>}
  */
 class _TLogs extends TTable {
     /**
@@ -25,6 +46,24 @@ class _TLogs extends TTable {
      * @return _T_TRLog_Logs
      */
     static public function AssertRow(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRLog_Logs_Insert $row
+     * @return _T_TRLog_Logs_Insert
+     */
+    static public function AssertRow_Insert(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRLog_Logs_Update $row
+     * @return _T_TRLog_Logs_Update
+     */
+    static public function AssertRow_Update(array $row): array {
         return $row;
     }
 
@@ -61,7 +100,7 @@ class _TLogs extends TTable {
         parent::__construct($db, 'Log_Logs', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FInt(true, true), 
+            'Id' => new Database\FLong(true), 
             'User_Id' => new Database\FLong(false), 
             'DateTime' => new Database\FLong(false), 
             'Message' => new Database\FString(false, 256), 

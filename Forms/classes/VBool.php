@@ -14,6 +14,7 @@ class VBool extends Forms\VField {
     protected function _validate(&$value) {
         $args = $this->getArgs();
 
+        $value = $value ? true : false;
         if (!$value) {
             if ($args['required'])
                 $this->error(HText::_("Forms:fields.notChecked"));
@@ -21,5 +22,4 @@ class VBool extends Forms\VField {
             return;
         }
     }
-
 }

@@ -11,11 +11,29 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRUsers_ResetPasswordHashes array{
- *     Id: int|null,
+ *     Id: float,
  *     User_Id: float,
- *     DateTime: float,
+ *     DateTime: int,
  *     Hash: string,
  * }
+ * @phpstan-type _T_TRUsers_ResetPasswordHashes_Insert array{
+ *     Id: float|null,
+ *     User_Id: float,
+ *     DateTime: int,
+ *     Hash: string,
+ * }
+ * @phpstan-type _T_TRUsers_ResetPasswordHashes_Update array{
+ *     Id?: float|null,
+ *     User_Id?: float,
+ *     DateTime?: int,
+ *     Hash?: string,
+ * }
+ * @phpstan-type _T_TRUsers_ResetPasswordHashes_Variant array{
+ *     Id: float,
+ *     User_Id: float,
+ *     DateTime: int,
+ *     Hash: string,
+ *     ...<string,mixed>}
  */
 class _TResetPasswordHashes extends TTable {
     /**
@@ -24,6 +42,24 @@ class _TResetPasswordHashes extends TTable {
      * @return _T_TRUsers_ResetPasswordHashes
      */
     static public function AssertRow(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRUsers_ResetPasswordHashes_Insert $row
+     * @return _T_TRUsers_ResetPasswordHashes_Insert
+     */
+    static public function AssertRow_Insert(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRUsers_ResetPasswordHashes_Update $row
+     * @return _T_TRUsers_ResetPasswordHashes_Update
+     */
+    static public function AssertRow_Update(array $row): array {
         return $row;
     }
 
@@ -60,7 +96,7 @@ class _TResetPasswordHashes extends TTable {
         parent::__construct($db, 'Users_ResetPasswordHashes', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FInt(true, true), 
+            'Id' => new Database\FLong(true), 
             'User_Id' => new Database\FLong(true), 
             'DateTime' => new Database\FDateTime(true), 
             'Hash' => new Database\FString(true, 128), 

@@ -11,11 +11,29 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRApp_Infos array{
- *     Id: int|null,
+ *     Id: float,
  *     User_Id: float,
  *     AuthenticationHash: string,
  *     Data: string,
  * }
+ * @phpstan-type _T_TRApp_Infos_Insert array{
+ *     Id: float|null,
+ *     User_Id: float,
+ *     AuthenticationHash: string,
+ *     Data: string,
+ * }
+ * @phpstan-type _T_TRApp_Infos_Update array{
+ *     Id?: float|null,
+ *     User_Id?: float,
+ *     AuthenticationHash?: string,
+ *     Data?: string,
+ * }
+ * @phpstan-type _T_TRApp_Infos_Variant array{
+ *     Id: float,
+ *     User_Id: float,
+ *     AuthenticationHash: string,
+ *     Data: string,
+ *     ...<string,mixed>}
  */
 class _TInfos extends TTable {
     /**
@@ -24,6 +42,24 @@ class _TInfos extends TTable {
      * @return _T_TRApp_Infos
      */
     static public function AssertRow(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRApp_Infos_Insert $row
+     * @return _T_TRApp_Infos_Insert
+     */
+    static public function AssertRow_Insert(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRApp_Infos_Update $row
+     * @return _T_TRApp_Infos_Update
+     */
+    static public function AssertRow_Update(array $row): array {
         return $row;
     }
 
@@ -60,7 +96,7 @@ class _TInfos extends TTable {
         parent::__construct($db, 'App_Infos', $tablePrefix);
 
         $this->setColumns([
-            'Id' => new Database\FInt(true, true), 
+            'Id' => new Database\FLong(true), 
             'User_Id' => new Database\FLong(true), 
             'AuthenticationHash' => new Database\FString(true, 256), 
             'Data' => new Database\FText(true, 'medium'), 

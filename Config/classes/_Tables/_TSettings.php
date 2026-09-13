@@ -14,6 +14,18 @@ use Override;
  *     Name: string,
  *     Value: string,
  * }
+ * @phpstan-type _T_TRConfig_Settings_Insert array{
+ *     Name: string,
+ *     Value: string,
+ * }
+ * @phpstan-type _T_TRConfig_Settings_Update array{
+ *     Name?: string,
+ *     Value?: string,
+ * }
+ * @phpstan-type _T_TRConfig_Settings_Variant array{
+ *     Name: string,
+ *     Value: string,
+ *     ...<string,mixed>}
  */
 class _TSettings extends TTable {
     /**
@@ -22,6 +34,24 @@ class _TSettings extends TTable {
      * @return _T_TRConfig_Settings
      */
     static public function AssertRow(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRConfig_Settings_Insert $row
+     * @return _T_TRConfig_Settings_Insert
+     */
+    static public function AssertRow_Insert(array $row): array {
+        return $row;
+    }
+
+    /**
+     *
+     * @param _T_TRConfig_Settings_Update $row
+     * @return _T_TRConfig_Settings_Update
+     */
+    static public function AssertRow_Update(array $row): array {
         return $row;
     }
 
