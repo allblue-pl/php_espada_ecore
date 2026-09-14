@@ -11,7 +11,7 @@ class MUser extends E\Module {
 
 	private MSession|null $session;
     private MDatabase $db;
-    private string $type;
+    private int $type;
 
     private string $session_Name;
 
@@ -42,7 +42,7 @@ class MUser extends E\Module {
         return $this->groups;
     }
 
-    public function getType() {
+    public function getType(): int {
         return $this->type;
     }
 
