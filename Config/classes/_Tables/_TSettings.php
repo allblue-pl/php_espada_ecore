@@ -83,6 +83,17 @@ class _TSettings extends TTable {
     //     return $rows;
     // }
 
+    /**
+     *
+     * @param _T_TRConfig_Settings_Variant $row
+     * @return _T_TRConfig_Settings
+     */
+    static public function RawRow(MDatabase $db, array $row): array {
+        $table = new _TSettings($db);
+
+        return $table->stripRow($row);
+    }
+
 
     public function __construct(MDatabase $db, $tablePrefix = 'c_s') {
         parent::__construct($db, 'Config_Settings', $tablePrefix);

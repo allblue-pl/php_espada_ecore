@@ -95,6 +95,17 @@ class _TLogs extends TTable {
     //     return $rows;
     // }
 
+    /**
+     *
+     * @param _T_TRLog_Logs_Variant $row
+     * @return _T_TRLog_Logs
+     */
+    static public function RawRow(MDatabase $db, array $row): array {
+        $table = new _TLogs($db);
+
+        return $table->stripRow($row);
+    }
+
 
     public function __construct(MDatabase $db, $tablePrefix = 'l_l') {
         parent::__construct($db, 'Log_Logs', $tablePrefix);

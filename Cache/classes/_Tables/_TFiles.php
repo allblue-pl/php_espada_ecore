@@ -91,6 +91,17 @@ class _TFiles extends TTable {
     //     return $rows;
     // }
 
+    /**
+     *
+     * @param _T_TRCache_Files_Variant $row
+     * @return _T_TRCache_Files
+     */
+    static public function RawRow(MDatabase $db, array $row): array {
+        $table = new _TFiles($db);
+
+        return $table->stripRow($row);
+    }
+
 
     public function __construct(MDatabase $db, $tablePrefix = 'c_f') {
         parent::__construct($db, 'Cache_Files', $tablePrefix);

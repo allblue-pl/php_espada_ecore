@@ -99,6 +99,17 @@ class _TTasks extends TTable {
     //     return $rows;
     // }
 
+    /**
+     *
+     * @param _T_TRTasks_Tasks_Variant $row
+     * @return _T_TRTasks_Tasks
+     */
+    static public function RawRow(MDatabase $db, array $row): array {
+        $table = new _TTasks($db);
+
+        return $table->stripRow($row);
+    }
+
 
     public function __construct(MDatabase $db, $tablePrefix = 't_t') {
         parent::__construct($db, 'Tasks_Tasks', $tablePrefix);

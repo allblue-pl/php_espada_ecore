@@ -91,6 +91,17 @@ class _TInfos extends TTable {
     //     return $rows;
     // }
 
+    /**
+     *
+     * @param _T_TRApp_Infos_Variant $row
+     * @return _T_TRApp_Infos
+     */
+    static public function RawRow(MDatabase $db, array $row): array {
+        $table = new _TInfos($db);
+
+        return $table->stripRow($row);
+    }
+
 
     public function __construct(MDatabase $db, $tablePrefix = 'a_i') {
         parent::__construct($db, 'App_Infos', $tablePrefix);

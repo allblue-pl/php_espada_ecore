@@ -91,6 +91,17 @@ class _TResetPasswordHashes extends TTable {
     //     return $rows;
     // }
 
+    /**
+     *
+     * @param _T_TRUsers_ResetPasswordHashes_Variant $row
+     * @return _T_TRUsers_ResetPasswordHashes
+     */
+    static public function RawRow(MDatabase $db, array $row): array {
+        $table = new _TResetPasswordHashes($db);
+
+        return $table->stripRow($row);
+    }
+
 
     public function __construct(MDatabase $db, $tablePrefix = 'u_rph') {
         parent::__construct($db, 'Users_ResetPasswordHashes', $tablePrefix);

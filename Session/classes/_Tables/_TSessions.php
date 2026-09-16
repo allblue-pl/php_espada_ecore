@@ -87,6 +87,17 @@ class _TSessions extends TTable {
     //     return $rows;
     // }
 
+    /**
+     *
+     * @param _T_TRSession_Sessions_Variant $row
+     * @return _T_TRSession_Sessions
+     */
+    static public function RawRow(MDatabase $db, array $row): array {
+        $table = new _TSessions($db);
+
+        return $table->stripRow($row);
+    }
+
 
     public function __construct(MDatabase $db, $tablePrefix = 's_s') {
         parent::__construct($db, 'Session_Sessions', $tablePrefix);
