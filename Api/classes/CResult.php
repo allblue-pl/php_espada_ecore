@@ -5,16 +5,28 @@ use E, EC;
 
 class CResult extends CResult_Base {
 
-    static public function Success($message = '') {
-        return new CResult(self::SUCCESS, $message);
+    static public function Success($message = '', array $data = []) {
+        $result = new CResult(self::SUCCESS, $message);
+        foreach ($data as $key => $value)
+            $result->add($key, $value);
+
+        return $result;
     }
 
-    static public function Failure($message = '') {
-        return new CResult(self::FAILURE, $message);
+    static public function Failure($message = '', array $data = []) {
+         $result = new CResult(self::FAILURE, $message);
+        foreach ($data as $key => $value)
+            $result->add($key, $value);
+
+        return $result;
     }
 
-    static public function Error($message = '') {
-        return new CResult(self::ERROR, $message);
+    static public function Error($message = '', array $data = []) {
+        $result = new CResult(self::ERROR, $message);
+        foreach ($data as $key => $value)
+            $result->add($key, $value);
+
+        return $result;
     }
 
 

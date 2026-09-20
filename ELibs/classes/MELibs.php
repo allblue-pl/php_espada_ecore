@@ -2,10 +2,14 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Basic\MHead;
 use EC\Text\HText;
+use Exception;
+use Override;
 
 class MELibs extends E\Module {
-    // private $head = null;
+    private MHead $head;
+
     private string $scriptCSPHash;
 
     private array $fields = [];
@@ -13,22 +17,35 @@ class MELibs extends E\Module {
     private array $texts = [];
     private string $script = '';
 
-    function __construct(E\Site $site, EC\Basic\MHead $head) {
+    private bool $fieldsInitialized;
+
+    public function __construct(E\Site $site, MHead|null $head) {
         parent::__construct($site);
 
-        // $this->head = $head;
-        $this->scriptCSPHash = $head->generateScriptCSPHash();
+        $site->addM($this);
+
+        $this->head = $head;
+        if ($this->head !== null)
+            $this->scriptCSPHash = $head->generateScriptCSPHash();
+
+        $this->fieldsInitialized = false;
     }
 
-    function addScript(string $script) {
+    public function addScript(string $script) {
+         $this->requireBeforePreDisplay();
+
         $this->script .= $script;
     }
 
-    function addTexts(array $texts) {
+    public function addTexts(array $texts) {
+         $this->requireBeforePreDisplay();
+
         $this->texts = array_merge($this->texts, $texts);
     }
 
-    function addTranslations(string $path) {
+    public function addTranslations(string $path) {
+         $this->requireBeforePreDisplay();
+
         $pkg = explode(':', $path)[0];
         $texts = [];
         $translationsArr = HText::GetTranslations($pkg)->getArray();
@@ -39,7 +56,9 @@ class MELibs extends E\Module {
         $this->addTexts($texts);
     }
 
-    function addTranslations_As(string $prefixName, string $path) {
+    public function addTranslations_As(string $prefixName, string $path) {
+         $this->requireBeforePreDisplay();
+
         $texts = [];
         $translationsArr = HText::GetTranslations($path)->getArray();
 
@@ -49,41 +68,26 @@ class MELibs extends E\Module {
         $this->addTexts($texts);
     }
 
-    function setField(string $fieldName, mixed $fieldValue) {
-        // $this->requireBeforePreDisplay();
+    public function setField(string $fieldName, mixed $fieldValue) {
+        $this->requireBeforePreDisplay();
 
         $this->fields[$fieldName] = $fieldValue;
     } 
 
-    function setFieldFn(string $fieldName, \Closure $fieldFn) {
+    public function setFieldFn(string $fieldName, \Closure $fieldFn) {
+         $this->requireBeforePreDisplay();
+
         $this->fieldFns[$fieldName] = $fieldFn;
     }
 
-    function _preDisplay(E\Site $site): void {
-        $site->addL('postBody', new EC\Basic\LScript(function() {
-            return $this->getScript(); }, $this->scriptCSPHash));
+    public function getFields() {
+        $this->initFields();
+
+        return $this->fields;;
     }
 
-    function getScript() {
-        /* Defaults */
-        $uris = [
-            'base' => E\Uri::Base(),
-            'pages' => [],
-        ];
-        $pages = E\Pages::GetAll();
-        foreach ($pages as $page)
-            $uris['pages'][$page->getName()] = str_replace('*', '', $page->getUri_Raw(''));
-        $this->setField('eUris', $uris);
-
-        $this->addTranslations('Date');
-        $this->setField('eLang', E\Langs::Get());
-
-        /* Setup */
-        foreach ($this->fieldFns as $fieldName => $fieldFn) {
-            $this->setField($fieldName, $fieldFn());
-        }
-
-        $fields_JSON =  json_encode($this->fields);
+    public function getScript() {
+        $fields_JSON =  json_encode($this->getFields());
         if ($fields_JSON === false)
             throw new \Exception('Cannot encode fields to JSON: ' . json_last_error_msg());
 
@@ -113,4 +117,37 @@ SCRIPT;
         return $script;
     }
 
+
+    private function initFields() {
+        if (!$this->fieldsInitialized)
+            throw new Exception("Fields already initialized.");
+        $this->fieldsInitialized = true;
+
+        /* Defaults */
+        $uris = [
+            'base' => E\Uri::Base(),
+            'pages' => [],
+        ];
+        $pages = E\Pages::GetAll();
+        foreach ($pages as $page)
+            $uris['pages'][$page->getName()] = str_replace('*', '', $page->getUri_Raw(''));
+        $this->setField('eUris', $uris);
+
+        $this->addTranslations('Date');
+        $this->setField('eLang', E\Langs::Get());
+
+        /* Setup */
+        foreach ($this->fieldFns as $fieldName => $fieldFn) {
+            $this->setField($fieldName, $fieldFn());
+        }
+    }
+
+
+    #[Override]
+    public function _preDisplay(E\Site $site): void {
+        if ($this->head !== null) {
+            $site->addL('postBody', new EC\Basic\LScript(function() {
+                return $this->getScript(); }, $this->scriptCSPHash));
+        }   
+    }
 }

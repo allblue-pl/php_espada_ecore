@@ -103,7 +103,6 @@ class AFilesUpload extends EC\Api\AUser {
                         $args->get("id"));
 
         return CResult::Success()
-            ->add('fileInfo', $fileInfo);
+            ->add('fileInfos', $fileInfo);
     }
-
 }
