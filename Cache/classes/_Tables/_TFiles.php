@@ -99,6 +99,7 @@ class _TFiles extends TTable {
     static public function RawRow(MDatabase $db, array $row): array {
         $table = new _TFiles($db);
 
+        /* @phpstan-ignore return.type */
         return $table->stripRow($row);
     }
 

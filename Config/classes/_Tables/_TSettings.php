@@ -91,6 +91,7 @@ class _TSettings extends TTable {
     static public function RawRow(MDatabase $db, array $row): array {
         $table = new _TSettings($db);
 
+        /* @phpstan-ignore return.type */
         return $table->stripRow($row);
     }
 

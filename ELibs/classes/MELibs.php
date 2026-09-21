@@ -8,7 +8,7 @@ use Exception;
 use Override;
 
 class MELibs extends E\Module {
-    private MHead $head;
+    private MHead|null $head;
 
     private string $scriptCSPHash;
 
@@ -117,9 +117,13 @@ SCRIPT;
         return $script;
     }
 
+    public function getTexts() {
+        return $this->texts;
+    }
+
 
     private function initFields() {
-        if (!$this->fieldsInitialized)
+        if ($this->fieldsInitialized)
             throw new Exception("Fields already initialized.");
         $this->fieldsInitialized = true;
 

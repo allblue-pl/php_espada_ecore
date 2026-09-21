@@ -95,6 +95,7 @@ class _TSessions extends TTable {
     static public function RawRow(MDatabase $db, array $row): array {
         $table = new _TSessions($db);
 
+        /* @phpstan-ignore return.type */
         return $table->stripRow($row);
     }
 

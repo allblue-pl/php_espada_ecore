@@ -111,6 +111,7 @@ class _TUsers extends TTable {
     static public function RawRow(MDatabase $db, array $row): array {
         $table = new _TUsers($db);
 
+        /* @phpstan-ignore return.type */
         return $table->stripRow($row);
     }
 

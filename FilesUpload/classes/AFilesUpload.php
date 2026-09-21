@@ -1,6 +1,7 @@
 <?php namespace EC\FilesUpload;
 defined('_ESPADA') or die(NO_ACCESS);
 
+use Closure;
 use E, EC;
 use EC\Api\CArgs;
 use EC\Api\CResult;
@@ -9,12 +10,21 @@ use EC\Api\SUserApi;
 use EC\Config\HConfig;
 use EC\Users\MUser;
 
+/**
+ * @phpstan-type _T_CategoryPermissionFn Closure(string, "r"|"w"): bool
+ */
 class AFilesUpload extends EC\Api\AUser {
-    private $categories;
+    /** @var list<string> $categories */
+    private array $categories;
+    /** @var array<string,_T_CategoryPermissionFn> $categoryPermissions */
+    private array $categoryPermissions;
 
 
     public function __construct(SUserApi $site, array $apiArgs) {
         parent::__construct($site, $apiArgs['requiredPermissions']);
+
+        $this->categories = HConfig::GetRequired('FilesUpload', 'categories');
+        $this->categoryPermissions = [];
 
         $this->action('delete', 'action_Delete', [
             'categoryName' => true,
@@ -35,14 +45,28 @@ class AFilesUpload extends EC\Api\AUser {
 
             'file' => true,
         ]);
+    }
 
-        $this->categories = HConfig::GetRequired('FilesUpload', 'categories');
+    /**
+     * @param _T_CategoryPermissionFn $permissionValidator 
+     */
+    public function addCategoryPermission(string $categoryName, 
+            Closure $permissionValidator) {
+        $this->categoryPermissions[$categoryName] = $permissionValidator;
     }
 
     public function action_Delete(CArgs $args) {
+        $categoryName = strval($args->get("categoryName"));
+        $id = strval($args->get("id"));
+        $fileName = strval($args->get("fileName"));
+
+        if (array_key_exists($categoryName, $this->categoryPermissions)) {
+            if (!$this->categoryPermissions[$categoryName]($id, "w"))
+                return CResult::Failure("Permission denied.");
+        }
+
         try {
-            HFilesUpload::DeleteFile($args->get("categoryName"), $args->get("id"), 
-                    $args->get("fileName"));
+            HFilesUpload::DeleteFile($categoryName, $id, $fileName);
         } catch (\Exception $e) {
             if (EDEBUG)
                 throw $e;
@@ -74,20 +98,34 @@ class AFilesUpload extends EC\Api\AUser {
     // }
 
     public function action_List(CArgs $args) {
-        if (!array_key_exists($args->get("categoryName"), $this->categories))
+        $categoryName = strval($args->get("categoryName"));
+        $id = strval($args->get("id"));
+
+        if (!array_key_exists($categoryName, $this->categories))
             return CResult::Failure("Upload category '{$args->get("categoryName")}' does not exist.");
 
-        $files = HFilesUpload::GetFileInfos($args->get("categoryName"), 
-                $args->get("id"));
+        if (array_key_exists($categoryName, $this->categoryPermissions)) {
+            if (!$this->categoryPermissions[$categoryName]($id, "r"))
+                return CResult::Failure("Permission denied.");
+        }
+
+        $files = HFilesUpload::GetFileInfos($categoryName, $id);
 
         return CResult::Success()
             ->add('files', $files);
     }
 
     public function action_Upload(CArgs $args) {
+        $categoryName = strval($args->get("categoryName"));
+        $id = strval($args->get("id"));
+
+        if (array_key_exists($categoryName, $this->categoryPermissions)) {
+            if (!$this->categoryPermissions[$categoryName]($id, "w"))
+                return CResult::Failure("Permission denied.");
+        }
+
         try {
-            HFilesUpload::Upload($args->get("categoryName"), $args->get("id"), 
-                    $args->get("file"));
+            HFilesUpload::Upload($categoryName, $id, $args->get("file"));
         } catch (\Exception $e) {
             if (EDEBUG)
                 throw $e;
@@ -98,11 +136,11 @@ class AFilesUpload extends EC\Api\AUser {
         $category = HFilesUpload::GetCategory($args->get("categoryName"));
         $fileInfo = $category['multiple'] ?
                 HFilesUpload::GetFileInfo_Multiple($args->get("categoryName"), 
-                    $args->get("id"), $args->get("file['name']")) :
+                    $args->get("id"), $args->get("file")["name"]) :
                 HFilesUpload::GetFileInfo_Single($args->get("categoryName"), 
                         $args->get("id"));
 
         return CResult::Success()
-            ->add('fileInfos', $fileInfo);
+            ->add('fileInfo', $fileInfo);
     }
 }

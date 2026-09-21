@@ -99,6 +99,7 @@ class _TInfos extends TTable {
     static public function RawRow(MDatabase $db, array $row): array {
         $table = new _TInfos($db);
 
+        /* @phpstan-ignore return.type */
         return $table->stripRow($row);
     }
 

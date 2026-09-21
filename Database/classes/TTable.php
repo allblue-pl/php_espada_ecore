@@ -2,6 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
+use EC\Forms\CValidator;
 
 class TTable {
 
@@ -542,6 +543,15 @@ class TTable {
         return $parsed_rows;
     }
 
+    public function removeSelectColumn(string $columnName): void {
+        for ($i = 0; $i < count($this->selectColumnNames); $i++) {
+            if ($this->selectColumnNames[$i] === $columnName) {
+                array_splice($this->selectColumnNames, $i, 1);
+                return;
+            }
+        }
+    }
+
     public function row(string $queryExtension = '', string $groupExtension = '',
             bool $forUpdate = false): array|null {
         if ($groupExtension !== '')
@@ -840,8 +850,8 @@ class TTable {
         $this->primaryKeys = $primaryKeys;
     }
 
-    public function setSelectColumnNames($select_column_names) {
-        $this->selectColumnNames = $select_column_names;
+    public function setSelectColumns($selectColumnNames) {
+        $this->selectColumnNames = $selectColumnNames;
     }
 
     // public function setValidator(VField $Validator_field)
@@ -1207,15 +1217,15 @@ class TTable {
         return $this->db->query_Execute($query);
     }
 
-    public function validate(EC\Forms\CValidator $validator, $fieldInfos): void {
+    public function validate(CValidator $validator, $fieldInfos): void {
         foreach ($fieldInfos as $field_name => $field_info) {
             $validator->add($field_name, $field_info[1],
                     $this->getColumn($field_info[0])['vFields']);
         }
     }
 
-    public function validateDefault(EC\Forms\CValidator $validator, $values,
-            $ignoreColumns = []): void {
+    public function validateDefault(CValidator $validator, array $values,
+            array $ignoreColumns = []): void {
         $fieldInfos = [];
         foreach ($values as $columnName => $value) {
             if (in_array($columnName, $ignoreColumns))
@@ -1227,8 +1237,21 @@ class TTable {
         $this->validate($validator, $fieldInfos);
     }
 
-    public function validateDefault_All(EC\Forms\CValidator $validator, $values,
-            $ignoreColumns = []): void {
+    public function validateDefault_Columns(CValidator $validator, array $values,
+            array $columnNames) {
+        $fieldInfos = [];
+        foreach ($values as $columnName => $value) {
+            if (!in_array($columnName, $columnNames))
+                continue;
+                
+            $fieldInfos[$columnName] = [ $columnName, $value ];
+        }
+
+        $this->validate($validator, $fieldInfos);
+    }
+
+    public function validateDefault_All(CValidator $validator, array $values,
+            array $ignoreColumns = []): void {
         $fieldInfos = [];
         $columnNames = $this->getColumnNames(true);
         foreach ($columnNames as $columnName) {

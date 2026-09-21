@@ -99,6 +99,7 @@ class _TResetPasswordHashes extends TTable {
     static public function RawRow(MDatabase $db, array $row): array {
         $table = new _TResetPasswordHashes($db);
 
+        /* @phpstan-ignore return.type */
         return $table->stripRow($row);
     }
 

@@ -103,6 +103,7 @@ class _TLogs extends TTable {
     static public function RawRow(MDatabase $db, array $row): array {
         $table = new _TLogs($db);
 
+        /* @phpstan-ignore return.type */
         return $table->stripRow($row);
     }
 

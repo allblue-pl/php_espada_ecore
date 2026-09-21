@@ -107,6 +107,7 @@ class _TTasks extends TTable {
     static public function RawRow(MDatabase $db, array $row): array {
         $table = new _TTasks($db);
 
+        /* @phpstan-ignore return.type */
         return $table->stripRow($row);
     }
 

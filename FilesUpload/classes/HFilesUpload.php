@@ -136,7 +136,7 @@ class HFilesUpload {
     static public function GetDirRelPath(string $categoryName, $id) {
         $category = self::GetCategory($categoryName);
 
-        $dirRelPath = "{$category['alias']}-{$id}";
+        $dirRelPath = str_replace("{id}", $id, $category['alias']);
 
         return $dirRelPath;
     }
@@ -174,14 +174,15 @@ class HFilesUpload {
             $sizeName = '$default') {
         $category = self::GetCategory($categoryName);
         $dirRelPath = self::GetDirRelPath($categoryName, $id);
-        $aliasArr = explode('/', $category['alias']);
-        $fileName = $aliasArr[count($aliasArr) -1];
+        $aliasArr = explode('/', $dirRelPath);
+        $fileName = array_pop($aliasArr);
+        $dirRelPath = implode("/", $aliasArr);
         $sizeName_Postfix = '';
         if ($sizeName !== '$default') {
             $sizeName_Postfix = "_{$sizeName}";
         }
 
-        return "{$dirRelPath}/{$fileName}-{$id}{$sizeName_Postfix}.{$ext}";
+        return "{$dirRelPath}/{$fileName}{$sizeName_Postfix}.{$ext}";
     }
 
     static public function GetFileRelPaths($categoryName, $id, 
@@ -351,7 +352,6 @@ class HFilesUpload {
                 'file' => E\Uri::File('FilesUpload:images/file.jpg'),
                 'loading' => E\Uri::File('FilesUpload:images/loading.gif'),
             ],
-            'texts' => HText::GetTranslations('FilesUpload:spk')->getArray(),
         ], $overrides);
 
         $eLibs->addTranslations('FilesUpload');
