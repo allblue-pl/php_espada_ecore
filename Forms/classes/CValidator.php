@@ -96,6 +96,12 @@ class CValidator {
         }
     }
 
+    public function isFieldValid(string $fieldName): bool {
+        $field = $this->field_Get($fieldName);
+        
+        return $field["valid"];
+    }
+
     public function isValid() {
         return $this->info['valid'];
     }

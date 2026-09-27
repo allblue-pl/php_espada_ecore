@@ -4,6 +4,7 @@ defined( '_ESPADA' ) or die( NO_ACCESS);
 use E, EC;
 use EC\Config\CConfig;
 use EC\Log\HLog;
+use Exception;
 
 class MDatabase extends E\Module {
 
@@ -23,7 +24,6 @@ class MDatabase extends E\Module {
 	private $useTransactions = true;
 
 	private $transaction_Autocommit = true;
-	private $transaction_InProgress = false;
 
 	private $lastQuery = null;
 
@@ -149,11 +149,13 @@ class MDatabase extends E\Module {
 	}
 
 	public function transaction_Commit() {
-		$this->transaction_InProgress = false;
 		return $this->mysqli->commit();
 	}
 
 	public function transaction_Finish(bool $commit) {
+        if ($this->transaction_Autocommit)
+            throw new Exception("No active transaction.");
+
 		$result = true;
 
 		if ($commit)
@@ -168,15 +170,15 @@ class MDatabase extends E\Module {
 	}
 
 	public function transaction_Rollback() {
-		$this->transaction_InProgress = false;
 		return $this->mysqli->rollback();
 	}
 
 	public function transaction_Start() {
 		if (!$this->useTransactions)
-			throw new \Exception('Transactions not supported.');
+			throw new Exception('Transactions not supported.');
 
-		$this->transaction_InProgress = false;
+        if (!$this->transaction_Autocommit)
+            throw new Exception("Transaction already in progress.");
 
 		$this->mysqli->autocommit(false);
 		$this->transaction_Autocommit = false;
@@ -254,8 +256,6 @@ class MDatabase extends E\Module {
 
 		$this->lastQuery = $query;
 
-		$this->transaction_InProgress = true;
-
         $timeFrom = time();
 
         try {
@@ -300,8 +300,6 @@ class MDatabase extends E\Module {
 		$this->requirePreInitialize();
 
 		$this->lastQuery = $query;
-
-		$this->transaction_InProgress = true;
 
         $timeFrom = time();
 

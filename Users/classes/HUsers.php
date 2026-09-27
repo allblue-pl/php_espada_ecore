@@ -19,7 +19,8 @@ class HUsers {
 
     const LogInError_UserDoesNotExist   = 0;
     const LogInError_UserNotActive      = 1;
-    const LogInError_WrongPassword      = 2;
+    const LogInError_UserNotConfirmed   = 2;
+    const LogInError_WrongPassword      = 3;
 
 
 	static public function Activate(MDatabase $db, $userId, bool $active,
@@ -112,6 +113,11 @@ class HUsers {
             return null;
         }
 
+        if (!$row['Confirmed']) {
+            $errorCode = self::LogInError_UserNotConfirmed;
+            return null;
+        }
+
 		if (!self::CheckPasswordHash($password, $row['PasswordHash'])) { 
             $errorCode = self::LogInError_WrongPassword;
 			return null;
@@ -148,7 +154,7 @@ class HUsers {
         return (new TUsers($db))->delete_ById($userId);
     }
 
-    static public function Exists(MDatabase $db, string $type, string $login, 
+    static public function Exists(MDatabase $db, int $type, string $login, 
             ?array $excludedIds = null, &$existingUserId = null, 
             $onlyActive = false) {
         $loginHash = self::GetLoginHash($login);
@@ -159,6 +165,7 @@ class HUsers {
         $where = [
             [ 'Id', 'NOT IN', $excludedIds ],
             [ 'LoginHash', '=', $loginHash ],
+            [ 'Type', '=', $type ],
         ];
         if ($onlyActive)
             $where[] = [ 'Active', '=', true ];
@@ -174,7 +181,7 @@ class HUsers {
         return;
     }
 
-    static public function Exists_ByHash(MDatabase $db, string $type, 
+    static public function Exists_ByHash(MDatabase $db, int $type, 
             string $loginHash, ?array $excludedIds = null, 
             &$existingUserId = null, $onlyActive = false) {
         if ($excludedIds === null)
@@ -183,6 +190,7 @@ class HUsers {
         $where = [
             [ 'Id', 'NOT IN', $excludedIds ],
             [ 'LoginHash', '=', $loginHash ],
+            [ 'Type', '=', $type ]
         ];
         if ($onlyActive)
             $where[] = [ 'Active', '=', true ];
@@ -304,8 +312,10 @@ class HUsers {
         ]]);
     }
 
-    static public function Update(MDatabase $db, string $type, $id, $login = null, 
-            $email = null, $password = null, $groups = null, $active = null) {
+    static public function Update(MDatabase $db, int $type, float|null $id, 
+            string|null $login = null, string|null $email = null, 
+            string|null $password = null, array|null $groups = null, 
+            bool|null $confirmed = null, bool|null $active = null) {
         $row = [
             'Id' => $id,
             'Type' => $type,
@@ -318,7 +328,7 @@ class HUsers {
             $row['EmailHash'] = self::GetEmailHash($email);
 
 		if ($password !== null)
-            $row['PasswordHash'] = self::GetPasswordHash($password);
+        $row['PasswordHash'] = self::GetPasswordHash($password);
 		else if ($row['Id'] !== null) {
 			$row_DB = (new TUsers($db))->row_ByPKs([ $row['Id'] ]);
 			$row['PasswordHash'] = $row_DB['PasswordHash'];
@@ -329,6 +339,9 @@ class HUsers {
 
         if ($active !== null)
             $row['Active'] = $active ? true : false;
+
+        if ($confirmed !== null)
+            $row['Confirmed'] = $confirmed ? true : false;
 
 		return (new TUsers($db))->update([ $row ]);
     }

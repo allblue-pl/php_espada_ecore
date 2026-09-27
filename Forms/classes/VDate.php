@@ -20,12 +20,12 @@ class VDate extends Forms\VField {
 
         if ($value === null) {
             if ($args['required'])
-                $this->error(HText::_("Date:NotSet"));
+                $this->error(HText::_("Forms:notSet"));
             else
                 return;
         } else {
             if (!is_numeric($value))
-                $this->error(HText::_("Date:Date_WrongFormat"));
+                $this->error(HText::_("Forms:date_WrongFormat"));
 
             $value = intval($value);
 
@@ -34,7 +34,7 @@ class VDate extends Forms\VField {
                     if ($args["minDateError"] !== null)
                         $this->error($args["minDateError"]);
                     else {
-                        $this->error(HText::_('Date:Date_BelowMinDate',
+                        $this->error(HText::_('Forms:date_BelowMinDate',
                                 array(date(HText::_('Date:Format_Date'),
                                 $args['minDate']))));
                     }
@@ -46,7 +46,7 @@ class VDate extends Forms\VField {
                     if ($args["maxDateError"] !== null)
                         $this->error($args["maxDateError"]);
                     else {
-                        $this->error(HText::_('Date:Date_AboveMaxDate',
+                        $this->error(HText::_('Forms:date_AboveMaxDate',
                                 array(date(HText::_('Date:Format_Date'),
                                 $args['maxDate']))));
                     }

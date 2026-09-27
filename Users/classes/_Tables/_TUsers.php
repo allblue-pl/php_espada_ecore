@@ -18,6 +18,7 @@ use Override;
  *     PasswordHash: string,
  *     Groups: string,
  *     Active: bool,
+ *     Confirmed: bool,
  * }
  * @phpstan-type _T_TRUsers_Users_Insert array{
  *     Id: float,
@@ -27,6 +28,7 @@ use Override;
  *     PasswordHash: string,
  *     Groups: string,
  *     Active: bool,
+ *     Confirmed: bool,
  * }
  * @phpstan-type _T_TRUsers_Users_Update array{
  *     Id?: float,
@@ -36,6 +38,7 @@ use Override;
  *     PasswordHash?: string,
  *     Groups?: string,
  *     Active?: bool,
+ *     Confirmed?: bool,
  * }
  * @phpstan-type _T_TRUsers_Users_Variant array{
  *     Id: float,
@@ -45,6 +48,7 @@ use Override;
  *     PasswordHash: string,
  *     Groups: string,
  *     Active: bool,
+ *     Confirmed: bool,
  *     ...<string,mixed>}
  */
 class _TUsers extends TTable {
@@ -127,6 +131,7 @@ class _TUsers extends TTable {
             'PasswordHash' => new Database\FString(true, 256), 
             'Groups' => new Database\FString(true, 128), 
             'Active' => new Database\FBool(true), 
+            'Confirmed' => new Database\FBool(true), 
         ]);
         $this->setPKs([ 'Id' ]);
 
