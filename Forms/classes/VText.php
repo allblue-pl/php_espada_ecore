@@ -16,7 +16,8 @@ class VText extends Forms\VField {
             'maxLength' => null,
             'regexp' => null,
             'trim' => false,
-            'chars' => HStrings::GetCharsRegexp_Basic()
+            'chars' => HStrings::GetCharsRegexp_Basic(),
+            'multiline' => false,
         ]);
 
         $this->texts = HText::GetTranslations('Forms:fields');
@@ -58,8 +59,16 @@ class VText extends Forms\VField {
 
             if ($args['chars'] !== null) {
                 $chars = str_replace('#', '\\#', $args['chars']);
+                if ($args["multiline"]) {
+                    $value = str_replace("\r\n", "\n", $value);
+                    $value = str_replace("\n", "\r\n", $value);
+
+                    $chars .= "\r\n";
+                }
+
                 // $value = ' hello ';
                 // echo '#' . $chars . '#' . $value . '#';
+
                 $invalidChars = [];
                 if (!HStrings::ValidateChars($value, $chars, $invalidChars)) {
 

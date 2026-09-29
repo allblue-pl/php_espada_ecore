@@ -1217,40 +1217,41 @@ class TTable {
         return $this->db->query_Execute($query);
     }
 
-    public function validate(CValidator $validator, $fieldInfos): void {
-        foreach ($fieldInfos as $field_name => $field_info) {
-            $validator->add($field_name, $field_info[1],
+    public function validate(CValidator $validator, array &$row, 
+            array $fieldInfos): void {
+        foreach ($fieldInfos as $field_name => &$field_info) {
+            $validator->add($field_name, $row[$field_info[1]],
                     $this->getColumn($field_info[0])['vFields']);
         }
     }
 
-    public function validateDefault(CValidator $validator, array $values,
+    public function validateDefault(CValidator $validator, array &$row,
             array $ignoreColumns = []): void {
         $fieldInfos = [];
-        foreach ($values as $columnName => $value) {
+        foreach ($row as $columnName => &$value) {
             if (in_array($columnName, $ignoreColumns))
                 continue;
                 
-            $fieldInfos[$columnName] = [ $columnName, $value ];
+            $fieldInfos[$columnName] = [ $columnName, $columnName ];
         }
 
-        $this->validate($validator, $fieldInfos);
+        $this->validate($validator, $row, $fieldInfos);
     }
 
-    public function validateDefault_Columns(CValidator $validator, array $values,
+    public function validateDefault_Columns(CValidator $validator, array &$row,
             array $columnNames) {
         $fieldInfos = [];
-        foreach ($values as $columnName => $value) {
+        foreach ($row as $columnName => $value) {
             if (!in_array($columnName, $columnNames))
                 continue;
                 
-            $fieldInfos[$columnName] = [ $columnName, $value ];
+            $fieldInfos[$columnName] = [ $columnName, $columnName ];
         }
 
-        $this->validate($validator, $fieldInfos);
+        $this->validate($validator, $row, $fieldInfos);
     }
 
-    public function validateDefault_All(CValidator $validator, array $values,
+    public function validateDefault_All(CValidator $validator, array &$values,
             array $ignoreColumns = []): void {
         $fieldInfos = [];
         $columnNames = $this->getColumnNames(true);
@@ -1258,10 +1259,10 @@ class TTable {
             if (in_array($columnName, $ignoreColumns))
                 continue;
 
-            $value = array_key_exists($columnName, $values) ? 
-                    $values[$columnName] : null;
-                
-            $fieldInfos[$columnName] = [ $columnName, $value ];
+            if (array_key_exists($columnName, $values))
+                $fieldInfos[$columnName] = [ $columnName, &$values[$columnName] ];
+            else
+                $fieldInfos[$columnName] = [ $columnName, null ];
         }
 
         $this->validate($validator, $fieldInfos);
@@ -1401,13 +1402,34 @@ class TTable {
                             } else if ($sign === 'NOT IN') {
                                 $args[] = 'TRUE = TRUE';
                                 continue;
+                            } else if ($sign === 'BIN') {
+                                $args[] = 'TRUE = FALSE';
+                                continue;
+                            } else if ($sign === 'NOT BIN') {
+                                $args[] = 'TRUE = TRUE';
+                                continue;
                             }
-                        } else
+                        } else {
+                            if ($sign === "BIN") {
+                                $prefix = "BINARY ";
+                                $sign = "IN";
+                            } else if ($sign === "NOT BIN") {
+                                $prefix = "BINARY ";
+                                $sign = "NOT IN";
+                            }
+
                             $dbValue = ' ' . $this->escapeArray($column['field'], $value);
+                        }
                     } else {
-                        if (is_string($value) && $sign === '==') {
-                            $prefix = 'BINARY ';
-                            $sign = '=';
+                        if (is_string($value)) {
+                            if ($sign === '==') {
+                                $prefix = 'BINARY ';
+                                $sign = '=';
+                            } else if ($sign === "!==") {
+                                $prefix = 'BINARY ';
+                                $sign = '<>';
+                            } else if ($sign === "!=")
+                                $sign = '<>';
                         }
 
                         $dbValue = ' ' . $column['field']->escape($this->db, $value);
