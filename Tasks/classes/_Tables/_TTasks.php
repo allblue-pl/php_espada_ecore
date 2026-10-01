@@ -12,7 +12,7 @@ use Override;
  *
  * @phpstan-type _T_TRTasks_Tasks array{
  *     Hash: string,
- *     User_Id: float|null,
+ *     User_Id: int|null,
  *     DateTime: int,
  *     Finished: bool,
  *     Info: string,
@@ -20,7 +20,7 @@ use Override;
  * }
  * @phpstan-type _T_TRTasks_Tasks_Insert array{
  *     Hash: string,
- *     User_Id: float|null,
+ *     User_Id: int|null,
  *     DateTime: int,
  *     Finished: bool,
  *     Info: string,
@@ -28,7 +28,7 @@ use Override;
  * }
  * @phpstan-type _T_TRTasks_Tasks_Update array{
  *     Hash?: string,
- *     User_Id?: float|null,
+ *     User_Id?: int|null,
  *     DateTime?: int,
  *     Finished?: bool,
  *     Info?: string,
@@ -36,7 +36,7 @@ use Override;
  * }
  * @phpstan-type _T_TRTasks_Tasks_Variant array{
  *     Hash: string,
- *     User_Id: float|null,
+ *     User_Id: int|null,
  *     DateTime: int,
  *     Finished: bool,
  *     Info: string,

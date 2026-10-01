@@ -11,30 +11,30 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRLog_Logs array{
- *     Id: float,
- *     User_Id: float|null,
- *     DateTime: float|null,
+ *     Id: int,
+ *     User_Id: int|null,
+ *     DateTime: int|null,
  *     Message: string|null,
  *     Data: string|null,
  * }
  * @phpstan-type _T_TRLog_Logs_Insert array{
- *     Id: float|null,
- *     User_Id: float|null,
- *     DateTime: float|null,
+ *     Id: int|null,
+ *     User_Id: int|null,
+ *     DateTime: int|null,
  *     Message: string|null,
  *     Data: string|null,
  * }
  * @phpstan-type _T_TRLog_Logs_Update array{
- *     Id?: float|null,
- *     User_Id?: float|null,
- *     DateTime?: float|null,
+ *     Id?: int|null,
+ *     User_Id?: int|null,
+ *     DateTime?: int|null,
  *     Message?: string|null,
  *     Data?: string|null,
  * }
  * @phpstan-type _T_TRLog_Logs_Variant array{
- *     Id: float,
- *     User_Id: float|null,
- *     DateTime: float|null,
+ *     Id: int,
+ *     User_Id: int|null,
+ *     DateTime: int|null,
  *     Message: string|null,
  *     Data: string|null,
  *     ...<string,mixed>}

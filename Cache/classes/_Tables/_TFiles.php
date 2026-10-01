@@ -11,28 +11,28 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRCache_Files array{
- *     Id: float,
- *     User_Id: float|null,
+ *     Id: int,
+ *     User_Id: int|null,
  *     Hash: string,
- *     Expires: float,
+ *     Expires: int,
  * }
  * @phpstan-type _T_TRCache_Files_Insert array{
- *     Id: float|null,
- *     User_Id: float|null,
+ *     Id: int|null,
+ *     User_Id: int|null,
  *     Hash: string,
- *     Expires: float,
+ *     Expires: int,
  * }
  * @phpstan-type _T_TRCache_Files_Update array{
- *     Id?: float|null,
- *     User_Id?: float|null,
+ *     Id?: int|null,
+ *     User_Id?: int|null,
  *     Hash?: string,
- *     Expires?: float,
+ *     Expires?: int,
  * }
  * @phpstan-type _T_TRCache_Files_Variant array{
- *     Id: float,
- *     User_Id: float|null,
+ *     Id: int,
+ *     User_Id: int|null,
  *     Hash: string,
- *     Expires: float,
+ *     Expires: int,
  *     ...<string,mixed>}
  */
 class _TFiles extends TTable {

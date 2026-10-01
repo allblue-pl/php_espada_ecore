@@ -23,7 +23,7 @@ class FId extends FField {
         if ($value === null)
             return null;
             
-        return (float)round($value);
+        return (int)round($value);
     }
 
     protected function _unescape(MDatabase $db, $value) {

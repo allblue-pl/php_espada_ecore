@@ -3,6 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 use E, EC;
 use EC\Forms\CValidator;
+use Exception;
 
 class TTable {
 
@@ -136,40 +137,49 @@ class TTable {
         if (count($this->columns_Table) > 0)
             return;
 
-        $class_name = get_called_class();
+        $className = get_called_class();
 
-        throw new \Exception("Table columns not set in `{$class_name}.");
+        throw new \Exception("Table columns not set in `{$className}.");
     }
 
-    public function columnExists($columnName, $is_table_column = false) {
-        if ($is_table_column)
+    public function columnExists($columnName, $isTableColumn = false) {
+        if ($isTableColumn)
             return array_key_exists($columnName, $this->columns_Table);
         else
             return array_key_exists($columnName, $this->columns);
     }
 
-    public function count($group_extension = '') {
-        $query = "SELECT COUNT(DISTINCT {$this->prefix}Id) as count" .
+    public function count(string $groupExtension = '', bool $forUpdate = false) {
+        $pks_Arr = [];
+        $pks = $this->getPKs();
+        foreach ($pks as $pk)
+            $pks_Arr[] = $this->prefix . $this->db->quote($pk);
+
+        $query = "SELECT COUNT(DISTINCT " . implode(", ", $pks_Arr) . ") as Count" .
                 ' FROM ' . $this->getQuery_From();
 
-        if ($group_extension !== '')
-            $query .= ' ' . $group_extension;
+        if ($groupExtension !== '')
+            $query .= ' ' . $groupExtension;
         $query .= ' LIMIT 1';
+
+        if ($forUpdate)
+            $query .= " FOR UPDATE";
 
         $rows = $this->db->query_Select($query);
 
         if (count($rows) === 0)
             return null;
 
-        return $this->db->unescapeInt($rows[0]['count']);
+        return $this->db->unescapeInt($rows[0]['Count']);
     }
 
-    public function count_Where($where_conditions, $group_extension = '') {
-        $where = $this->getQuery_Conditions($where_conditions);
+    public function count_Where(array $whereConditions, string $groupExtension = '', 
+            bool $forUpdate = false) {
+        $where = $this->getQuery_Conditions($whereConditions);
         if ($where !== '')
-            $group_extension = 'WHERE ' . $where . ' ' . $group_extension;
+            $groupExtension = 'WHERE ' . $where . ' ' . $groupExtension;
 
-        return $this->count($group_extension);
+        return $this->count($groupExtension);
     }
 
     public function delete($query_extension = '') {
@@ -1217,14 +1227,29 @@ class TTable {
         return $this->db->query_Execute($query);
     }
 
-    public function validate(CValidator $validator, array &$row, 
+    /**
+     * @template T
+     * @param T $values
+     * @param-out T $values
+     * @return void 
+     */
+    public function validate(CValidator $validator, array &$values, 
             array $fieldInfos): void {
-        foreach ($fieldInfos as $field_name => &$field_info) {
-            $validator->add($field_name, $row[$field_info[1]],
-                    $this->getColumn($field_info[0])['vFields']);
+        foreach ($fieldInfos as $field_name => &$fieldInfo) {
+            if (!array_key_exists($fieldInfo[1], $values)) {
+                throw new Exception("Value '{$fieldInfo[1]}' does not exist.");
+            }
+            $validator->add($field_name, $values[$fieldInfo[1]],
+                    $this->getColumn($fieldInfo[0])['vFields']);
         }
     }
 
+    /**
+     * @template T
+     * @param T $row
+     * @param-out T $row
+     * @return void 
+     */
     public function validateDefault(CValidator $validator, array &$row,
             array $ignoreColumns = []): void {
         $fieldInfos = [];
@@ -1238,8 +1263,14 @@ class TTable {
         $this->validate($validator, $row, $fieldInfos);
     }
 
+    /**
+     * @template T
+     * @param T $row
+     * @param-out T $row
+     * @return void 
+     */
     public function validateDefault_Columns(CValidator $validator, array &$row,
-            array $columnNames) {
+            array $columnNames): void {
         $fieldInfos = [];
         foreach ($row as $columnName => $value) {
             if (!in_array($columnName, $columnNames))
@@ -1251,7 +1282,13 @@ class TTable {
         $this->validate($validator, $row, $fieldInfos);
     }
 
-    public function validateDefault_All(CValidator $validator, array &$values,
+    /**
+     * @template T
+     * @param T $row
+     * @param-out T $row
+     * @return void 
+     */
+    public function validateDefault_All(CValidator $validator, array &$row,
             array $ignoreColumns = []): void {
         $fieldInfos = [];
         $columnNames = $this->getColumnNames(true);
@@ -1259,13 +1296,13 @@ class TTable {
             if (in_array($columnName, $ignoreColumns))
                 continue;
 
-            if (array_key_exists($columnName, $values))
-                $fieldInfos[$columnName] = [ $columnName, &$values[$columnName] ];
-            else
-                $fieldInfos[$columnName] = [ $columnName, null ];
+            $fieldInfos[$columnName] = [ $columnName, $columnName ];
+
+            if (!array_key_exists($columnName, $row))
+                $row[$columnName] = null;
         }
 
-        $this->validate($validator, $fieldInfos);
+        $this->validate($validator, $row, $fieldInfos);
     }
 
     // public function validateRow($row) {

@@ -11,26 +11,26 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRApp_Infos array{
- *     Id: float,
- *     User_Id: float,
+ *     Id: int,
+ *     User_Id: int,
  *     AuthenticationHash: string,
  *     Data: string,
  * }
  * @phpstan-type _T_TRApp_Infos_Insert array{
- *     Id: float|null,
- *     User_Id: float,
+ *     Id: int|null,
+ *     User_Id: int,
  *     AuthenticationHash: string,
  *     Data: string,
  * }
  * @phpstan-type _T_TRApp_Infos_Update array{
- *     Id?: float|null,
- *     User_Id?: float,
+ *     Id?: int|null,
+ *     User_Id?: int,
  *     AuthenticationHash?: string,
  *     Data?: string,
  * }
  * @phpstan-type _T_TRApp_Infos_Variant array{
- *     Id: float,
- *     User_Id: float,
+ *     Id: int,
+ *     User_Id: int,
  *     AuthenticationHash: string,
  *     Data: string,
  *     ...<string,mixed>}

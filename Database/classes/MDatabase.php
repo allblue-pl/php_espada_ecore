@@ -98,7 +98,7 @@ class MDatabase extends E\Module {
         if ($value === null)
 			return 'NULL';
 
-        return (string)(round((float)$value));
+        return (string)(round((int)$value));
     }
 
 	public function escapeString($value) {
@@ -223,9 +223,9 @@ class MDatabase extends E\Module {
             if ($date_time === '0000-00-00 00:00:00')
                 $date_time = '1970-01-01 00:00:00';
 
-		    return (float)strtotime($date_time . ' UTC');
+		    return strtotime($date_time . ' UTC');
         } catch (\Exception $e) {
-            return (float)strtotime('1970-01-01 00:00:00 UTC');
+            return strtotime('1970-01-01 00:00:00 UTC');
         }
 	}
 
@@ -240,7 +240,7 @@ class MDatabase extends E\Module {
 		if ($value === null)
 			return null;
 
-		return (float)$value;
+		return (int)$value;
 	}
 
 	public function unescapeString($value) {

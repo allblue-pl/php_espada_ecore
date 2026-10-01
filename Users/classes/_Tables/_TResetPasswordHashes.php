@@ -11,26 +11,26 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRUsers_ResetPasswordHashes array{
- *     Id: float,
- *     User_Id: float,
+ *     Id: int,
+ *     User_Id: int,
  *     DateTime: int,
  *     Hash: string,
  * }
  * @phpstan-type _T_TRUsers_ResetPasswordHashes_Insert array{
- *     Id: float|null,
- *     User_Id: float,
+ *     Id: int|null,
+ *     User_Id: int,
  *     DateTime: int,
  *     Hash: string,
  * }
  * @phpstan-type _T_TRUsers_ResetPasswordHashes_Update array{
- *     Id?: float|null,
- *     User_Id?: float,
+ *     Id?: int|null,
+ *     User_Id?: int,
  *     DateTime?: int,
  *     Hash?: string,
  * }
  * @phpstan-type _T_TRUsers_ResetPasswordHashes_Variant array{
- *     Id: float,
- *     User_Id: float,
+ *     Id: int,
+ *     User_Id: int,
  *     DateTime: int,
  *     Hash: string,
  *     ...<string,mixed>}

@@ -11,7 +11,7 @@ use Override;
 /**
  *
  * @phpstan-type _T_TRUsers_Users array{
- *     Id: float,
+ *     Id: int,
  *     Type: int,
  *     LoginHash: string,
  *     EmailHash: string,
@@ -21,7 +21,7 @@ use Override;
  *     Confirmed: bool,
  * }
  * @phpstan-type _T_TRUsers_Users_Insert array{
- *     Id: float,
+ *     Id: int,
  *     Type: int,
  *     LoginHash: string,
  *     EmailHash: string,
@@ -31,7 +31,7 @@ use Override;
  *     Confirmed: bool,
  * }
  * @phpstan-type _T_TRUsers_Users_Update array{
- *     Id?: float,
+ *     Id?: int,
  *     Type?: int,
  *     LoginHash?: string,
  *     EmailHash?: string,
@@ -41,7 +41,7 @@ use Override;
  *     Confirmed?: bool,
  * }
  * @phpstan-type _T_TRUsers_Users_Variant array{
- *     Id: float,
+ *     Id: int,
  *     Type: int,
  *     LoginHash: string,
  *     EmailHash: string,

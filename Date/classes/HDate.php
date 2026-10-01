@@ -5,7 +5,6 @@ use E, EC;
 use EC\Text\HText;
 
 class HDate {
-
     const Span_Second = 1;
     const Span_Minute = 60;
     const Span_Hour = 60 * self::Span_Minute;
@@ -21,7 +20,7 @@ class HDate {
 
     static private $TimeZone = null;
 
-    static public function ExcelToTime($str) {
+    static public function ExcelToTime(string $str) {
         if ($str === null || $str === '')
             return null;
 
@@ -36,7 +35,7 @@ class HDate {
         return ($start + $diff);
     }
 
-    static public function GetDay($time = null) {
+    static public function GetDay(int|null $time = null) {
         if ($time === null)
             $time = self::GetTime();
 
@@ -44,7 +43,7 @@ class HDate {
                 self::GetUTCOffset_Time($time);
     }
 
-    static public function GetDay_UTC($time = null) {
+    static public function GetDay_UTC(int|null $time = null) {
         if ($time === null)
             $time = self::GetTime();
 
@@ -112,14 +111,14 @@ class HDate {
         return self::StrToTime_RelNeg("{$year}-{$month}-{$day} 00:00");
     }
 
-    static public function GetTime_Rel(?float $time = null): ?float {
+    static public function GetTime_Rel(int|null $time = null): int {
         if ($time === null)
             $time = time();
 
         return $time + self::GetUTCOffset($time) * self::Span_Hour;
     }
 
-    static public function GetTime_RelNeg(?float $time = null) {
+    static public function GetTime_RelNeg(int|null $time = null) {
         if ($time === null)
             $time = time();
 
@@ -256,18 +255,18 @@ class HDate {
         self::$TimeZone = new \DateTimeZone($timeZoneName);
     }
 
-    static public function StrToTime($str) {
+    static public function StrToTime(string $str): int|null {
         if ($str === null || $str === '')
             return null;
 
-        return (float)strtotime($str . ' UTC');
+        return strtotime($str . ' UTC');
     }
 
-    static public function StrToTime_RelNeg($str) {
+    static public function StrToTime_RelNeg(string $str): int|null {
         if ($str === null || $str === '')
             return null;
 
-        $time = (float)strtotime($str . ' UTC');
+        $time = strtotime($str . ' UTC');
 
         return $time - self::GetUTCOffset($time) * self::Span_Hour;
     }
