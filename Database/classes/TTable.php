@@ -1228,8 +1228,8 @@ class TTable {
     }
 
     /**
-     * @template T
-     * @param T $values
+     * @template T of array
+     * @param T &$values
      * @param-out T $values
      * @return void 
      */
@@ -1245,10 +1245,9 @@ class TTable {
     }
 
     /**
-     * @template T
-     * @param T $row
+     * @template T of array
+     * @param T &$row
      * @param-out T $row
-     * @return void 
      */
     public function validateDefault(CValidator $validator, array &$row,
             array $ignoreColumns = []): void {
@@ -1264,10 +1263,9 @@ class TTable {
     }
 
     /**
-     * @template T
-     * @param T $row
+     * @template T of array
+     * @param T &$row
      * @param-out T $row
-     * @return void 
      */
     public function validateDefault_Columns(CValidator $validator, array &$row,
             array $columnNames): void {
@@ -1283,10 +1281,9 @@ class TTable {
     }
 
     /**
-     * @template T
-     * @param T $row
+     * @template T of array
+     * @param T &$row
      * @param-out T $row
-     * @return void 
      */
     public function validateDefault_All(CValidator $validator, array &$row,
             array $ignoreColumns = []): void {

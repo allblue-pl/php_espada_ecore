@@ -20,7 +20,7 @@ class HDate {
 
     static private $TimeZone = null;
 
-    static public function ExcelToTime(string $str) {
+    static public function ExcelToTime(string $str): int {
         if ($str === null || $str === '')
             return null;
 
@@ -35,7 +35,7 @@ class HDate {
         return ($start + $diff);
     }
 
-    static public function GetDay(int|null $time = null) {
+    static public function GetDay(int|null $time = null): int {
         if ($time === null)
             $time = self::GetTime();
 
@@ -43,7 +43,7 @@ class HDate {
                 self::GetUTCOffset_Time($time);
     }
 
-    static public function GetDay_UTC(int|null $time = null) {
+    static public function GetDay_UTC(int|null $time = null): int {
         if ($time === null)
             $time = self::GetTime();
 
@@ -52,14 +52,14 @@ class HDate {
         return $time;
     }
 
-    static public function GetDayNr(int|null $time = null) {
+    static public function GetDayNr(int|null $time = null): int {
         if ($time === null)
             $time = time();
 
         return intval(self::Format("d", $time)) - 1;
     }
 
-    static public function GetDayNr_UTC(int|null $time = null) {
+    static public function GetDayNr_UTC(int|null $time = null): int {
         if ($time === null)
             $time = time();
 
@@ -75,21 +75,21 @@ class HDate {
         return gmdate('N', $time === null ? self::GetTime() : $time) - 1;
     }
 
-    static public function GetMonthNr(int|null $time = null) {
+    static public function GetMonthNr(int|null $time = null): int {
         if ($time === null)
             $time = time();
 
         return intval(self::Format("m", $time)) - 1;
     }
 
-    static public function GetMonthNr_UTC(int|null $time = null) {
+    static public function GetMonthNr_UTC(int|null $time = null): int {
         if ($time === null)
             $time = time();
 
         return intval(self::Format_UTC("m", $time)) - 1;
     }
 
-    static public function GetMonthName($monthNr) {
+    static public function GetMonthName($monthNr): int {
         return HText::_('Date:MonthNames_' . $monthNr);
     }
 
@@ -97,14 +97,14 @@ class HDate {
         return time();
     }
 
-    static public function GetTime_FromNrs(int $year, int $month, int $day) {
+    static public function GetTime_FromNrs(int $year, int $month, int $day): int {
         $month++;
         $day++;
 
         return self::StrToTime("{$year}-{$month}-{$day} 00:00");
     }
 
-    static public function GetTime_FromNrs_Rel(int $year, int $month, int $day) {
+    static public function GetTime_FromNrs_Rel(int $year, int $month, int $day): int {
         $month++;
         $day++;
 
@@ -118,7 +118,7 @@ class HDate {
         return $time + self::GetUTCOffset($time) * self::Span_Hour;
     }
 
-    static public function GetTime_RelNeg(int|null $time = null) {
+    static public function GetTime_RelNeg(int|null $time = null): int {
         if ($time === null)
             $time = time();
 
@@ -136,7 +136,7 @@ class HDate {
         return self::$TimeZone;
     }
 
-    static public function GetUTCOffset(int $time) {
+    static public function GetUTCOffset(int $time): int {
         return self::GetUTCOffset_Time($time) / 60 / 60;
     }
 
@@ -147,7 +147,7 @@ class HDate {
         return self::GetTimeZone()->getOffset($dateTime);
     }
 
-    static public function GetTimeZoneOffset($timezone_name) {
+    static public function GetTimeZoneOffset($timezone_name): int {
         $utc_time = new \DateTime('now', new \DateTimeZone('UTC'));
 
         $timezone = new \DateTimeZone($timezone_name);
@@ -156,21 +156,21 @@ class HDate {
         return $timezone_offset;
     }
 
-    static public function GetYearNr(int|null $time = null) {
+    static public function GetYearNr(int|null $time = null): int {
         if ($time === null)
             $time = time();
 
         return intval(self::Format("Y", $time));
     }
 
-    static public function GetYearNr_UTC(int|null $time = null) {
+    static public function GetYearNr_UTC(int|null $time = null): int {
         if ($time === null)
             $time = time();
 
         return intval(self::Format_UTC("Y", $time));
     }
 
-    static public function Format(string $format, int|null $time) {
+    static public function Format(string $format, int|null $time): string {
         if ($time === null)
             $time = time();
 
@@ -179,14 +179,14 @@ class HDate {
         return gmdate($format, $time);
     }
 
-    static public function Format_UTC(string $format, int|null $time) {
+    static public function Format_UTC(string $format, int|null $time): string {
         if ($time === null)
             $time = time();
 
         return gmdate($format, $time);
     }
 
-    static public function Format_Date($time) {
+    static public function Format_Date($time): string {
         if ($time === null)
             return '-';
 
@@ -195,21 +195,21 @@ class HDate {
         return gmdate(HText::_('Date:Format_Date'), $time);
     }
 
-    static public function Format_Date_UTC($time) {
+    static public function Format_Date_UTC($time): string {
         if ($time === null)
             return '-';
 
         return gmdate(HText::_('Date:Format_Date'), $time);
     }
 
-    static public function Format_Date_Rel($time) {
+    static public function Format_Date_Rel($time): string {
         if ($time === null)
             return '-';
 
         return gmdate(HText::_('Date:Format_Date'), $time);
     }
 
-    static public function Format_DateTime($time) {
+    static public function Format_DateTime($time): string {
         if ($time === null)
             return '-';
 
@@ -218,28 +218,28 @@ class HDate {
         return gmdate(HText::_('Date:Format_DateTime'), $time);
     }
 
-    static public function Format_DateTime_UTC($time) {
+    static public function Format_DateTime_UTC($time): string {
         if ($time === null)
             return '-';
 
         return gmdate(HText::_('Date:Format_DateTime'), $time);
     }
 
-    static public function Format_Time($time) {
+    static public function Format_Time($time): string {
         if ($time === null)
             return '-';
 
         return gmdate(HText::_('Date:Format_Time'), $time);
     }
 
-    static public function Format_Time_Rel($time) {
+    static public function Format_Time_Rel($time): string {
         if ($time === null)
             return '-';
 
         return gmdate(HText::_('Date:Format_Time'), $time);
     }
 
-    static public function Format_DayOfWeek($time) {
+    static public function Format_DayOfWeek($time): string {
         if ($time === null)
             return '-';
 
@@ -247,11 +247,11 @@ class HDate {
         return HText::_("Date:Format_DayOfWeek_{$day_of_week}");
     }
 
-    static public function Round_Day(int $time) {
+    static public function Round_Day(int $time): int {
         return floor($time / self::Span_Day) * self::Span_Day;
     }
 
-    static public function SetTimeZone(string $timeZoneName) {
+    static public function SetTimeZone(string $timeZoneName): void {
         self::$TimeZone = new \DateTimeZone($timeZoneName);
     }
 

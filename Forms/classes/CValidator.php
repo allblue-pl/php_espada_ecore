@@ -16,6 +16,12 @@ class CValidator {
 
     }
 
+    /**
+     * @template T
+     * @param T $value
+     * @param-out T $value
+     * @return void 
+     */
     public function add(string $name, mixed &$value, array $validatorFields = []) {
         if ($this->field_Exists($name))
             throw new \Exception("Field `{$name}` already exists.");
@@ -45,10 +51,10 @@ class CValidator {
         $this->info['errors'][] = $message;
     }   
 
-    public function fieldError($field_name, $message = null) {
+    public function fieldError($fieldName, $message = null) {
         $this->info['valid'] = false;
 
-        $field = &$this->field_Get($field_name);
+        $field = &$this->field_Get($fieldName);
 
         if (!$field['valid'])
             return;
@@ -64,8 +70,8 @@ class CValidator {
         }
     }
 
-    public function fieldSuccess($field_name, $message = null) {
-        $field = &$this->field_Get($field_name);
+    public function fieldSuccess($fieldName, $message = null) {
+        $field = &$this->field_Get($fieldName);
 
         $field['valid'] = false;
 
