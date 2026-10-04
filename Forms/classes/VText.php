@@ -35,6 +35,11 @@ class VText extends Forms\VField {
 
             return;
         } else {
+            if ($args["multiline"]) {
+                $value = str_replace("\r\n", "\n", $value);
+                $value = str_replace("\n", "\r\n", $value);
+            }
+
             if ($args['minLength'] !== null) {
                 if (mb_strlen($value) < $args['minLength']) {
                     $this->error($this->texts->get(
@@ -43,10 +48,12 @@ class VText extends Forms\VField {
             }
 
             if ($args['maxLength'] !== null) {
-                if ($args['maxLength'] > 0)
-                    if (mb_strlen($value) > $args['maxLength'])
+                if ($args['maxLength'] > 0) {
+                    if (mb_strlen($value) > $args['maxLength']) {
                         $this->error($this->texts->get(
                             'text_AboveMaxLength', [$args['maxLength']]));
+                    }
+                }
             }
 
             if ($args['regexp'] !== null) {
@@ -59,19 +66,14 @@ class VText extends Forms\VField {
 
             if ($args['chars'] !== null) {
                 $chars = str_replace('#', '\\#', $args['chars']);
-                if ($args["multiline"]) {
-                    $value = str_replace("\r\n", "\n", $value);
-                    $value = str_replace("\n", "\r\n", $value);
-
+                if ($args["multiline"])
                     $chars .= "\r\n";
-                }
 
                 // $value = ' hello ';
                 // echo '#' . $chars . '#' . $value . '#';
 
                 $invalidChars = [];
                 if (!HStrings::ValidateChars($value, $chars, $invalidChars)) {
-
                     $not_allowed_chars_arr = $invalidChars;
                     $not_allowed_chars = implode(', ', $not_allowed_chars_arr);
 
@@ -79,8 +81,14 @@ class VText extends Forms\VField {
                     $not_allowed_chars = str_replace('\\', '', $not_allowed_chars);
                     $not_allowed_chars = str_replace('&#92;', '\\', $not_allowed_chars);
 
+                    $ords = [];
+                    for ($i = 0; $i < mb_strlen($not_allowed_chars); $i++) {
+                        $c = mb_substr($not_allowed_chars, $i, 1);
+                        $ords[] = "#" . ord($c);
+                    }
+
                     $this->error($this->texts->get('text_NotAllowedCharacters',
-                        [ $not_allowed_chars ]));
+                        [ $not_allowed_chars, implode(", ", $ords) ]));
 
                 }
             }

@@ -123,7 +123,7 @@ class HStrings {
 
         $invalidChars = [];
 
-        mb_ereg_search_init($string, $regexp);
+        mb_ereg_search_init($string, $regexp, "u");
         while(true) {
             if (mb_ereg_search() === false)
                 break;
