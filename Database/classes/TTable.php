@@ -266,15 +266,23 @@ class TTable {
         return $this->columns[$columnName];
     }
 
-    public function getColumnNames($tableOnly = false, $prefix = null) {
+    /**
+     * @param list<string> $ignoreColumns 
+     */
+    public function getColumnNames(bool $tableOnly = false, string|null $prefix = null, 
+            array $ignoreColumns = []) {
         $columnNames = null;
 
-        if ($tableOnly)
-            $columnNames = array_keys($this->columns_Table);
-        else {
+        if ($tableOnly) {
+            $columnNames = [];
+            foreach ($this->columns_Table as $columnName => $column) {
+                if (!in_array($columnName, $ignoreColumns))
+                    $columnNames[] = $columnName;
+            }
+        } else {
             $columnNames = [];
             foreach ($this->columns as $columnName => $column) {
-                if (!$column['optional'])
+                if (!in_array($columnName, $ignoreColumns) && !$column['optional'])
                     $columnNames[] = $columnName;
             }
         }
@@ -1266,6 +1274,7 @@ class TTable {
      * @template T of array
      * @param T &$row
      * @param-out T $row
+     * @param list<string> $columnNames
      */
     public function validateDefault_Columns(CValidator $validator, array &$row,
             array $columnNames): void {

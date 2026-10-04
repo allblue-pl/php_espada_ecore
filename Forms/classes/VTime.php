@@ -22,7 +22,7 @@ class VTime extends Forms\VField {
     protected function _validate(&$value) {
         $args = $this->getArgs();
 
-        if ($value === null || $value === 0) {
+        if ($value === null || $value === 0 || $value === "") {
             if ($args['required'])
                 $this->error($this->texts->notSet);
             else
