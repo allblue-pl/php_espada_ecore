@@ -84,7 +84,7 @@ class VText extends Forms\VField {
                     $ords = [];
                     for ($i = 0; $i < mb_strlen($not_allowed_chars); $i++) {
                         $c = mb_substr($not_allowed_chars, $i, 1);
-                        $ords[] = "#" . ord($c);
+                        $ords[] = "#" . mb_ord($c);
                     }
 
                     $this->error($this->texts->get('text_NotAllowedCharacters',

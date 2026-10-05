@@ -5,18 +5,20 @@ use E, EC;
 
 class HImages {
 
-    static public function Create($file_path) {
-        if (!file_exists($file_path))
-            throw new \Exception("File path '{$file_path}'  does not exist.");
+    static public function Create($filePath) {
+        if (!file_exists($filePath))
+            throw new \Exception("File path '{$filePath}'  does not exist.");
 
-        $mime = getimagesize($file_path)['mime'];
+        $mime = getimagesize($filePath)['mime'];
 
         if ($mime === 'image/jpeg')
-            return imagecreatefromjpeg($file_path);
+            return imagecreatefromjpeg($filePath);
         if ($mime === 'image/gif')
-            return imagecreatefromgif($file_path);
+            return imagecreatefromgif($filePath);
         if ($mime === 'image/png')
-            return imagecreatefrompng($file_path);
+            return imagecreatefrompng($filePath);
+        if ($mime === 'image/webp')
+            return imagecreatefromwebp($filePath);
 
         return null;
     }
@@ -29,6 +31,9 @@ class HImages {
             $quality_Png = 9 - (int)round(($quality / 100.0) * 9);
             imagesavealpha($image, true);
             return imagepng($image, $destFilePath, $quality_Png);
+        } else if ($ext === 'webp') {
+            imagesavealpha($image, true);
+            return imagewebp($image, $destFilePath, $quality);
         } else
             throw new \Exception('Unknown image extension.');
     }
