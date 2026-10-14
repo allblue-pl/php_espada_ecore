@@ -15,6 +15,8 @@ class MSession extends E\Module {
         $this->db = $db;
         $this->sessionHandler = new CSessionHandler($this);
 
+        session_name(HConfig::Get("Session", "name", "PHPSESSID"));
+
         session_set_cookie_params([
             'domain' => HConfig::Get("Session", "domain", null),
             'lifetime' => HConfig::Get("Session", "expirationTime", 0),
