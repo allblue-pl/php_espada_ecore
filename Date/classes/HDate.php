@@ -20,7 +20,7 @@ class HDate {
 
     static private $TimeZone = null;
 
-    static public function ExcelToTime(string $str): int {
+    static public function ExcelToTime(string $str): int|null {
         if ($str === null || $str === '')
             return null;
 
