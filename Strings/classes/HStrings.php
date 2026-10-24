@@ -11,7 +11,7 @@ class HStrings {
     static public function GetCharsRegexp($types = [], $extra = '',
             $langs = null) {
         foreach ($types as $type) {
-            if (!in_array($type, $types))
+            if (!in_array($type, [ "digits", "letters", "special", "emojis" ]))
                 throw new \Exception("Unknown chars type `{$type}`.");
         }
 
@@ -22,10 +22,19 @@ class HStrings {
         if (in_array('letters', $types))
             $chars .= 'a-zA-Z' . self::GetLangsSpecialCharacters();
         if (in_array('special', $types)) {
-            $chars .= ' `!@#%&_=/<>:;",\'' .
+            $chars .= ' `!@#%&_=/<>:;",\'–' .
                 '\\\\' . '\\^' . '\\$' . '\\.' . '\\[' .'\\]' . '\\|' .
                 '\\(' . '\\)' . '\\?' . '\\*' . '\\+' . '\\{' . '\\}' .
                 '\\-';
+        }
+        if (in_array('emojis', $types)) {
+            $chars .= '\\x{1F600}-\\x{1F64F}'; // Emoticons
+            $chars .= '\\x{1F300}-\\x{1F5FF}'; // Symbols & Pictographs
+            $chars .= '\\x{1F680}-\\x{1F6FF}'; // Transport & Map Symbols
+            $chars .= '\\x{1F900}-\\x{1F9FF}'; // Supplemental Symbols
+            $chars .= '\\x{1FA70}-\\x{1FAFF}'; // Symbols & Pictographs Ext. A
+            $chars .= '\\x{2600}-\\x{26FF}'; // Misc Symbols
+            $chars .= '\\x{2700}-\\x{27BF}'; // Dingbats
         }
 
         return $chars . self::EscapeRegexpChars($extra);
@@ -119,19 +128,11 @@ class HStrings {
     }
 
     static public function ValidateChars($string, $validChars, &$invalidChars) {
-        $regexp = '[^' . $validChars . ']';
-
+        $regexp = '/[^' . str_replace("/", "\\/", $validChars) . ']/u';
         $invalidChars = [];
 
-        mb_ereg_search_init($string, $regexp, "u");
-        while(true) {
-            if (mb_ereg_search() === false)
-                break;
-            
-            $match = mb_ereg_search_getregs();
-            if (!in_array($match[0], $invalidChars))
-                $invalidChars[] = $match[0];
-        }
+        if (preg_match_all($regexp, $string, $matches))
+            $invalidChars = array_unique($matches[0]);
         
         if (count($invalidChars) === 0)
             return true;

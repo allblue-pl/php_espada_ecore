@@ -368,7 +368,7 @@ class MDatabase extends E\Module {
 		$name = 	$config->getRequired("{$this->prefix}_Name");
 
 		$port = $config->get("{$this->prefix}_Port", 3306);
-		$charset_encoding = $config->get("{$this->prefix}_CharsetEncoding", 'utf8');
+		$charset_encoding = $config->get("{$this->prefix}_CharsetEncoding", 'utf8mb4');
 		$this->useTransactions = $config->get("{$this->prefix}_UseTransactions", true);
 
 		$this->mysqli = new \mysqli($host, $user, $password, $name, $port);

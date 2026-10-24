@@ -1,7 +1,7 @@
 <?php namespace EC\Mailer;
 defined('_ESPADA') or die(NO_ACCESS);
 
-require(PATH_ESITE.'/composer/vendor/autoload.php');
+require_once(PATH_ESITE.'/composer/vendor/autoload.php');
 
 use E, EC;
 use PHPMailer\PHPMailer;
