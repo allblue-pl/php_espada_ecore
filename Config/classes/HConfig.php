@@ -110,14 +110,14 @@ class HConfig {
 		if (!file_exists($file_path))
 			throw new \Exception('Config file `'.$file_path.'` does not exist.');
 
-		$eConfig = new CConfig_Setter();
+		$eConfig = new CConfig_Setter(self::$Properties);
 
 		unset($file_path);
 
 		require(PATH_PRESETS . '/Config/config.php');
 
-        self::$Properties = array_replace_recursive(self::$Properties,
-                $eConfig->getProperties());
+        // self::$Properties = array_replace_recursive(self::$Properties,
+        //         $eConfig->getProperties());
 	}
 
 }

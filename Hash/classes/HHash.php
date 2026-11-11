@@ -16,7 +16,7 @@ class HHash {
 
 	static public function GetPassword($password, $hash_rounds = 12) {
 		$options = [ 'cost' => $hash_rounds ];
-		return password_hash($password, PASSWORD_BCRYPT);
+		return password_hash($password, PASSWORD_BCRYPT, $options);
 	}
 
 	static public function CheckPassword($password, $password_hash) {

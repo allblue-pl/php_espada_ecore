@@ -7,6 +7,7 @@ use EC\Database\MDatabase;
 use EC\Date\HDate;
 use EC\ELibs\MELibs;
 use EC\Hash\HHash;
+use EC\Strings\HStrings;
 use EC\Text\HText;
 
 class HUsers {
@@ -15,7 +16,7 @@ class HUsers {
 
 	const HashRounds_Default = 12;
 
-	const Password_MinCharacters = 6;
+	const Password_MinCharacters = 12;
 
     const LogInError_UserDoesNotExist   = 0;
     const LogInError_UserNotActive      = 1;
@@ -108,6 +109,11 @@ class HUsers {
 			return null;
         }
 
+		if (!self::CheckPasswordHash($password, $row['PasswordHash'])) { 
+            $errorCode = self::LogInError_WrongPassword;
+			return null;
+        }
+
         if (!$row['Active']) {
             $errorCode = self::LogInError_UserNotActive;
             return null;
@@ -116,11 +122,6 @@ class HUsers {
         if (!$row['Confirmed']) {
             $errorCode = self::LogInError_UserNotConfirmed;
             return null;
-        }
-
-		if (!self::CheckPasswordHash($password, $row['PasswordHash'])) { 
-            $errorCode = self::LogInError_WrongPassword;
-			return null;
         }
 
 		return [
@@ -144,7 +145,8 @@ class HUsers {
 			return false;
 		if (!preg_match('#[0-9]#', $password))
 			return false;
-		if (!preg_match('#[a-zA-Z!@\#$%\^&\*]+#', $password))
+		if (!HStrings::ValidateChars($password, HStrings::GetCharsRegexp_Basic(), 
+                $invalidChars))
 			return false;
 
 		return true;
@@ -312,7 +314,7 @@ class HUsers {
         ]]);
     }
 
-    static public function Update(MDatabase $db, int $type, float|null $id, 
+    static public function Update(MDatabase $db, int $type, int|null &$id, 
             string|null $login = null, string|null $email = null, 
             string|null $password = null, array|null $groups = null, 
             bool|null $confirmed = null, bool|null $active = null) {
@@ -343,7 +345,12 @@ class HUsers {
         if ($confirmed !== null)
             $row['Confirmed'] = $confirmed ? true : false;
 
-		return (new TUsers($db))->update([ $row ]);
+        $tUsers = new TUsers($db);
+		$result = $tUsers->update([ $row ]);
+        if ($result && $id === null)
+            $id = $tUsers->getLastInsertedId();
+
+        return $result;;
     }
     
     static public function ValidateEmail(MDatabase $db, $userType, 

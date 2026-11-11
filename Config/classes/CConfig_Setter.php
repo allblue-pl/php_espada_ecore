@@ -7,8 +7,8 @@ class CConfig_Setter {
 
     private $properties = [];
 
-    public function __construct() {
-
+    public function __construct(array &$properties) {
+        $this->properties = &$properties;
     }
 
     public function getProperties() {
