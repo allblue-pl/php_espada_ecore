@@ -28,13 +28,24 @@ class HStrings {
                 '\\-';
         }
         if (in_array('emojis', $types)) {
-            $chars .= '\\x{1F600}-\\x{1F64F}'; // Emoticons
-            $chars .= '\\x{1F300}-\\x{1F5FF}'; // Symbols & Pictographs
-            $chars .= '\\x{1F680}-\\x{1F6FF}'; // Transport & Map Symbols
-            $chars .= '\\x{1F900}-\\x{1F9FF}'; // Supplemental Symbols
-            $chars .= '\\x{1FA70}-\\x{1FAFF}'; // Symbols & Pictographs Ext. A
-            $chars .= '\\x{2600}-\\x{26FF}'; // Misc Symbols
-            $chars .= '\\x{2700}-\\x{27BF}'; // Dingbats
+            $chars .= '\\x{1F600}-\\x{1F64F}';
+            $chars .= '\\x{1F300}-\\x{1F5FF}';
+            $chars .= '\\x{1F680}-\\x{1F6FF}';
+            $chars .= '\\x{1F900}-\\x{1F9FF}';
+            $chars .= '\\x{1FA70}-\\x{1FAFF}';
+            $chars .= '\\x{1FA00}-\\x{1FA6F}';
+            $chars .= '\\x{2600}-\\x{26FF}';
+            $chars .= '\\x{2700}-\\x{27BF}';
+
+            /* Additions */
+            $chars .= '\\x{FE0E}\\x{FE0F}';
+            $chars .= '\\x{200D}';
+            $chars .= '\\x{1F1E6}-\\x{1F1FF}';
+            $chars .= '\\x{20E3}';
+            $chars .= '\\x{2300}-\\x{23FF}';
+            $chars .= '\\x{2B00}-\\x{2BFF}';
+            $chars .= '\\x{3030}\\x{303D}\\x{3297}\\x{3299}';
+            $chars .= '\\x{E0020}-\\x{E007F}';
         }
 
         return $chars . self::EscapeRegexpChars($extra);
